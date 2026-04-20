@@ -88,11 +88,11 @@ All sizes use Inter via `next/font/google`. Language: `pt-BR`.
 | Role | Size | Weight | Line Height | Usage |
 |------|------|--------|-------------|-------|
 | Body | 14px | 400 (regular) | 1.5 | Form helper text, descriptions, table cells |
-| Label | 14px | 500 (medium) | 1.4 | Form labels, badge text, navigation items |
+| Label | 14px | 600 (semibold) | 1.4 | Form labels, badge text, navigation items |
 | Heading | 20px | 600 (semibold) | 1.3 | Card titles, step titles, section headings |
-| Display | 28px | 700 (bold) | 1.2 | Auth page main heading ("Bem-vindo de volta", "Crie sua conta") |
+| Display | 28px | 600 (semibold) | 1.2 | Auth page main heading ("Bem-vindo de volta", "Crie sua conta") |
 
-**Constraint: only 2 weights in components — 400 (regular) and 600 (semibold).** Weight 500 and 700 reserved for specific elements listed above; do not generalize.
+**Constraint: only 2 weights in components — 400 (regular) and 600 (semibold).** Do not use weight 500 or 700.
 
 **Error text:** 12px, weight 400, color `destructive` (red token). Uses `FormMessage` from shadcn/ui.
 
@@ -248,7 +248,7 @@ All copy in pt-BR. Brazilian Portuguese conventions: lowercase months, comma as 
 | Empty state body | "Convide corretores, financeiro ou visualizadores para colaborar na sua corretora." |
 | Empty state CTA | "Convidar primeiro usuário" |
 | Destructive: cancel invite | Confirm dialog: "Cancelar convite para [email]?" — body: "O link de convite enviado deixará de funcionar." — confirm button: "Sim, cancelar convite" — cancel button: "Manter convite" |
-| Destructive: remove user | Confirm dialog: "Remover [nome] da corretora?" — body: "O usuário perderá acesso imediatamente. Os registros criados por ele serão mantidos." — confirm button: "Sim, remover usuário" — cancel button: "Cancelar" |
+| Destructive: remove user | Confirm dialog: "Remover [nome] da corretora?" — body: "O usuário perderá acesso imediatamente. Os registros criados por ele serão mantidos." — confirm button: "Sim, remover usuário" — cancel button: "Manter usuário" |
 | Role names in pt-BR | admin = "Administrador", corretor = "Corretor", financeiro = "Financeiro", visualizador = "Visualizador" |
 
 ### Trial Expired Screen
