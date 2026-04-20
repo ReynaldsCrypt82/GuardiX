@@ -101,14 +101,54 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 a AUTH-05 | Phase 1 | — Pending |
-| CRM-01 a CRM-09 | Phase 2 | — Pending |
-| SEG-01 a SEG-07 | Phase 3 | — Pending |
-| CON-01 a CON-06 | Phase 4 | — Pending |
-| COM-01 a COM-06 | Phase 5 | — Pending |
-| FIN-01 a FIN-05 | Phase 6 | — Pending |
-| DASH-01 a DASH-04 | Phase 7 | — Pending |
-| AUTO-01 a AUTO-06 | Phase 8 | — Pending |
+| AUTH-01 | Phase 1 — Fundacao & Auth | Pending |
+| AUTH-02 | Phase 1 — Fundacao & Auth | Pending |
+| AUTH-03 | Phase 1 — Fundacao & Auth | Pending |
+| AUTH-04 | Phase 1 — Fundacao & Auth | Pending |
+| AUTH-05 | Phase 1 — Fundacao & Auth | Pending |
+| CRM-01 | Phase 2 — CRM & Clientes | Pending |
+| CRM-02 | Phase 2 — CRM & Clientes | Pending |
+| CRM-03 | Phase 2 — CRM & Clientes | Pending |
+| CRM-04 | Phase 2 — CRM & Clientes | Pending |
+| CRM-05 | Phase 2 — CRM & Clientes | Pending |
+| CRM-06 | Phase 2 — CRM & Clientes | Pending |
+| CRM-07 | Phase 2 — CRM & Clientes | Pending |
+| CRM-08 | Phase 2 — CRM & Clientes | Pending |
+| CRM-09 | Phase 2 — CRM & Clientes | Pending |
+| SEG-01 | Phase 3 — Seguros & Consorcio | Pending |
+| SEG-02 | Phase 3 — Seguros & Consorcio | Pending |
+| SEG-03 | Phase 3 — Seguros & Consorcio | Pending |
+| SEG-04 | Phase 3 — Seguros & Consorcio | Pending |
+| SEG-05 | Phase 3 — Seguros & Consorcio | Pending |
+| SEG-06 | Phase 3 — Seguros & Consorcio | Pending |
+| SEG-07 | Phase 3 — Seguros & Consorcio | Pending |
+| CON-01 | Phase 3 — Seguros & Consorcio | Pending |
+| CON-02 | Phase 3 — Seguros & Consorcio | Pending |
+| CON-03 | Phase 3 — Seguros & Consorcio | Pending |
+| CON-04 | Phase 3 — Seguros & Consorcio | Pending |
+| CON-05 | Phase 3 — Seguros & Consorcio | Pending |
+| CON-06 | Phase 3 — Seguros & Consorcio | Pending |
+| COM-01 | Phase 4 — Corretores & Comissoes | Pending |
+| COM-02 | Phase 4 — Corretores & Comissoes | Pending |
+| COM-03 | Phase 4 — Corretores & Comissoes | Pending |
+| COM-04 | Phase 4 — Corretores & Comissoes | Pending |
+| COM-05 | Phase 4 — Corretores & Comissoes | Pending |
+| COM-06 | Phase 4 — Corretores & Comissoes | Pending |
+| FIN-01 | Phase 5 — Financeiro | Pending |
+| FIN-02 | Phase 5 — Financeiro | Pending |
+| FIN-03 | Phase 5 — Financeiro | Pending |
+| FIN-04 | Phase 5 — Financeiro | Pending |
+| FIN-05 | Phase 5 — Financeiro | Pending |
+| DASH-01 | Phase 6 — Dashboards & Relatorios | Pending |
+| DASH-02 | Phase 6 — Dashboards & Relatorios | Pending |
+| DASH-03 | Phase 6 — Dashboards & Relatorios | Pending |
+| DASH-04 | Phase 6 — Dashboards & Relatorios | Pending |
+| AUTO-01 | Phase 7 — Automacoes & IA | Pending |
+| AUTO-02 | Phase 7 — Automacoes & IA | Pending |
+| AUTO-03 | Phase 7 — Automacoes & IA | Pending |
+| AUTO-04 | Phase 7 — Automacoes & IA | Pending |
+| AUTO-05 | Phase 7 — Automacoes & IA | Pending |
+| AUTO-06 | Phase 7 — Automacoes & IA | Pending |
 
 ---
-*Last updated: 2026-04-20 após definição de requisitos v1*
+*Last updated: 2026-04-19 após criação do roadmap (7 fases, 48 requisitos mapeados)*
