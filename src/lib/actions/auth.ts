@@ -1,5 +1,6 @@
 'use server'
 import { redirect } from 'next/navigation'
+import { z } from 'zod'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 import { generateSlug } from '@/lib/utils/slug'
@@ -268,4 +269,25 @@ export async function signOut(): Promise<void> {
   const supabase = await createClient()
   await supabase.auth.signOut()
   redirect('/login')
+}
+
+/**
+ * resetPassword — sends a password-reset email via Supabase Auth.
+ * Always returns success to prevent account enumeration — the caller cannot
+ * distinguish between "email found" and "email not found".
+ */
+export async function resetPassword(
+  formData: FormData,
+): Promise<{ error?: string; success?: boolean }> {
+  const email = formData.get('email')?.toString()
+  if (!email || !z.string().email().safeParse(email).success) {
+    return { error: 'E-mail inválido.' }
+  }
+  const supabase = await createClient()
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
+  await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${appUrl}/redefinir-senha`,
+  })
+  // Always return success to prevent account enumeration
+  return { success: true }
 }
