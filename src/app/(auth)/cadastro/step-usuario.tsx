@@ -1,11 +1,12 @@
 'use client'
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Eye, EyeOff } from 'lucide-react'
 import { z } from 'zod'
 import { registerStep2Schema } from '@/lib/validations/auth-schemas'
 import { useRegisterWizard } from '@/stores/register-wizard.store'
+import { WizardPasswordContext } from './wizard'
 import {
   Form,
   FormControl,
@@ -21,6 +22,7 @@ type Step2Values = z.infer<typeof registerStep2Schema>
 
 export function StepUsuario() {
   const { adminData, setAdminData, setStep } = useRegisterWizard()
+  const { setPassword } = useContext(WizardPasswordContext)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
 
@@ -29,18 +31,18 @@ export function StepUsuario() {
     defaultValues: {
       adminName: adminData?.adminName ?? '',
       email: adminData?.email ?? '',
-      password: adminData?.password ?? '',
-      passwordConfirm: adminData?.passwordConfirm ?? '',
+      password: '',
+      passwordConfirm: '',
     },
   })
 
   function onSubmit(values: Step2Values) {
+    // Store only non-sensitive fields in global state; password stays in context ref
     setAdminData({
       adminName: values.adminName,
       email: values.email,
-      password: values.password,
-      passwordConfirm: values.passwordConfirm,
     })
+    setPassword(values.password)
     setStep(3)
   }
 

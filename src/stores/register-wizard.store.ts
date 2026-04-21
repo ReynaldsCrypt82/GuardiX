@@ -9,8 +9,9 @@ interface EmpresaData {
 interface AdminData {
   adminName: string
   email: string
-  password: string
-  passwordConfirm: string
+  // Passwords are intentionally NOT stored here — kept in local React state only
+  // to avoid exposing credentials in global client-side store (browser extensions,
+  // React DevTools). See WizardPasswordContext in wizard.tsx.
 }
 
 interface WizardState {

@@ -1,9 +1,10 @@
 'use client'
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useContext } from 'react'
 import { Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { registerTenant } from '@/lib/actions/auth'
 import { useRegisterWizard } from '@/stores/register-wizard.store'
+import { WizardPasswordContext } from './wizard'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -11,6 +12,7 @@ import { Separator } from '@/components/ui/separator'
 
 export function StepPlano() {
   const { empresaData, adminData, setStep, reset } = useRegisterWizard()
+  const { password } = useContext(WizardPasswordContext)
   const [acceptTerms, setAcceptTerms] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
@@ -36,8 +38,9 @@ export function StepPlano() {
     fd.set('segment', empresaData.segment)
     fd.set('adminName', adminData.adminName)
     fd.set('email', adminData.email)
-    fd.set('password', adminData.password)
-    fd.set('passwordConfirm', adminData.passwordConfirm)
+    // Password comes from WizardPasswordContext ref — never stored in Zustand
+    fd.set('password', password)
+    fd.set('passwordConfirm', password)
     fd.set('acceptTerms', 'true')
 
     startTransition(async () => {
