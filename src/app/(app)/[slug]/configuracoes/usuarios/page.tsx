@@ -15,7 +15,8 @@ export default async function UsersPage() {
       .from('user_invitations')
       .select('id, email, role, expires_at')
       .is('accepted_at', null)
-      .is('cancelled_at', null),
+      .is('cancelled_at', null)
+      .gt('expires_at', new Date().toISOString()),
   ])
 
   return (
