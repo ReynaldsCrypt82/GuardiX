@@ -10,6 +10,22 @@ import {
 } from '@/lib/validations/auth-schemas'
 
 /**
+ * isSlugTaken — single-row existence check for a given slug.
+ * Avoids fetching all tenant slugs (unbounded query) for uniqueness resolution.
+ */
+async function isSlugTaken(
+  admin: ReturnType<typeof createAdminClient>,
+  slug: string,
+): Promise<boolean> {
+  const { data } = await admin
+    .from('tenants')
+    .select('id')
+    .eq('slug', slug)
+    .maybeSingle()
+  return data !== null
+}
+
+/**
  * registerTenant — atomic tenant onboarding.
  *
  * Steps:
@@ -65,10 +81,13 @@ export async function registerTenant(
     }
   }
 
-  // 2. Generate unique slug
-  const { data: slugRows } = await admin.from('tenants').select('slug')
-  const existingSlugs = (slugRows ?? []).map((r) => r.slug)
-  const slug = generateSlug(companyName, existingSlugs)
+  // 2. Generate unique slug — targeted per-candidate existence check (no unbounded fetch)
+  const base = generateSlug(companyName, [])
+  let slug = base
+  let slugSuffix = 2
+  while (await isSlugTaken(admin, slug)) {
+    slug = `${base}-${slugSuffix++}`
+  }
 
   // 3. INSERT tenant
   const { data: tenant, error: tenantErr } = await admin
