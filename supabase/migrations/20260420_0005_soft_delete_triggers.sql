@@ -8,7 +8,7 @@ CREATE OR REPLACE FUNCTION public.prevent_hard_delete()
   LANGUAGE plpgsql
 AS $$
 BEGIN
-  IF current_setting('role') <> 'service_role' THEN
+  IF auth.role() IS DISTINCT FROM 'service_role' THEN
     RAISE EXCEPTION
       'Hard DELETE forbidden on % — use soft delete (deleted_at = NOW())',
       TG_TABLE_NAME;
