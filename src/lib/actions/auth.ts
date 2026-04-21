@@ -78,6 +78,16 @@ export async function registerTenant(
     .single()
 
   if (tenantErr || !tenant) {
+    // PostgreSQL unique-constraint violation — race condition on CNPJ
+    const isUniqueViolation =
+      (tenantErr as { code?: string } | null)?.code === '23505'
+    if (isUniqueViolation) {
+      return {
+        error: {
+          cnpj: ['Este CNPJ já possui uma conta no NEXUS. Faça login ou recupere o acesso.'],
+        },
+      }
+    }
     return {
       error: {
         _form: ['Ocorreu um erro ao criar sua corretora. Tente novamente.'],
@@ -100,7 +110,13 @@ export async function registerTenant(
 
   if (authErr || !authRes?.user) {
     // ROLLBACK — delete the tenant we just created
-    await admin.from('tenants').delete().eq('id', tenant.id)
+    const { error: rollbackTenantErr } = await admin
+      .from('tenants')
+      .delete()
+      .eq('id', tenant.id)
+    if (rollbackTenantErr) {
+      console.error('[registerTenant] rollback: failed to delete tenant', tenant.id, rollbackTenantErr)
+    }
 
     const msg = authErr?.message?.toLowerCase() ?? ''
     const isDupe =
@@ -132,8 +148,17 @@ export async function registerTenant(
 
   if (profileErr) {
     // ROLLBACK cascade: delete auth user + tenant
-    await admin.auth.admin.deleteUser(authRes.user.id)
-    await admin.from('tenants').delete().eq('id', tenant.id)
+    const { error: rollbackUserErr } = await admin.auth.admin.deleteUser(authRes.user.id)
+    if (rollbackUserErr) {
+      console.error('[registerTenant] rollback: failed to delete auth user', authRes.user.id, rollbackUserErr)
+    }
+    const { error: rollbackTenantErr2 } = await admin
+      .from('tenants')
+      .delete()
+      .eq('id', tenant.id)
+    if (rollbackTenantErr2) {
+      console.error('[registerTenant] rollback: failed to delete tenant', tenant.id, rollbackTenantErr2)
+    }
     return {
       error: {
         _form: ['Ocorreu um erro ao finalizar o cadastro. Tente novamente.'],
