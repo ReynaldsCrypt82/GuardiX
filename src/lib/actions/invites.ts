@@ -223,17 +223,18 @@ export async function acceptInvite(
     }
   }
 
-  // Find the auth user that inviteUserByEmail pre-created
-  const { data: listRes } = await admin.auth.admin.listUsers()
-  const authUser = listRes?.users?.find(
-    (u) => u.email?.toLowerCase() === invite.email.toLowerCase(),
+  // Find the auth user that inviteUserByEmail pre-created — use direct email lookup
+  // instead of listUsers() to avoid O(n) scan and the 1000-user pagination cap
+  const { data: userByEmail, error: lookupErr } = await admin.auth.admin.getUserByEmail(
+    invite.email,
   )
-  if (!authUser) {
+  if (lookupErr || !userByEmail?.user) {
     return {
       error:
         'Usuário do convite não encontrado. Peça para o administrador reenviar o convite.',
     }
   }
+  const authUser = userByEmail.user
 
   const tenantSlug = (invite.tenants as { slug: string } | null)?.slug
   if (!tenantSlug) {
