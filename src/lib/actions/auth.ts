@@ -203,8 +203,14 @@ export async function loginWithPassword(
   }
 
   // Honour ?next= param from protected-route redirect
+  // Guard against open-redirect: reject protocol-relative URLs (//evil.com) and any
+  // string containing a colon (https: or javascript:)
+  function isSafeInternalPath(path: string): boolean {
+    return path.startsWith('/') && !path.startsWith('//') && !path.includes(':')
+  }
+
   const next = formData.get('next')?.toString()
-  if (next && next.startsWith('/')) {
+  if (next && isSafeInternalPath(next)) {
     redirect(next)
   }
 
