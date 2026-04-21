@@ -76,9 +76,13 @@ export function StepEmpresa() {
   }
 
   function handleCNPJChange(raw: string) {
-    // Apply mask 00.000.000/0000-00
-    const digits = stripCNPJ(raw)
-    const masked = formatCNPJ(digits)
+    // Apply mask progressively (no zero-padding on partial input)
+    const digits = stripCNPJ(raw).slice(0, 14)
+    let masked = digits
+    if (digits.length > 12) masked = `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(5, 8)}/${digits.slice(8, 12)}-${digits.slice(12)}`
+    else if (digits.length > 8) masked = `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(5, 8)}/${digits.slice(8)}`
+    else if (digits.length > 5) masked = `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(5)}`
+    else if (digits.length > 2) masked = `${digits.slice(0, 2)}.${digits.slice(2)}`
     form.setValue('cnpj', masked, { shouldValidate: false })
 
     setCnpjStatus('idle')
