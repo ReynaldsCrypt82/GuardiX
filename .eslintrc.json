@@ -1,0 +1,17 @@
+{
+  "extends": ["next/core-web-vitals", "prettier"],
+  "rules": {
+    "no-restricted-imports": ["error", {
+      "patterns": [{
+        "group": ["**/lib/supabase/admin", "@/lib/supabase/admin"],
+        "message": "admin client uses service_role. Import only from files with 'use server' or in src/app/api/. Never client-side."
+      }]
+    }]
+  },
+  "overrides": [
+    {
+      "files": ["src/app/api/**/*", "src/lib/actions/**/*"],
+      "rules": { "no-restricted-imports": "off" }
+    }
+  ]
+}
