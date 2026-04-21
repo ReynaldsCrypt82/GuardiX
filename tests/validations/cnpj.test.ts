@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest'
 
-// @ts-expect-error — module does not exist yet (Wave 1 implements it)
 import { validateCNPJ } from '@/lib/validations/cnpj'
 
 describe('validateCNPJ', () => {
