@@ -241,6 +241,14 @@ export async function acceptInvite(
     return { error: 'Corretora não encontrada.' }
   }
 
+  // Helper — unclaims the invite so the user can retry
+  async function unclaimInvite() {
+    await admin
+      .from('user_invitations')
+      .update({ accepted_at: null })
+      .eq('id', invite.id)
+  }
+
   // Set password + app_metadata (app_metadata only — never user_metadata for tenant_id/role)
   const { error: updErr } = await admin.auth.admin.updateUserById(authUser.id, {
     password,
@@ -253,6 +261,7 @@ export async function acceptInvite(
     user_metadata: { full_name: fullName },
   })
   if (updErr) {
+    await unclaimInvite()
     return { error: 'Erro ao ativar conta. Tente novamente.' }
   }
 
@@ -265,6 +274,7 @@ export async function acceptInvite(
     active: true,
   })
   if (profErr) {
+    await unclaimInvite()
     return { error: 'Erro ao criar perfil. Tente novamente.' }
   }
 
@@ -275,6 +285,7 @@ export async function acceptInvite(
     password,
   })
   if (signInErr) {
+    // Auto-login failed but account is fully configured — send to manual login
     redirect(`/login?next=/${tenantSlug}/dashboard`)
   }
 
