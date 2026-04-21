@@ -16,12 +16,12 @@ ALTER TABLE public.user_invitations ENABLE ROW LEVEL SECURITY;
 -- =============================================================================
 CREATE POLICY "tenant_self_select" ON public.tenants
   FOR SELECT TO authenticated
-  USING (id = (SELECT auth.tenant_id()) AND deleted_at IS NULL);
+  USING (id = (SELECT public.jwt_tenant_id()) AND deleted_at IS NULL);
 
 CREATE POLICY "tenant_self_update" ON public.tenants
   FOR UPDATE TO authenticated
-  USING (id = (SELECT auth.tenant_id()) AND (SELECT auth.tenant_role()) = 'admin')
-  WITH CHECK (id = (SELECT auth.tenant_id()));
+  USING (id = (SELECT public.jwt_tenant_id()) AND (SELECT public.jwt_tenant_role()) = 'admin')
+  WITH CHECK (id = (SELECT public.jwt_tenant_id()));
 
 -- =============================================================================
 -- profiles policies
@@ -29,22 +29,22 @@ CREATE POLICY "tenant_self_update" ON public.tenants
 -- =============================================================================
 CREATE POLICY "profiles_select_own_tenant" ON public.profiles
   FOR SELECT TO authenticated
-  USING (tenant_id = (SELECT auth.tenant_id()));
+  USING (tenant_id = (SELECT public.jwt_tenant_id()));
 
 CREATE POLICY "profiles_insert_admin_only" ON public.profiles
   FOR INSERT TO authenticated
   WITH CHECK (
-    tenant_id = (SELECT auth.tenant_id())
-    AND (SELECT auth.tenant_role()) = 'admin'
+    tenant_id = (SELECT public.jwt_tenant_id())
+    AND (SELECT public.jwt_tenant_role()) = 'admin'
   );
 
 CREATE POLICY "profiles_update_admin_or_self" ON public.profiles
   FOR UPDATE TO authenticated
   USING (
-    tenant_id = (SELECT auth.tenant_id())
-    AND (id = (SELECT auth.uid()) OR (SELECT auth.tenant_role()) = 'admin')
+    tenant_id = (SELECT public.jwt_tenant_id())
+    AND (id = (SELECT auth.uid()) OR (SELECT public.jwt_tenant_role()) = 'admin')
   )
-  WITH CHECK (tenant_id = (SELECT auth.tenant_id()));
+  WITH CHECK (tenant_id = (SELECT public.jwt_tenant_id()));
 
 -- =============================================================================
 -- user_invitations policies
@@ -53,10 +53,10 @@ CREATE POLICY "profiles_update_admin_or_self" ON public.profiles
 CREATE POLICY "invitations_admin_manage" ON public.user_invitations
   FOR ALL TO authenticated
   USING (
-    tenant_id = (SELECT auth.tenant_id())
-    AND (SELECT auth.tenant_role()) = 'admin'
+    tenant_id = (SELECT public.jwt_tenant_id())
+    AND (SELECT public.jwt_tenant_role()) = 'admin'
   )
   WITH CHECK (
-    tenant_id = (SELECT auth.tenant_id())
-    AND (SELECT auth.tenant_role()) = 'admin'
+    tenant_id = (SELECT public.jwt_tenant_id())
+    AND (SELECT public.jwt_tenant_role()) = 'admin'
   );
