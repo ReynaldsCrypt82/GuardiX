@@ -274,9 +274,12 @@ max_frequency = "5s"
 # uri = "pg-functions://postgres/auth/before-user-created-hook"
 
 # This hook runs before a token is issued and allows you to add additional claims based on the authentication method used.
-# [auth.hook.custom_access_token]
-# enabled = true
-# uri = "pg-functions://<database>/<schema>/<hook_name>"
+[auth.hook.custom_access_token]
+enabled = true
+# URI is set to the deployed Edge Function. Replace <project-ref> with your Supabase project reference.
+# Example: uri = "https://<project-ref>.supabase.co/functions/v1/custom-access-token"
+# For local development with supabase start: uri = "http://host.docker.internal:54321/functions/v1/custom-access-token"
+uri = "http://host.docker.internal:54321/functions/v1/custom-access-token"
 
 # Configure one of the supported SMS providers: `twilio`, `twilio_verify`, `messagebird`, `textlocal`, `vonage`.
 [auth.sms.twilio]
@@ -363,6 +366,9 @@ enabled = false
 authorization_url_path = "/oauth/consent"
 # Allow dynamic client registration
 allow_dynamic_registration = false
+
+[functions.custom-access-token]
+verify_jwt = false
 
 [edge_runtime]
 enabled = true
