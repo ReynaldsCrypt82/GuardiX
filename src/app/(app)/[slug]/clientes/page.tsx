@@ -31,6 +31,9 @@ export default async function ClientesPage({ params, searchParams }: Props) {
   } = await supabase.auth.getUser()
   if (!user) notFound()
 
+  const userRole = (user.app_metadata as { role?: string }).role ?? ''
+  const userId = user.id
+
   const pageNum = Math.max(1, parseInt(sp.page ?? '1', 10))
   const offset = (pageNum - 1) * PAGE_SIZE
 
@@ -113,7 +116,13 @@ export default async function ClientesPage({ params, searchParams }: Props) {
         </div>
       ) : (
         <>
-          <ClientsTable slug={slug} clients={clients ?? []} />
+          <ClientsTable
+                slug={slug}
+                clients={clients ?? []}
+                stages={stagesRes.data ?? []}
+                userRole={userRole}
+                userId={userId}
+              />
           <ClientsPagination page={pageNum} totalPages={totalPages} />
         </>
       )}

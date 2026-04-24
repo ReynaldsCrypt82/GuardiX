@@ -13,6 +13,13 @@ import {
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { formatDocument } from '@/lib/utils/format-document'
+import { ClientStageSelector } from './client-stage-selector'
+
+interface Stage {
+  id: string
+  name: string
+  color: string
+}
 
 interface Client {
   id: string
@@ -21,15 +28,24 @@ interface Client {
   document: string
   created_at: string
   assigned_to: { id: string; full_name: string | null } | null
-  stage: { id: string; name: string; color: string } | null
+  stage: Stage | null
 }
 
 interface ClientsTableProps {
   slug: string
   clients: Client[]
+  stages: Stage[]
+  userRole: string
+  userId: string
 }
 
-export function ClientsTable({ slug, clients }: ClientsTableProps) {
+export function ClientsTable({
+  slug,
+  clients,
+  stages,
+  userRole,
+  userId,
+}: ClientsTableProps) {
   if (clients.length === 0) {
     return (
       <div className="flex flex-col items-center gap-2 rounded-lg border border-dashed p-8 text-center">
@@ -51,41 +67,47 @@ export function ClientsTable({ slug, clients }: ClientsTableProps) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {clients.map((c) => (
-          <TableRow key={c.id} className="cursor-pointer">
-            <TableCell>
-              <Link
-                href={`/${slug}/clientes/${c.id}`}
-                className="font-medium hover:underline"
-              >
-                {c.name}
-              </Link>
-            </TableCell>
-            <TableCell>
-              <Badge variant={c.type === 'pf' ? 'secondary' : 'outline'}>
-                {c.type === 'pf' ? 'PF' : 'PJ'}
-              </Badge>
-            </TableCell>
-            <TableCell className="font-mono text-sm">
-              {formatDocument(c.document, c.type)}
-            </TableCell>
-            <TableCell>{c.assigned_to?.full_name ?? '—'}</TableCell>
-            <TableCell>
-              {c.stage ? (
-                <Badge
-                  style={{ backgroundColor: c.stage.color, color: '#fff', border: 'none' }}
+        {clients.map((c) => {
+          // canEdit: admin pode editar qualquer cliente;
+          // corretor só pode editar clientes atribuídos a si mesmo (D-08, T-02-22)
+          const canEdit =
+            userRole === 'admin' ||
+            (userRole === 'corretor' && c.assigned_to?.id === userId)
+
+          return (
+            <TableRow key={c.id} className="cursor-pointer">
+              <TableCell>
+                <Link
+                  href={`/${slug}/clientes/${c.id}`}
+                  className="font-medium hover:underline"
                 >
-                  {c.stage.name}
+                  {c.name}
+                </Link>
+              </TableCell>
+              <TableCell>
+                <Badge variant={c.type === 'pf' ? 'secondary' : 'outline'}>
+                  {c.type === 'pf' ? 'PF' : 'PJ'}
                 </Badge>
-              ) : (
-                <span className="text-muted-foreground">—</span>
-              )}
-            </TableCell>
-            <TableCell className="text-muted-foreground">
-              {format(new Date(c.created_at), 'dd/MM/yyyy', { locale: ptBR })}
-            </TableCell>
-          </TableRow>
-        ))}
+              </TableCell>
+              <TableCell className="font-mono text-sm">
+                {formatDocument(c.document, c.type)}
+              </TableCell>
+              <TableCell>{c.assigned_to?.full_name ?? '—'}</TableCell>
+              <TableCell>
+                <ClientStageSelector
+                  slug={slug}
+                  clientId={c.id}
+                  currentStage={c.stage}
+                  stages={stages}
+                  canEdit={canEdit}
+                />
+              </TableCell>
+              <TableCell className="text-muted-foreground">
+                {format(new Date(c.created_at), 'dd/MM/yyyy', { locale: ptBR })}
+              </TableCell>
+            </TableRow>
+          )
+        })}
       </TableBody>
     </Table>
   )

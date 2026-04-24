@@ -37,6 +37,10 @@ export function SidebarShell({ slug }: SidebarShellProps) {
           label: 'Usuários',
           href: `/${slug}/configuracoes/usuarios`,
         },
+        {
+          label: 'Pipeline',
+          href: `/${slug}/configuracoes/pipeline`,
+        },
       ],
     },
   ]
