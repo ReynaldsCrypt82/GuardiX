@@ -280,6 +280,7 @@ enabled = true
 # Example: uri = "https://<project-ref>.supabase.co/functions/v1/custom-access-token"
 # For local development with supabase start: uri = "http://host.docker.internal:54321/functions/v1/custom-access-token"
 uri = "http://host.docker.internal:54321/functions/v1/custom-access-token"
+secrets = "env(CUSTOM_ACCESS_TOKEN_SECRET)"
 
 # Configure one of the supported SMS providers: `twilio`, `twilio_verify`, `messagebird`, `textlocal`, `vonage`.
 [auth.sms.twilio]
