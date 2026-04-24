@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Settings, Users } from 'lucide-react'
+import { LayoutDashboard, Settings, Users, UserCog } from 'lucide-react'
 
 interface SidebarShellProps {
   slug: string
@@ -22,6 +22,11 @@ export function SidebarShell({ slug }: SidebarShellProps) {
       label: 'Dashboard',
       href: `/${slug}/dashboard`,
       icon: <LayoutDashboard size={16} />,
+    },
+    {
+      label: 'Clientes',
+      href: `/${slug}/clientes`,
+      icon: <Users size={16} />,
     },
     {
       label: 'Configurações',
@@ -77,7 +82,7 @@ export function SidebarShell({ slug }: SidebarShellProps) {
                         : 'text-muted-foreground hover:text-foreground hover:bg-muted',
                     ].join(' ')}
                   >
-                    <Users size={14} />
+                    <UserCog size={14} />
                     {child.label}
                   </Link>
                 ))}
