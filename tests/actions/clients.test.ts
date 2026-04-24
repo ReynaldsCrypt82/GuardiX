@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { createClientAction } from '@/lib/actions/clients'
+import { buildSearchClause, resetPageOnFilterChange } from '@/lib/utils/clients-query'
 
 // ---------------------------------------------------------------------------
 // Mock: @/lib/supabase/server
@@ -294,11 +295,61 @@ describe('listClients filters (CRM-09)', () => {
   it.todo('filtro por assigned_to retorna apenas clientes do corretor')
   it.todo('filtro por stage_id restringe ao estágio')
   it.todo('filtro por type (pf|pj) segrega tipos')
-  it.todo('paginação reseta para page=1 ao aplicar filtro novo (Pitfall 4)')
+
+  // resetPageOnFilterChange — pure helper tested here (Pitfall 4)
+  it('resetPageOnFilterChange: reseta page=1 ao aplicar filtro novo', () => {
+    const base = new URLSearchParams('q=Maria&page=3&stage=stage-abc')
+    const result = resetPageOnFilterChange(base, 'corretor', 'corretor-xyz')
+    expect(result.get('page')).toBe('1')
+    expect(result.get('corretor')).toBe('corretor-xyz')
+    expect(result.get('q')).toBe('Maria') // preserva outros params
+  })
+
+  it('resetPageOnFilterChange: remove filtro quando valor é null', () => {
+    const base = new URLSearchParams('corretor=corretor-xyz&page=2')
+    const result = resetPageOnFilterChange(base, 'corretor', null)
+    expect(result.has('corretor')).toBe(false)
+    expect(result.get('page')).toBe('1')
+  })
+
+  it('resetPageOnFilterChange: preserva searchParams não relacionados ao filtro alterado', () => {
+    const base = new URLSearchParams('q=Empresa&stage=stage-1&page=5')
+    const result = resetPageOnFilterChange(base, 'type', 'pj')
+    expect(result.get('type')).toBe('pj')
+    expect(result.get('stage')).toBe('stage-1')
+    expect(result.get('q')).toBe('Empresa')
+    expect(result.get('page')).toBe('1')
+  })
 })
 
 describe('searchClients (CRM-08)', () => {
-  it.todo('busca por nome via ilike case-insensitive')
-  it.todo('busca por CPF com máscara normaliza via stripCPF antes de ilike')
-  it.todo('busca por CNPJ com máscara normaliza via stripCNPJ antes de ilike')
+  it('buildSearchClause: input só letras → busca apenas por nome', () => {
+    const result = buildSearchClause('Maria')
+    expect(result).toEqual({ type: 'name', name: 'Maria' })
+  })
+
+  it('buildSearchClause: CPF com máscara → busca OR por nome + document stripped', () => {
+    const result = buildSearchClause('111.444.777-35')
+    expect(result).toEqual({ type: 'or', name: '111.444.777-35', document: '11144477735' })
+  })
+
+  it('buildSearchClause: menos de 3 dígitos → busca apenas por nome', () => {
+    const result = buildSearchClause('11')
+    expect(result).toEqual({ type: 'name', name: '11' })
+  })
+
+  it('buildSearchClause: CNPJ com máscara → busca OR por nome + document stripped', () => {
+    const result = buildSearchClause('12.345.678/0001-90')
+    expect(result).toEqual({ type: 'or', name: '12.345.678/0001-90', document: '12345678000190' })
+  })
+
+  it('buildSearchClause: string vazia → busca apenas por nome (0 dígitos)', () => {
+    const result = buildSearchClause('')
+    expect(result).toEqual({ type: 'name', name: '' })
+  })
+
+  it('buildSearchClause: CPF sem máscara com 11 dígitos → busca OR', () => {
+    const result = buildSearchClause('52998224725')
+    expect(result).toEqual({ type: 'or', name: '52998224725', document: '52998224725' })
+  })
 })
