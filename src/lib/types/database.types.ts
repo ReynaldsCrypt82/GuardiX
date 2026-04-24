@@ -1,15 +1,17 @@
 /**
  * Supabase TypeScript types for Database
  *
- * NOTE: This file was hand-authored from the migration schema in
- * supabase/migrations/20260420_0001_foundation_schema.sql
- * because the Supabase project credentials are not yet configured in .env.local.
+ * NOTE: This file was hand-authored from the migration schemas in
+ * supabase/migrations/ because the Supabase project credentials are not yet
+ * configured in .env.local.
  *
  * Once NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set and
  * `npx supabase link` is run, regenerate with:
  *   npx supabase gen types typescript --linked > src/lib/types/database.types.ts
  *
  * TODO: Regenerate from live schema after credentials are configured (auth gate).
+ * Last updated: added clients, pipeline_stages, client_interactions, client_tasks
+ * from migrations 0006–0009 (Phase 02 Plan 01).
  */
 
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
@@ -155,6 +157,252 @@ export type Database = {
           {
             foreignKeyName: 'user_invitations_invited_by_fkey'
             columns: ['invited_by']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      // -----------------------------------------------------------------------
+      // Phase 02 tables — added from migrations 0006–0009
+      // -----------------------------------------------------------------------
+      clients: {
+        Row: {
+          id: string
+          tenant_id: string
+          type: 'pf' | 'pj'
+          document: string
+          name: string
+          responsible: string | null
+          email: string | null
+          phone: string | null
+          address: Json | null
+          stage_id: string | null
+          assigned_to: string
+          deleted_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          tenant_id: string
+          type: 'pf' | 'pj'
+          document: string
+          name: string
+          responsible?: string | null
+          email?: string | null
+          phone?: string | null
+          address?: Json | null
+          stage_id?: string | null
+          assigned_to: string
+          deleted_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          tenant_id?: string
+          type?: 'pf' | 'pj'
+          document?: string
+          name?: string
+          responsible?: string | null
+          email?: string | null
+          phone?: string | null
+          address?: Json | null
+          stage_id?: string | null
+          assigned_to?: string
+          deleted_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'clients_tenant_id_fkey'
+            columns: ['tenant_id']
+            isOneToOne: false
+            referencedRelation: 'tenants'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'clients_assigned_to_fkey'
+            columns: ['assigned_to']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'clients_stage_id_fkey'
+            columns: ['stage_id']
+            isOneToOne: false
+            referencedRelation: 'pipeline_stages'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      pipeline_stages: {
+        Row: {
+          id: string
+          tenant_id: string
+          name: string
+          color: string
+          position: number
+          is_closed: boolean
+          deleted_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          tenant_id: string
+          name: string
+          color?: string
+          position: number
+          is_closed?: boolean
+          deleted_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          tenant_id?: string
+          name?: string
+          color?: string
+          position?: number
+          is_closed?: boolean
+          deleted_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'pipeline_stages_tenant_id_fkey'
+            columns: ['tenant_id']
+            isOneToOne: false
+            referencedRelation: 'tenants'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      client_interactions: {
+        Row: {
+          id: string
+          tenant_id: string
+          client_id: string
+          type: 'ligacao' | 'email' | 'reuniao' | 'whatsapp' | 'visita'
+          occurred_at: string
+          description: string
+          created_by: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          tenant_id: string
+          client_id: string
+          type: 'ligacao' | 'email' | 'reuniao' | 'whatsapp' | 'visita'
+          occurred_at?: string
+          description: string
+          created_by: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          tenant_id?: string
+          client_id?: string
+          type?: 'ligacao' | 'email' | 'reuniao' | 'whatsapp' | 'visita'
+          occurred_at?: string
+          description?: string
+          created_by?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'client_interactions_tenant_id_fkey'
+            columns: ['tenant_id']
+            isOneToOne: false
+            referencedRelation: 'tenants'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'client_interactions_client_id_fkey'
+            columns: ['client_id']
+            isOneToOne: false
+            referencedRelation: 'clients'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'client_interactions_created_by_fkey'
+            columns: ['created_by']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      client_tasks: {
+        Row: {
+          id: string
+          tenant_id: string
+          client_id: string
+          description: string
+          due_date: string
+          assigned_to: string
+          completed_at: string | null
+          deleted_at: string | null
+          created_by: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          tenant_id: string
+          client_id: string
+          description: string
+          due_date: string
+          assigned_to: string
+          completed_at?: string | null
+          deleted_at?: string | null
+          created_by: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          tenant_id?: string
+          client_id?: string
+          description?: string
+          due_date?: string
+          assigned_to?: string
+          completed_at?: string | null
+          deleted_at?: string | null
+          created_by?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'client_tasks_tenant_id_fkey'
+            columns: ['tenant_id']
+            isOneToOne: false
+            referencedRelation: 'tenants'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'client_tasks_client_id_fkey'
+            columns: ['client_id']
+            isOneToOne: false
+            referencedRelation: 'clients'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'client_tasks_assigned_to_fkey'
+            columns: ['assigned_to']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'client_tasks_created_by_fkey'
+            columns: ['created_by']
             isOneToOne: false
             referencedRelation: 'profiles'
             referencedColumns: ['id']
