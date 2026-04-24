@@ -283,13 +283,9 @@ describe('createClientAction (PJ)', () => {
 })
 
 // ---------------------------------------------------------------------------
-// Remaining stubs (wave 2+)
+// updateClientStage (CRM-05)
+// NOTE: updateClientStage coverage lives in tests/actions/pipeline.test.ts (Plan 04)
 // ---------------------------------------------------------------------------
-describe('updateClientStage (CRM-05)', () => {
-  it.todo('corretor só pode mover seus próprios clientes (RLS)')
-  it.todo('admin pode mover qualquer cliente do tenant')
-  it.todo('rejeita stage_id de outro tenant')
-})
 
 describe('listClients filters (CRM-09)', () => {
   it.todo('filtro por assigned_to retorna apenas clientes do corretor')
