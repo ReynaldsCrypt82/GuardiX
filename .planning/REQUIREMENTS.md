@@ -41,7 +41,7 @@
 - [x] **CON-02**: Usuário pode cadastrar cota de consórcio vinculada a um cliente com número, parcela e parcelas pagas/total
 - [x] **CON-03**: Usuário pode registrar contemplado com tipo (sorteio ou lance) e valor do lance se aplicável
 - [x] **CON-04**: Usuário pode acompanhar pipeline pós-contemplação: aguardando docs → em análise → crédito liberado
-- [ ] **CON-05**: Sistema envia alerta X dias antes da data de assembleia do grupo
+- [x] **CON-05**: Sistema envia alerta X dias antes da data de assembleia do grupo
 - [x] **CON-06**: Usuário pode filtrar cotas por status (ativa / contemplada / encerrada) e administradora
 
 ### Corretores & Comissões (COM)
@@ -126,7 +126,7 @@
 | CON-02 | Phase 3 — Seguros & Consorcio | Complete |
 | CON-03 | Phase 3 — Seguros & Consorcio | Complete |
 | CON-04 | Phase 3 — Seguros & Consorcio | Complete |
-| CON-05 | Phase 3 — Seguros & Consorcio | Pending |
+| CON-05 | Phase 3 — Seguros & Consorcio | Complete |
 | CON-06 | Phase 3 — Seguros & Consorcio | Complete |
 | COM-01 | Phase 4 — Corretores & Comissoes | Pending |
 | COM-02 | Phase 4 — Corretores & Comissoes | Pending |

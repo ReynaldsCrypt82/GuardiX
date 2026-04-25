@@ -12,7 +12,7 @@ Construção do SaaS multi-tenant para corretoras de seguros e consórcio em 7 f
 
 - [ ] **Phase 1: Fundacao & Auth** - Multi-tenant isolado, autenticacao e controle de acesso por papel
 - [ ] **Phase 2: CRM & Clientes** - Cadastro completo de clientes PF/PJ, pipeline de vendas e follow-up
-- [ ] **Phase 3: Seguros & Consorcio** - Gestao de apolices de seguros e cotas de consorcio em paralelo
+- [x] **Phase 3: Seguros & Consorcio** - Gestao de apolices de seguros e cotas de consorcio em paralelo (completed 2026-04-25)
 - [ ] **Phase 4: Corretores & Comissoes** - Cadastro de corretores, parceiros externos e ledger de comissoes
 - [ ] **Phase 5: Financeiro** - Contas a receber/pagar, fluxo de caixa e controle de inadimplencia
 - [ ] **Phase 6: Dashboards & Relatorios** - KPIs executivos, rankings e exportacao de relatorios
@@ -62,7 +62,7 @@ Plans:
 - [x] 03-01-PLAN.md — Schema SQL (5 tabelas + RLS) + utilitario vigencia + schemas Zod + stubs de teste Wave 0 + supabase db push
 - [x] 03-02-PLAN.md — Modulo Seguros: Server Actions (policies/claims/endorsements) + UI listagem/formulario/detalhes + VigenciaBadge + sidebar estendida
 - [x] 03-03-PLAN.md — Modulo Consorcio: Server Actions (groups/quotas/contemplation) + UI listagem/formularios/detalhes do grupo
-- [ ] 03-04-PLAN.md — Integracao cliente: tela /clientes/[id] com abas Apolices+Consorcio + alertas in-app (badge + toast)
+- [x] 03-04-PLAN.md — Integracao cliente: tela /clientes/[id] com abas Apolices+Consorcio + alertas in-app (badge + toast)
 **UI hint**: yes
 
 ### Phase 4: Corretores & Comissoes
@@ -123,7 +123,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 |-------|----------------|--------|-----------|
 | 1. Fundacao & Auth | 0/TBD | Not started | - |
 | 2. CRM & Clientes | 0/TBD | Not started | - |
-| 3. Seguros & Consorcio | 3/4 | In Progress|  |
+| 3. Seguros & Consorcio | 4/4 | Complete   | 2026-04-25 |
 | 4. Corretores & Comissoes | 0/TBD | Not started | - |
 | 5. Financeiro | 0/TBD | Not started | - |
 | 6. Dashboards & Relatorios | 0/TBD | Not started | - |
