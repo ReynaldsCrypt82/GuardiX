@@ -59,7 +59,7 @@ Construção do SaaS multi-tenant para corretoras de seguros e consórcio em 7 f
   6. Usuario pode filtrar apolices e cotas por tipo, seguradora/administradora, corretor e status
 **Plans**: 4 plans
 Plans:
-- [ ] 03-01-PLAN.md — Schema SQL (5 tabelas + RLS) + utilitario vigencia + schemas Zod + stubs de teste Wave 0 + supabase db push
+- [x] 03-01-PLAN.md — Schema SQL (5 tabelas + RLS) + utilitario vigencia + schemas Zod + stubs de teste Wave 0 + supabase db push
 - [ ] 03-02-PLAN.md — Modulo Seguros: Server Actions (policies/claims/endorsements) + UI listagem/formulario/detalhes + VigenciaBadge + sidebar estendida
 - [ ] 03-03-PLAN.md — Modulo Consorcio: Server Actions (groups/quotas/contemplation) + UI listagem/formularios/detalhes do grupo
 - [ ] 03-04-PLAN.md — Integracao cliente: tela /clientes/[id] com abas Apolices+Consorcio + alertas in-app (badge + toast)
@@ -123,7 +123,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 |-------|----------------|--------|-----------|
 | 1. Fundacao & Auth | 0/TBD | Not started | - |
 | 2. CRM & Clientes | 0/TBD | Not started | - |
-| 3. Seguros & Consorcio | 0/4 | Planned | - |
+| 3. Seguros & Consorcio | 1/4 | In Progress|  |
 | 4. Corretores & Comissoes | 0/TBD | Not started | - |
 | 5. Financeiro | 0/TBD | Not started | - |
 | 6. Dashboards & Relatorios | 0/TBD | Not started | - |

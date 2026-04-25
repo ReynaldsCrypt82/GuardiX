@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 3 context gathered
-last_updated: "2026-04-25T16:14:25.861Z"
-last_activity: 2026-04-25 -- Phase 3 planning complete
+stopped_at: Completed 03-seguros-consorcio 03-01-PLAN.md
+last_updated: "2026-04-25T16:34:50.327Z"
+last_activity: 2026-04-25
 progress:
   total_phases: 7
   completed_phases: 2
   total_plans: 12
-  completed_plans: 8
-  percent: 67
+  completed_plans: 9
+  percent: 75
 ---
 
 # Project State
@@ -25,10 +25,10 @@ See: .planning/PROJECT.md (updated 2026-04-19)
 
 ## Current Position
 
-Phase: 03 (seguros-consorcio) — CONTEXT GATHERED
-Plan: —
+Phase: 03 (seguros-consorcio) — EXECUTING
+Plan: 2 of 4
 Status: Ready to execute
-Last activity: 2026-04-25 -- Phase 3 planning complete
+Last activity: 2026-04-25
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -52,6 +52,7 @@ Progress: [░░░░░░░░░░] 0%
 - Trend: —
 
 *Updated after each plan completion*
+| Phase 03-seguros-consorcio P01 | 6m | 3 tasks | 15 files |
 
 ## Accumulated Context
 
@@ -65,6 +66,9 @@ Recent decisions affecting current work:
 - `app_metadata` (nao `user_metadata`) para tenant_id e role no JWT
 - Seguros + Consorcio agrupados na Phase 3 — paralelos, ambos dependem apenas do CRM
 - Ledger de comissoes append-only — nunca UPDATE em valores ja registrados
+- [Phase 03-01]: updatePolicySchema usa z.object com campos opcionais — discriminatedUnion do Zod nao suporta .partial() diretamente
+- [Phase 03-01]: supabase db push contornado via supabase db query --linked -f por versioning collision (CLI usa apenas a data como version key)
+- [Phase 03-01]: post_contemplation_stage TEXT CHECK enum adicionado em consortium_quotas — stages filtráveis para CON-04 além das post_contemplation_notes de texto livre
 
 ### Pending Todos
 
@@ -78,6 +82,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-25T04:45:00.000Z
-Stopped at: Phase 3 context gathered
-Resume file: .planning/phases/03-seguros-consorcio/03-CONTEXT.md
+Last session: 2026-04-25T16:34:50.323Z
+Stopped at: Completed 03-seguros-consorcio 03-01-PLAN.md
+Resume file: None
