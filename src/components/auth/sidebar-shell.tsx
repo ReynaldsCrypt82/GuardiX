@@ -3,8 +3,14 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { LayoutDashboard, Settings, Users, UserCog, Shield, CircleDollarSign } from 'lucide-react'
 
+interface AlertCounts {
+  policies: number
+  assemblies: number
+}
+
 interface SidebarShellProps {
   slug: string
+  alertCounts?: AlertCounts
 }
 
 interface NavItem {
@@ -15,7 +21,7 @@ interface NavItem {
   children?: { label: string; href: string }[]
 }
 
-export function SidebarShell({ slug }: SidebarShellProps) {
+export function SidebarShell({ slug, alertCounts }: SidebarShellProps) {
   const pathname = usePathname()
 
   const navItems: NavItem[] = [
@@ -100,6 +106,16 @@ export function SidebarShell({ slug }: SidebarShellProps) {
               >
                 {item.icon}
                 {item.label}
+                {item.label === 'Seguros' && (alertCounts?.policies ?? 0) > 0 && (
+                  <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-semibold text-white px-1">
+                    {(alertCounts?.policies ?? 0) > 99 ? '99+' : alertCounts?.policies}
+                  </span>
+                )}
+                {item.label === 'Consórcio' && (alertCounts?.assemblies ?? 0) > 0 && (
+                  <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-orange-500 text-[10px] font-semibold text-white px-1">
+                    {(alertCounts?.assemblies ?? 0) > 99 ? '99+' : alertCounts?.assemblies}
+                  </span>
+                )}
               </Link>
             )}
 
