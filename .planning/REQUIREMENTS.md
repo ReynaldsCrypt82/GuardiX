@@ -27,20 +27,20 @@
 
 ### Gestão de Apólices — Seguros (SEG)
 
-- [ ] **SEG-01**: Usuário pode cadastrar apólice com número, seguradora, tipo de seguro, vigência, prêmio e corretor
-- [ ] **SEG-02**: Sistema exibe status visual da apólice (verde: vigente / amarelo: a vencer em X dias / vermelho: vencida)
-- [ ] **SEG-03**: Sistema envia alerta de vencimento de apólice X dias antes — configurável por tipo de seguro
-- [ ] **SEG-04**: Usuário pode registrar sinistro com data, tipo e número de protocolo vinculado à apólice
-- [ ] **SEG-05**: Usuário pode registrar endosso vinculado à apólice original com descrição da alteração
-- [ ] **SEG-06**: Usuário pode filtrar apólices por tipo, seguradora, corretor e status de vigência
-- [ ] **SEG-07**: Apólice fica vinculada ao cliente e ao corretor responsável
+- [x] **SEG-01**: Usuário pode cadastrar apólice com número, seguradora, tipo de seguro, vigência, prêmio e corretor
+- [x] **SEG-02**: Sistema exibe status visual da apólice (verde: vigente / amarelo: a vencer em X dias / vermelho: vencida)
+- [x] **SEG-03**: Sistema envia alerta de vencimento de apólice X dias antes — configurável por tipo de seguro
+- [x] **SEG-04**: Usuário pode registrar sinistro com data, tipo e número de protocolo vinculado à apólice
+- [x] **SEG-05**: Usuário pode registrar endosso vinculado à apólice original com descrição da alteração
+- [x] **SEG-06**: Usuário pode filtrar apólices por tipo, seguradora, corretor e status de vigência
+- [x] **SEG-07**: Apólice fica vinculada ao cliente e ao corretor responsável
 
 ### Gestão de Consórcio (CON)
 
-- [ ] **CON-01**: Usuário pode cadastrar grupo de consórcio com administradora, tipo (auto/imóvel/serviço), prazo e crédito total
+- [x] **CON-01**: Usuário pode cadastrar grupo de consórcio com administradora, tipo (auto/imóvel/serviço), prazo e crédito total
 - [ ] **CON-02**: Usuário pode cadastrar cota de consórcio vinculada a um cliente com número, parcela e parcelas pagas/total
 - [ ] **CON-03**: Usuário pode registrar contemplado com tipo (sorteio ou lance) e valor do lance se aplicável
-- [ ] **CON-04**: Usuário pode acompanhar pipeline pós-contemplação: aguardando docs → em análise → crédito liberado
+- [x] **CON-04**: Usuário pode acompanhar pipeline pós-contemplação: aguardando docs → em análise → crédito liberado
 - [ ] **CON-05**: Sistema envia alerta X dias antes da data de assembleia do grupo
 - [ ] **CON-06**: Usuário pode filtrar cotas por status (ativa / contemplada / encerrada) e administradora
 
@@ -115,17 +115,17 @@
 | CRM-07 | Phase 2 — CRM & Clientes | Pending |
 | CRM-08 | Phase 2 — CRM & Clientes | Pending |
 | CRM-09 | Phase 2 — CRM & Clientes | Pending |
-| SEG-01 | Phase 3 — Seguros & Consorcio | Pending |
-| SEG-02 | Phase 3 — Seguros & Consorcio | Pending |
-| SEG-03 | Phase 3 — Seguros & Consorcio | Pending |
-| SEG-04 | Phase 3 — Seguros & Consorcio | Pending |
-| SEG-05 | Phase 3 — Seguros & Consorcio | Pending |
-| SEG-06 | Phase 3 — Seguros & Consorcio | Pending |
-| SEG-07 | Phase 3 — Seguros & Consorcio | Pending |
-| CON-01 | Phase 3 — Seguros & Consorcio | Pending |
+| SEG-01 | Phase 3 — Seguros & Consorcio | Complete |
+| SEG-02 | Phase 3 — Seguros & Consorcio | Complete |
+| SEG-03 | Phase 3 — Seguros & Consorcio | Complete |
+| SEG-04 | Phase 3 — Seguros & Consorcio | Complete |
+| SEG-05 | Phase 3 — Seguros & Consorcio | Complete |
+| SEG-06 | Phase 3 — Seguros & Consorcio | Complete |
+| SEG-07 | Phase 3 — Seguros & Consorcio | Complete |
+| CON-01 | Phase 3 — Seguros & Consorcio | Complete |
 | CON-02 | Phase 3 — Seguros & Consorcio | Pending |
 | CON-03 | Phase 3 — Seguros & Consorcio | Pending |
-| CON-04 | Phase 3 — Seguros & Consorcio | Pending |
+| CON-04 | Phase 3 — Seguros & Consorcio | Complete |
 | CON-05 | Phase 3 — Seguros & Consorcio | Pending |
 | CON-06 | Phase 3 — Seguros & Consorcio | Pending |
 | COM-01 | Phase 4 — Corretores & Comissoes | Pending |
