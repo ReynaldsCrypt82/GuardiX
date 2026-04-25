@@ -12,7 +12,26 @@ Corretoras de pequeno e médio porte controlam todo o ciclo de vida de seguros e
 
 ### Validated
 
-(None yet — ship to validate)
+**Multi-tenant & Auth** — Validated in Phase 1: Fundação & Auth
+- [x] Onboarding de corretoras com isolamento total de dados por tenant (RLS + JWT claims)
+- [x] Gestão de usuários internos com papéis: Admin, Corretor, Financeiro, Visualizador
+- [x] Autenticação segura com controle de sessão (@supabase/ssr + cookie-based)
+
+**CRM & Clientes** — Validated in Phase 2: CRM & Clientes
+- [x] Cadastro completo de clientes (PF e PJ) com histórico de interações
+- [x] Pipeline de vendas — funil: prospecção → proposta → aguardando aprovação → fechado
+- [x] Follow-up com tarefas, lembretes e alertas de renovação
+- [x] Segmentação de clientes por categoria, produto e corretor responsável
+
+**Seguros** — Validated in Phase 3: Seguros & Consórcio
+- [x] Cadastro e gestão de apólices por tipo de seguro (Auto, Vida, Residencial, Empresarial, Saúde, Outros)
+- [x] Controle de vigências com semáforo verde/amarelo/vermelho e alertas in-app (30 dias)
+- [x] Registro de sinistros e endossos vinculados à apólice
+
+**Consórcio** — Validated in Phase 3: Seguros & Consórcio
+- [x] Cadastro de grupos de consórcio e cotas por cliente
+- [x] Gestão de assembleias mensais: datas, alertas 3 dias antes via badge + toast
+- [x] Registro de contemplados (sorteio/lance) e pipeline pós-contemplação (aguardando_docs → em_analise → credito_liberado)
 
 ### Active
 
