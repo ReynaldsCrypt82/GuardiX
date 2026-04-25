@@ -4,6 +4,7 @@ import { SidebarShell } from '@/components/auth/sidebar-shell'
 import { UserMenu } from '@/components/auth/user-menu'
 import { Toaster } from '@/components/ui/sonner'
 import { AlertToastTrigger } from '@/components/auth/alert-toast-trigger'
+import { addDays, startOfToday, format } from 'date-fns'
 
 export default async function SlugLayout({
   children,
@@ -36,13 +37,11 @@ export default async function SlugLayout({
 
   // Alertas in-app (D-06): apólices com vigencia_fim ≤ 30 dias (SEG-03)
   // Fallback gracioso: se tabelas não existirem (antes do db push), usa count=0 (T-03-19)
-  const today = new Date().toISOString().split('T')[0]
-  const thirtyDaysLater = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-    .toISOString()
-    .split('T')[0]
-  const threeDaysLater = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
-    .toISOString()
-    .split('T')[0]
+  // CR-03 fix: addDays + startOfToday matches getVigenciaStatus() — avoids DST drift on boundary days
+  const todayDate = startOfToday()
+  const today = format(todayDate, 'yyyy-MM-dd')
+  const thirtyDaysLater = format(addDays(todayDate, 30), 'yyyy-MM-dd')
+  const threeDaysLater = format(addDays(todayDate, 3), 'yyyy-MM-dd')
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabaseAny = supabase as any

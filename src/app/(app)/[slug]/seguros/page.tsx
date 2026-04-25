@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
 import { PolicyTable, type PolicyRow } from '@/components/seguros/policy-table'
+import { addDays, startOfToday, format } from 'date-fns'
 
 const PAGE_SIZE = 25
 
@@ -36,13 +37,11 @@ export default async function SegurosPage({ params, searchParams }: Props) {
   const pageNum = Math.max(1, parseInt(sp.page ?? '1', 10))
   const from = (pageNum - 1) * PAGE_SIZE
 
-  // Dates for vigencia status filtering
-  const thirtyDaysLater = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-    .toISOString()
-    .split('T')[0]
-  const sixtyDaysLater = new Date(Date.now() + 60 * 24 * 60 * 60 * 1000)
-    .toISOString()
-    .split('T')[0]
+  // Dates for vigencia status filtering — use startOfToday() to match getVigenciaStatus() (vigencia.ts)
+  // CR-03 fix: addDays + startOfToday avoids DST drift versus Date.now() arithmetic
+  const today = startOfToday()
+  const thirtyDaysLater = format(addDays(today, 30), 'yyyy-MM-dd')
+  const sixtyDaysLater = format(addDays(today, 60), 'yyyy-MM-dd')
 
   let query = supabase
     .from('policies')
