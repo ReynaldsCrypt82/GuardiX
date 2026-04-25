@@ -32,7 +32,7 @@ export function ClientsFilters({ corretores, stages }: ClientsFiltersProps) {
     const params = resetPageOnFilterChange(
       new URLSearchParams(searchParams.toString()),
       key,
-      value || null,
+      value === '_all' ? null : value || null,
     )
     router.replace(`${pathname}?${params.toString()}`)
   }
@@ -54,7 +54,7 @@ export function ClientsFilters({ corretores, stages }: ClientsFiltersProps) {
           <SelectValue placeholder="Corretor" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="">Todos os corretores</SelectItem>
+          <SelectItem value="_all">Todos os corretores</SelectItem>
           {corretores.map((c) => (
             <SelectItem key={c.id} value={c.id}>
               {c.full_name ?? 'Sem nome'}
@@ -68,7 +68,7 @@ export function ClientsFilters({ corretores, stages }: ClientsFiltersProps) {
           <SelectValue placeholder="Estágio" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="">Todos os estágios</SelectItem>
+          <SelectItem value="_all">Todos os estágios</SelectItem>
           {stages.map((s) => (
             <SelectItem key={s.id} value={s.id}>
               {s.name}
@@ -82,7 +82,7 @@ export function ClientsFilters({ corretores, stages }: ClientsFiltersProps) {
           <SelectValue placeholder="Tipo" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="">Todos os tipos</SelectItem>
+          <SelectItem value="_all">Todos os tipos</SelectItem>
           <SelectItem value="pf">Pessoa Física</SelectItem>
           <SelectItem value="pj">Pessoa Jurídica</SelectItem>
         </SelectContent>

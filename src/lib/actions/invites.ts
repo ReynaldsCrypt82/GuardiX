@@ -102,11 +102,7 @@ export async function inviteUser(
   })
 
   if (mailErr) {
-    // Rollback — mark invite cancelled
-    await admin
-      .from('user_invitations')
-      .update({ cancelled_at: new Date().toISOString() })
-      .eq('id', invite.id)
+    // Leave invite active so admin can use "Reenviar" without creating a new one
     return {
       error: {
         _form: ['Não foi possível enviar o convite por e-mail. Tente novamente.'],

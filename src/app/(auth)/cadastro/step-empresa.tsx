@@ -75,28 +75,26 @@ export function StepEmpresa() {
     }
   }
 
-  function handleCNPJChange(raw: string) {
-    // Apply mask progressively (no zero-padding on partial input)
+  function applyMask(raw: string): { masked: string; digits: string } {
     const digits = stripCNPJ(raw).slice(0, 14)
     let masked = digits
     if (digits.length > 12) masked = `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(5, 8)}/${digits.slice(8, 12)}-${digits.slice(12)}`
     else if (digits.length > 8) masked = `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(5, 8)}/${digits.slice(8)}`
     else if (digits.length > 5) masked = `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(5)}`
     else if (digits.length > 2) masked = `${digits.slice(0, 2)}.${digits.slice(2)}`
-    form.setValue('cnpj', masked, { shouldValidate: false })
+    return { masked, digits }
+  }
 
+  function scheduleCNPJLookup(digits: string) {
     setCnpjStatus('idle')
     setCnpjMessage('')
-
     if (debounceRef.current) clearTimeout(debounceRef.current)
-
     if (digits.length === 14) {
       if (!validateCNPJ(digits)) {
         setCnpjStatus('invalid')
         setCnpjMessage('CNPJ inválido. Verifique o número e tente novamente.')
         return
       }
-      // Debounce API call 500ms after last digit entered
       debounceRef.current = setTimeout(() => lookupCNPJ(digits), 500)
     }
   }
@@ -138,8 +136,15 @@ export function StepEmpresa() {
                   <Input
                     placeholder="00.000.000/0000-00"
                     maxLength={18}
-                    {...field}
-                    onChange={(e) => handleCNPJChange(e.target.value)}
+                    name={field.name}
+                    ref={field.ref}
+                    onBlur={field.onBlur}
+                    value={field.value}
+                    onChange={(e) => {
+                      const { masked, digits } = applyMask(e.target.value)
+                      field.onChange(masked)
+                      scheduleCNPJLookup(digits)
+                    }}
                   />
                 </FormControl>
                 {/* CNPJ status message */}

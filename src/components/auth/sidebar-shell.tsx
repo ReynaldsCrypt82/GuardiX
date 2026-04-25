@@ -60,18 +60,25 @@ export function SidebarShell({ slug }: SidebarShellProps) {
       <nav className="flex flex-col gap-1 p-3">
         {navItems.map((item) => (
           <div key={item.label}>
-            <Link
-              href={item.href}
-              className={[
-                'flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors',
-                isActive(item.href) && !item.children
-                  ? 'bg-primary text-primary-foreground font-semibold'
-                  : 'text-foreground hover:bg-muted',
-              ].join(' ')}
-            >
-              {item.icon}
-              {item.label}
-            </Link>
+            {item.children ? (
+              <div className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-foreground">
+                {item.icon}
+                {item.label}
+              </div>
+            ) : (
+              <Link
+                href={item.href}
+                className={[
+                  'flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors',
+                  isActive(item.href)
+                    ? 'bg-primary text-primary-foreground font-semibold'
+                    : 'text-foreground hover:bg-muted',
+                ].join(' ')}
+              >
+                {item.icon}
+                {item.label}
+              </Link>
+            )}
 
             {item.children && (
               <div className="mt-1 ml-4 flex flex-col gap-1 border-l pl-3">
