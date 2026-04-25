@@ -383,13 +383,13 @@ describe('updateQuotaStageAction — pipeline pós-contemplação', () => {
   it('rejeita corretor atualizando cota de outro corretor', async () => {
     const { updateQuotaStageAction } = await import('@/lib/actions/consortium-quotas')
     mockSupabase.auth.getUser.mockResolvedValue({ data: { user: corretorUser() } })
-    // Mock the select query for assigned_to check
+    // Mock the select().eq().maybeSingle() chain for assigned_to ownership check
     const maybeSingleFn = vi.fn().mockResolvedValue({
       data: { assigned_to: ADMIN_UUID }, // different from CORRETOR_UUID
       error: null,
     })
-    const eqSelectFn = vi.fn(() => ({ maybeSingle: maybeSingleFn }))
-    mockQuotaChain.select.mockReturnValue({ eq: eqSelectFn })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockQuotaSelectChain.eq.mockReturnValue({ maybeSingle: maybeSingleFn } as any)
 
     const fd = makeFormData({ quota_id: QUOTA_UUID, stage: 'em_analise' })
     const result = await updateQuotaStageAction('slug', GROUP_UUID, fd)
