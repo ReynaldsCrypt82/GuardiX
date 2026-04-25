@@ -1,7 +1,7 @@
 'use server'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
-import { createPolicySchema } from '@/lib/validations/policy-schemas'
+import { createPolicySchema, updatePolicySchema } from '@/lib/validations/policy-schemas'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnySupabase = any
@@ -84,7 +84,17 @@ export async function createPolicyAction(slug: string, formData: FormData) {
 
 export async function updatePolicyAction(slug: string, policyId: string, formData: FormData) {
   const raw = Object.fromEntries(formData) as Record<string, unknown>
+  // Coerce numeric strings coming from FormData (FormData entries are always strings)
   if (raw.premio_total !== undefined) raw.premio_total = Number(raw.premio_total)
+
+  // CR-01 fix: Zod whitelist — only validated fields can reach .update()
+  // updatePolicySchema is z.object with optional fields + required id
+  const parsed = updatePolicySchema.safeParse({ id: policyId, ...raw })
+  if (!parsed.success) {
+    return { error: 'Dados inválidos.' }
+  }
+  // Strip id from update payload — id is the WHERE filter, not a column to set
+  const { id: _id, ...updateData } = parsed.data
 
   const supabase = (await createClient()) as AnySupabase
   const {
@@ -111,7 +121,7 @@ export async function updatePolicyAction(slug: string, policyId: string, formDat
 
   const { error } = await supabase
     .from('policies')
-    .update({ ...raw, updated_at: new Date().toISOString() })
+    .update({ ...updateData, updated_at: new Date().toISOString() })
     .eq('id', policyId)
 
   if (error) return { error: 'Erro ao atualizar apólice.' }

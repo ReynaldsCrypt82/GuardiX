@@ -7,9 +7,16 @@ const mockSingle = vi.fn()
 const mockPoliciesInsertChain = {
   select: vi.fn(() => ({ single: mockSingle })),
 }
+// Select chain for updatePolicyAction — .select().eq().is().single()
+const mockSelectChain = {
+  eq: vi.fn(() => mockSelectChain),
+  is: vi.fn(() => mockSelectChain),
+  single: vi.fn(),
+}
 const mockPoliciesChain = {
   insert: vi.fn(() => mockPoliciesInsertChain),
   update: vi.fn(() => ({ eq: vi.fn(() => Promise.resolve({ error: null })) })),
+  select: vi.fn(() => mockSelectChain),
 }
 const mockSupabase = {
   auth: {
@@ -108,7 +115,7 @@ function outrosFormData(overrides?: Record<string, string | number>) {
 // ---------------------------------------------------------------------------
 // Import actions (after mocks are set up)
 // ---------------------------------------------------------------------------
-import { createPolicyAction, softDeletePolicyAction } from '@/lib/actions/policies'
+import { createPolicyAction, softDeletePolicyAction, updatePolicyAction } from '@/lib/actions/policies'
 
 // ---------------------------------------------------------------------------
 // createPolicyAction — validação e campos core
@@ -245,5 +252,91 @@ describe('softDeletePolicyAction', () => {
     mockSupabase.auth.getUser.mockResolvedValue({ data: { user: corretorUser() } })
     const result = await softDeletePolicyAction('slug-test', 'policy-uuid-1')
     expect(result).toHaveProperty('error')
+  })
+})
+
+// ---------------------------------------------------------------------------
+// updatePolicyAction — validação Zod e whitelist de campos
+// ---------------------------------------------------------------------------
+describe('updatePolicyAction — validação Zod e whitelist de campos', () => {
+  const POLICY_ID = '11111111-1111-1111-1111-111111111111'
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockSupabase.auth.getUser.mockResolvedValue({ data: { user: adminUser() } })
+    // Mock .select(...).eq(...).is(...).single() to return existing policy assigned_to admin
+    mockSelectChain.single.mockResolvedValue({
+      data: { assigned_to: ADMIN_UUID },
+      error: null,
+    })
+    // Mock .update(...).eq(...) to resolve OK
+    mockPoliciesChain.update.mockReturnValue({
+      eq: vi.fn(() => Promise.resolve({ error: null })),
+    })
+  })
+
+  it('updatePolicyAction com FormData válido chama .update() apenas com campos whitelist + updated_at', async () => {
+    const fd = makeFormData({ insurer: 'Bradesco Seguros', premio_total: 2000 })
+    const result = await updatePolicyAction('slug-test', POLICY_ID, fd)
+    expect(result).toEqual({ success: true })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const updateArg = (mockPoliciesChain.update.mock.calls as any)[0][0] as Record<string, unknown>
+    expect(updateArg.insurer).toBe('Bradesco Seguros')
+    expect(updateArg.premio_total).toBe(2000)
+    expect(updateArg.updated_at).toEqual(expect.any(String))
+    // id deve ser excluído do update
+    expect(updateArg).not.toHaveProperty('id')
+  })
+
+  it('updatePolicyAction ignora tenant_id malicioso no FormData', async () => {
+    const fd = makeFormData({ insurer: 'Bradesco', tenant_id: 'attacker-tenant-uuid' })
+    await updatePolicyAction('slug-test', POLICY_ID, fd)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const updateArg = (mockPoliciesChain.update.mock.calls as any)[0][0] as Record<string, unknown>
+    expect(updateArg).not.toHaveProperty('tenant_id')
+  })
+
+  it('updatePolicyAction ignora deleted_at malicioso no FormData', async () => {
+    const fd = makeFormData({ insurer: 'Bradesco', deleted_at: '2026-01-01' })
+    await updatePolicyAction('slug-test', POLICY_ID, fd)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const updateArg = (mockPoliciesChain.update.mock.calls as any)[0][0] as Record<string, unknown>
+    expect(updateArg).not.toHaveProperty('deleted_at')
+  })
+
+  it('updatePolicyAction rejeita client_id em formato não-UUID — retorna error sem chamar .update()', async () => {
+    const fd = makeFormData({ client_id: 'not-a-uuid' })
+    const result = await updatePolicyAction('slug-test', POLICY_ID, fd)
+    expect(result).toHaveProperty('error')
+    expect(mockPoliciesChain.update).not.toHaveBeenCalled()
+  })
+
+  it('updatePolicyAction rejeita premio_total negativo — retorna error sem chamar .update()', async () => {
+    const fd = makeFormData({ premio_total: -100 })
+    const result = await updatePolicyAction('slug-test', POLICY_ID, fd)
+    expect(result).toHaveProperty('error')
+    expect(mockPoliciesChain.update).not.toHaveBeenCalled()
+  })
+
+  it('updatePolicyAction com FormData vazio chama .update() apenas com updated_at', async () => {
+    const fd = new FormData()
+    const result = await updatePolicyAction('slug-test', POLICY_ID, fd)
+    expect(result).toEqual({ success: true })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const updateArg = (mockPoliciesChain.update.mock.calls as any)[0][0] as Record<string, unknown>
+    expect(Object.keys(updateArg)).toEqual(['updated_at'])
+  })
+
+  it('updatePolicyAction bloqueia corretor editando apólice de outro corretor', async () => {
+    mockSupabase.auth.getUser.mockResolvedValue({ data: { user: corretorUser() } })
+    // Policy assigned_to é diferente do CORRETOR_UUID
+    mockSelectChain.single.mockResolvedValue({
+      data: { assigned_to: ADMIN_UUID },
+      error: null,
+    })
+    const fd = makeFormData({ insurer: 'Bradesco' })
+    const result = await updatePolicyAction('slug-test', POLICY_ID, fd)
+    expect(result).toEqual({ error: 'Sem permissão para editar esta apólice.' })
+    expect(mockPoliciesChain.update).not.toHaveBeenCalled()
   })
 })
