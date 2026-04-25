@@ -3,6 +3,9 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createClaimSchema } from '@/lib/validations/claim-schemas'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnySupabase = any
+
 export async function createClaimAction(slug: string, formData: FormData) {
   const raw = Object.fromEntries(formData) as Record<string, unknown>
   const parsed = createClaimSchema.safeParse(raw)
@@ -10,7 +13,7 @@ export async function createClaimAction(slug: string, formData: FormData) {
     return { error: parsed.error.flatten().fieldErrors }
   }
 
-  const supabase = await createClient()
+  const supabase = (await createClient()) as AnySupabase
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -43,5 +46,5 @@ export async function createClaimAction(slug: string, formData: FormData) {
   if (error) return { error: { _form: ['Erro ao registrar sinistro.'] } }
 
   revalidatePath(`/${slug}/seguros/${parsed.data.policy_id}`)
-  return { id: data.id }
+  return { id: (data as { id: string }).id }
 }

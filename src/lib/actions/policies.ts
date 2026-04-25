@@ -3,6 +3,9 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createPolicySchema } from '@/lib/validations/policy-schemas'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnySupabase = any
+
 export async function createPolicyAction(slug: string, formData: FormData) {
   const raw = Object.fromEntries(formData) as Record<string, unknown>
 
@@ -19,7 +22,7 @@ export async function createPolicyAction(slug: string, formData: FormData) {
     return { error: parsed.error.flatten().fieldErrors }
   }
 
-  const supabase = await createClient()
+  const supabase = (await createClient()) as AnySupabase
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -76,14 +79,14 @@ export async function createPolicyAction(slug: string, formData: FormData) {
 
   revalidatePath(`/${slug}/seguros`)
   revalidatePath(`/${slug}/clientes/${client_id}`)
-  return { id: data.id }
+  return { id: (data as { id: string }).id }
 }
 
 export async function updatePolicyAction(slug: string, policyId: string, formData: FormData) {
   const raw = Object.fromEntries(formData) as Record<string, unknown>
   if (raw.premio_total !== undefined) raw.premio_total = Number(raw.premio_total)
 
-  const supabase = await createClient()
+  const supabase = (await createClient()) as AnySupabase
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -102,16 +105,13 @@ export async function updatePolicyAction(slug: string, policyId: string, formDat
   if (fetchError || !policy) return { error: 'Apólice não encontrada.' }
 
   // Corretor só pode editar apólice própria
-  if (role === 'corretor' && policy.assigned_to !== user.id) {
+  if (role === 'corretor' && (policy as { assigned_to: string }).assigned_to !== user.id) {
     return { error: 'Sem permissão para editar esta apólice.' }
   }
 
   const { error } = await supabase
     .from('policies')
-    .update({
-      ...raw,
-      updated_at: new Date().toISOString(),
-    })
+    .update({ ...raw, updated_at: new Date().toISOString() })
     .eq('id', policyId)
 
   if (error) return { error: 'Erro ao atualizar apólice.' }
@@ -122,7 +122,7 @@ export async function updatePolicyAction(slug: string, policyId: string, formDat
 }
 
 export async function softDeletePolicyAction(slug: string, policyId: string) {
-  const supabase = await createClient()
+  const supabase = (await createClient()) as AnySupabase
   const {
     data: { user },
   } = await supabase.auth.getUser()

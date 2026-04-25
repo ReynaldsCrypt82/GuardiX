@@ -170,7 +170,8 @@ describe('createPolicyAction — validação e campos core', () => {
     const fd = autoFormData({ assigned_to: ADMIN_UUID })
     const result = await createPolicyAction('slug-test', fd)
     expect(result).toEqual({ id: 'policy-1' })
-    const insertArg = mockPoliciesChain.insert.mock.calls[0][0] as Record<string, unknown>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const insertArg = (mockPoliciesChain.insert.mock.calls as any)[0][0] as Record<string, unknown>
     // type_data deve conter campos específicos do auto
     expect(insertArg.type_data).toEqual(
       expect.objectContaining({ placa: 'ABC1D23', marca_modelo: 'Toyota Corolla' })

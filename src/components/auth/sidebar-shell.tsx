@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Settings, Users, UserCog } from 'lucide-react'
+import { LayoutDashboard, Settings, Users, UserCog, Shield, CircleDollarSign } from 'lucide-react'
 
 interface SidebarShellProps {
   slug: string
@@ -11,6 +11,7 @@ interface NavItem {
   label: string
   href: string
   icon: React.ReactNode
+  sectionLabel?: boolean
   children?: { label: string; href: string }[]
 }
 
@@ -27,6 +28,23 @@ export function SidebarShell({ slug }: SidebarShellProps) {
       label: 'Clientes',
       href: `/${slug}/clientes`,
       icon: <Users size={16} />,
+    },
+    // Seção "Produtos" — label não clicável
+    {
+      label: 'Produtos',
+      href: '',
+      icon: null,
+      sectionLabel: true,
+    },
+    {
+      label: 'Seguros',
+      href: `/${slug}/seguros`,
+      icon: <Shield size={16} />,
+    },
+    {
+      label: 'Consórcio',
+      href: `/${slug}/consorcio`,
+      icon: <CircleDollarSign size={16} />,
     },
     {
       label: 'Configurações',
@@ -60,7 +78,12 @@ export function SidebarShell({ slug }: SidebarShellProps) {
       <nav className="flex flex-col gap-1 p-3">
         {navItems.map((item) => (
           <div key={item.label}>
-            {item.children ? (
+            {item.sectionLabel ? (
+              // Seção label — não clicável, não active (D-02)
+              <div className="px-3 py-1 mt-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                {item.label}
+              </div>
+            ) : item.children ? (
               <div className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-foreground">
                 {item.icon}
                 {item.label}

@@ -107,7 +107,8 @@ describe('createClaimAction — validação de sinistros', () => {
       expect.objectContaining({ tenant_id: 'tenant-uuid-1' })
     )
     // Confirma que o insert NÃO recebeu tenant_id do FormData
-    const insertArg = mockClaimsChain.insert.mock.calls[0][0] as Record<string, unknown>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const insertArg = (mockClaimsChain.insert.mock.calls as any)[0][0] as Record<string, unknown>
     expect(insertArg.tenant_id).toBe('tenant-uuid-1')
   })
 
