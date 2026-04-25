@@ -786,17 +786,17 @@ Todos os arquivos de teste abaixo devem ser criados no Wave 0 (schema + stubs) a
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **CON-04: Pipeline pós-contemplação — campo enum ou apenas notas?**
    - O que sabemos: D-04 do CONTEXT.md define `post_contemplation_notes TEXT`. O REQUIREMENTS.md CON-04 menciona "aguardando docs → em análise → crédito liberado" como stages distintos.
-   - O que está ambíguo: Se o usuário quer poder filtrar/reportar por stage de pós-contemplação ou apenas anotar livremente.
-   - Recomendação: Adicionar `post_contemplation_stage TEXT CHECK (IN ('aguardando_docs','em_analise','credito_liberado')) DEFAULT 'aguardando_docs'` à tabela `consortium_quotas` quando `status = 'contemplado'`. Campo `post_contemplation_notes` existe em paralelo. Custo: uma coluna extra. Benefício: filtragem futura na Phase 6.
+   - O que estava ambíguo: Se o usuário quer poder filtrar/reportar por stage de pós-contemplação ou apenas anotar livremente.
+   - **RESOLVED:** Schema inclui ambos — `post_contemplation_stage TEXT CHECK (IN ('aguardando_docs','em_analise','credito_liberado')) DEFAULT 'aguardando_docs'` E `post_contemplation_notes TEXT` na tabela `consortium_quotas`. Adição aditiva ao D-04: notas de texto + stage filtrável. Implementado no Plan 03-01 T1.
 
 2. **SEG-03 vs D-06: "Configurável por tipo de seguro" vs "alerta fixo 30 dias"**
    - O que sabemos: SEG-03 diz "X dias antes — configurável por tipo de seguro". D-06 do CONTEXT.md diz "badge conta apólices com semáforo vermelho (≤ 30 dias)".
-   - O que está ambíguo: Se a configurabilidade (X dias por tipo) está no escopo desta phase ou é Phase 7.
-   - Recomendação: Implementar alerta fixo de 30 dias conforme D-06. A configurabilidade por tipo (SEG-03 completo) fica para Phase 7 junto com n8n e emails — D-06 substitui SEG-03 para v1 in-app.
+   - O que estava ambíguo: Se a configurabilidade (X dias por tipo) está no escopo desta phase ou é Phase 7.
+   - **RESOLVED:** Implementar alerta fixo de 30 dias conforme D-06. Configurabilidade por tipo deferred para Phase 7 junto com n8n e emails. D-06 substitui SEG-03 v1 in-app. Implementado no Plan 03-04 T2.
 
 ---
 
