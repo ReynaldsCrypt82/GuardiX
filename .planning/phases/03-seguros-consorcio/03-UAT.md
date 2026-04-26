@@ -1,9 +1,9 @@
 ---
-status: diagnosed
+status: complete
 phase: 03-seguros-consorcio
 source: [03-VERIFICATION.md]
 started: 2026-04-25T19:05:00Z
-updated: 2026-04-25T19:20:00Z
+updated: 2026-04-25T20:30:00Z
 ---
 
 ## Current Test
@@ -30,15 +30,15 @@ result: pass
 
 ### 5. Badge Contador na Sidebar
 expected: Com apólices vencendo, badge vermelho com contagem aparece ao lado de 'Seguros'. Com assembleia nos próximos 3 dias, badge laranja com contagem aparece ao lado de 'Consórcio'.
-result: issue
+result: fixed
 reported: "não consigo editar o grupo para inserir a data da assembleia — listagem de grupos só tem botão 'Ver grupo', sem opção de editar. Sem UI de edição de grupo, o next_assembly_date nunca pode ser preenchido e o badge laranja de Consórcio nunca aparece."
-severity: major
+fixed_by: 03-06-PLAN.md — GroupEditDialog adicionado no header da página de detalhes do grupo; updateGroupAction estendida para todos os campos editáveis com Zod safeParse
 
 ## Summary
 
 total: 5
-passed: 4
-issues: 1
+passed: 5
+issues: 0
 pending: 0
 skipped: 0
 blocked: 0
@@ -46,15 +46,7 @@ blocked: 0
 ## Gaps
 
 - truth: "Badge laranja de Consórcio aparece na sidebar quando há assembleia nos próximos 3 dias"
-  status: failed
-  reason: "User reported: não há UI para editar grupo e preencher next_assembly_date — listagem só tem botão 'Ver grupo', sem edição. updateGroupAction existe no backend mas não há página/form de edição de grupo no frontend."
+  status: fixed
+  fix: "03-06: GroupEditDialog criado em src/components/consorcio/group-edit-dialog.tsx, wired no header de src/app/(app)/[slug]/consorcio/[id]/page.tsx. updateGroupAction agora valida e persiste todos os campos editáveis incluindo next_assembly_date (nullable). Badge já consultava next_assembly_date desde Phase 03-04."
   severity: major
   test: 5
-  artifacts:
-    - path: "src/app/(app)/[slug]/consorcio/page.tsx"
-      issue: "Tabela de grupos só tem botão 'Ver grupo' (link para /consorcio/[id]), sem botão de editar ou ação para atualizar next_assembly_date"
-    - path: "src/lib/actions/consortium-groups.ts"
-      issue: "updateGroupAction existe mas não há UI que o invoque para atualizar next_assembly_date"
-  missing:
-    - "Adicionar botão/link de edição de grupo na listagem ou na página de detalhes do grupo"
-    - "Criar formulário de edição de grupo que permita atualizar next_assembly_date (e outros campos editáveis)"
