@@ -1,7 +1,8 @@
 ---
 phase: 4
 slug: corretores-comissoes
-status: draft
+status: approved
+reviewed_at: 2026-04-26
 shadcn_initialized: true
 preset: new-york / neutral / cssVariables
 created: 2026-04-26
@@ -78,11 +79,18 @@ Tabs: "Visão geral" | "Relatório de comissões"
   Relatório: commission_entries table with filters
 ```
 
+### Focal Points
+
+| Screen | Primary Visual Anchor |
+|--------|-----------------------|
+| Broker list page (`/[slug]/corretores`) | Table row actions column — specifically the "Ver dashboard" button, which is the primary user journey entry point for each broker row |
+| Broker dashboard (`/[slug]/corretores/[id]`) | Stat cards grid — specifically the "Comissão acumulada" and "Meta atingida" cards, which communicate the broker's financial performance at a glance |
+
 ---
 
 ## Spacing Scale
 
-Standard 8-point scale (inherited from Phase 1 — source: 01-UI-SPEC.md). No exceptions for Phase 4.
+Standard 8-point scale (inherited from Phase 1 — source: 01-UI-SPEC.md).
 
 | Token | Value | Usage |
 |-------|-------|-------|
@@ -97,6 +105,8 @@ Standard 8-point scale (inherited from Phase 1 — source: 01-UI-SPEC.md). No ex
 Exceptions:
 - Touch targets for action buttons: minimum 44px height (WCAG 2.1 AA)
 - Stat card metric value: 24px height minimum for readability on BRL numbers
+
+**Phase 4 specific spacing note:** Rate override fields grid uses `gap-4` (16px = `md` token). The value `gap-3` (12px) is NOT used — all grids stay on the 8-point scale.
 
 ---
 
@@ -203,8 +213,9 @@ All copy in pt-BR. Decimal separator: comma. Currency: "R$". Date: dd/mm/yyyy.
 | Default rate helper | "Taxa aplicada quando não há override por tipo de produto" |
 | Rate overrides section heading | "Taxas por tipo de produto (opcional)" |
 | Rate override helper | "Deixe em branco para usar a taxa padrão" |
+| Rate overrides grid | `grid grid-cols-3 gap-4` — one Input per product type key, labeled with product type name |
 | Submit button | "Salvar perfil" |
-| Cancel button | "Cancelar" |
+| Cancel button | "Fechar sem salvar" |
 | Submit loading | "Salvando..." |
 | Success toast | "Perfil de corretor atualizado." |
 | Error — validation | "Verifique os campos: {campo} está inválido." |
@@ -222,7 +233,7 @@ All copy in pt-BR. Decimal separator: comma. Currency: "R$". Date: dd/mm/yyyy.
 | Default rate label | "Taxa de repasse padrão (%)" |
 | Rate overrides section heading | "Taxas por tipo de produto (opcional)" |
 | Submit button | "Cadastrar parceiro" |
-| Cancel button | "Cancelar" |
+| Cancel button | "Descartar" |
 | Submit loading | "Cadastrando..." |
 | Success toast | "Parceiro cadastrado com sucesso." |
 | Error — server | "Erro ao cadastrar parceiro. Tente novamente." |
@@ -239,7 +250,7 @@ All copy in pt-BR. Decimal separator: comma. Currency: "R$". Date: dd/mm/yyyy.
 | Notes label | "Observações (opcional)" |
 | Notes placeholder | "Motivo, referência ou informação adicional..." |
 | Confirm button | "Confirmar pagamento" |
-| Cancel button | "Cancelar" |
+| Cancel button | "Não registrar agora" |
 | Confirm loading | "Registrando..." |
 | Success toast | "Comissão registrada no ledger." |
 | Error — already paid | "Comissão já registrada para este item. Use estorno ou correção para ajustes." |
@@ -280,18 +291,20 @@ All copy in pt-BR. Decimal separator: comma. Currency: "R$". Date: dd/mm/yyyy.
 | Storno notes label | "Motivo do estorno" |
 | Storno notes required | true |
 | Storno submit button | "Confirmar estorno" |
+| Storno cancel button | "Não estornar" |
 | Correction dialog title | "Registrar correção" |
 | Correction body | "Uma correção cria um novo lançamento complementar no ledger. Use para ajustar diferenças." |
 | Correction amount label | "Valor da diferença (R$)" |
 | Correction notes label | "Motivo da correção" |
 | Correction notes required | true |
 | Correction submit button | "Confirmar correção" |
+| Correction cancel button | "Não corrigir" |
 
 ### Destructive Actions
 
 | Action | Trigger | Confirmation Dialog Copy |
 |--------|---------|--------------------------|
-| Excluir parceiro | Button "Excluir" in partner row actions | Title: "Excluir parceiro?" — Body: "O parceiro será removido (soft delete). Lançamentos de comissão já registrados são mantidos no ledger." — Confirm: "Sim, excluir" — Cancel: "Cancelar" |
+| Excluir parceiro | Button "Excluir" in partner row actions | Title: "Excluir parceiro?" — Body: "O parceiro será removido (soft delete). Lançamentos de comissão já registrados são mantidos no ledger." — Confirm: "Sim, excluir" — Cancel: "Manter parceiro" |
 
 ---
 
@@ -304,7 +317,7 @@ This Dialog is triggered from the brokers list when a user with `role='corretor'
 1. Button "Completar perfil de corretor" appears in the list row actions for users without a broker_profile.
 2. Clicking opens a `Dialog` (not a separate page) — mirrors `contemplation-dialog.tsx` pattern.
 3. Form uses shadcn/ui Form + Input + Label. No React Hook Form in Phase 4 — use direct FormData + Server Action (same pattern as existing consorcio dialogs).
-4. Rate override fields: render 9 Input fields in a 3-column grid (`grid grid-cols-3 gap-3`), one per product type key. Each labeled with the product type name.
+4. Rate override fields: render 9 Input fields in a 3-column grid (`grid grid-cols-3 gap-4`), one per product type key. Each labeled with the product type name.
 5. On submit: show loading state in button, call Server Action, on success close dialog + `revalidatePath` + toast.
 
 ### "Marcar comissão como paga" Flow
@@ -459,3 +472,6 @@ No third-party registries declared for Phase 4. All required UI is covered by ex
 | VigenciaBadge inline color pattern | src/components/seguros/vigencia-badge.tsx |
 | Sonner toast (top-right) | Established in Phase 3 |
 | entry_type badge colors (green/red/blue) | Design default — aligns with semantic meaning |
+| Cancel labels — context-specific (not generic "Cancelar") | gsd-ui-checker BLOCK — Dimension 1 revision 2026-04-26 |
+| Focal points declared per primary screen | gsd-ui-checker FLAG — Dimension 2 revision 2026-04-26 |
+| Rate override grid gap-4 (16px) not gap-3 (12px) | gsd-ui-checker FLAG — Dimension 5 revision 2026-04-26 |
