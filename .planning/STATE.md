@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-seguros-consorcio 03-04-PLAN.md
-last_updated: "2026-04-25T23:06:55.675Z"
+stopped_at: Completed 03-seguros-consorcio-06-PLAN.md
+last_updated: "2026-04-26T01:41:48.468Z"
 last_activity: 2026-04-25
 progress:
   total_phases: 7
   completed_phases: 3
-  total_plans: 13
-  completed_plans: 13
+  total_plans: 14
+  completed_plans: 14
   percent: 100
 ---
 
@@ -56,6 +56,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 03-seguros-consorcio P02 | 12m | 2 tasks | 15 files |
 | Phase 03-seguros-consorcio P03 | 18m | 2 tasks | 10 files |
 | Phase 03-seguros-consorcio P04 | 10m | 2 tasks | 6 files |
+| Phase 03-seguros-consorcio P06 | 20 | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -79,6 +80,8 @@ Recent decisions affecting current work:
 - [Phase 03-seguros-consorcio]: client_interactions nao tem deleted_at — query sem esse filtro (tabela imutavel por design)
 - [Phase 03-seguros-consorcio]: AlertToastTrigger usa useEffect com deps=[] — toast disparado uma vez por sessao (mount only)
 - [Phase 03-seguros-consorcio]: Queries de alerta no layout com try/catch — fallback count=0 se tabelas ausentes antes do db push
+- [Phase 03-seguros-consorcio]: start_date excluded from updateGroupSchema — historical field, immutable post-creation per D-04
+- [Phase 03-seguros-consorcio]: Dialog primitive chosen over Sheet for GroupEditDialog — mirrors contemplation-dialog conventions in consorcio module
 
 ### Pending Todos
 
@@ -92,6 +95,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-25T17:06:18.701Z
-Stopped at: Completed 03-seguros-consorcio 03-04-PLAN.md
+Last session: 2026-04-26T01:38:25.279Z
+Stopped at: Completed 03-seguros-consorcio-06-PLAN.md
 Resume file: None
