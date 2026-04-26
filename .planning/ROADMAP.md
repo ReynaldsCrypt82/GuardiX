@@ -75,7 +75,12 @@ Plans:
   3. Ao registrar apolice ou contemplacao, comissao e calculada automaticamente e inserida no ledger
   4. Valor de comissao ja registrado nao pode ser editado — apenas estorno ou correcao via novo lancamento
   5. Corretor visualiza seu dashboard individual com producao do mes, comissao acumulada e carteira de clientes
-**Plans**: TBD
+**Plans**: 4 plans
+Plans:
+- [ ] 04-01-PLAN.md — Migrations: broker_profiles + partners + commission_entries + ALTER policies/quotas + RLS append-only
+- [ ] 04-02-PLAN.md — Camada logica: resolveCommissionRate util + Zod schemas + Server Actions (broker, partner, commission) + Wave 0 tests
+- [ ] 04-03-PLAN.md — UI admin: sidebar (Corretores+Parceiros) + rotas /corretores e /parceiros + dialogs de perfil/parceiro/exclusao
+- [ ] 04-04-PLAN.md — Dashboard /corretores/[id]: 4 stat cards + month selector + Tabs (Visao geral|Relatorio) + integracao mark-commission-paid em /seguros/[id] e /consorcio/[id]
 **UI hint**: yes
 
 ### Phase 5: Financeiro
