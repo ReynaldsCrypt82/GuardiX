@@ -14,6 +14,19 @@ export const createGroupSchema = z.object({
 
 export type CreateGroupInput = z.infer<typeof createGroupSchema>
 
+export const updateGroupSchema = z.object({
+  administrator: z.string().min(2, 'Administradora obrigatória'),
+  type: z.enum(['auto', 'imovel', 'servico'], {
+    errorMap: () => ({ message: 'Tipo de consórcio inválido' }),
+  }),
+  credit_value: z.coerce.number().min(0.01, 'Valor de crédito deve ser maior que zero'),
+  term_months: z.coerce.number().int().min(1, 'Prazo em meses obrigatório'),
+  total_quotas: z.coerce.number().int().min(1, 'Total de cotas deve ser pelo menos 1'),
+  next_assembly_date: z.string().date('Data de assembleia inválida').optional().nullable(),
+})
+
+export type UpdateGroupInput = z.infer<typeof updateGroupSchema>
+
 export const createQuotaSchema = z.object({
   group_id: z.string().uuid('Grupo obrigatório'),
   client_id: z.string().uuid('Cliente obrigatório'),

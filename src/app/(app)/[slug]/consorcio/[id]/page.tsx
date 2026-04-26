@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/card'
 import { QuotaTable, type QuotaRow } from '@/components/consorcio/quota-table'
 import { QuotaForm } from '@/components/consorcio/quota-form'
+import { GroupEditDialog } from '@/components/consorcio/group-edit-dialog'
 
 interface Props {
   params: Promise<{ slug: string; id: string }>
@@ -150,6 +151,18 @@ export default async function ConsorcioGroupDetailPage({ params, searchParams }:
                 {TYPE_LABELS[group.type] ?? group.type} — {formatBRL(group.credit_value)}
               </p>
             </div>
+            <GroupEditDialog
+              slug={slug}
+              group={{
+                id: group.id,
+                administrator: group.administrator,
+                type: group.type,
+                credit_value: group.credit_value,
+                term_months: group.term_months,
+                total_quotas: group.total_quotas,
+                next_assembly_date: group.next_assembly_date,
+              }}
+            />
           </div>
         </CardHeader>
         <CardContent>

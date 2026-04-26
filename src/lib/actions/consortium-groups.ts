@@ -1,7 +1,7 @@
 'use server'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
-import { createGroupSchema } from '@/lib/validations/consortium-schemas'
+import { createGroupSchema, updateGroupSchema } from '@/lib/validations/consortium-schemas'
 
 export async function createGroupAction(slug: string, formData: FormData) {
   const raw = Object.fromEntries(formData) as Record<string, unknown>
@@ -58,8 +58,16 @@ export async function updateGroupAction(
 ) {
   const raw = Object.fromEntries(formData) as Record<string, unknown>
 
-  // Normalizar next_assembly_date vazio → null
+  // Normalizar next_assembly_date vazio → null (CON-05 — campo nullable)
   if (raw.next_assembly_date === '') raw.next_assembly_date = null
+
+  const parsed = updateGroupSchema.safeParse(raw)
+  if (!parsed.success) {
+    const fieldErrors = parsed.error.flatten().fieldErrors as Record<string, string[] | undefined>
+    const firstKey = Object.keys(fieldErrors)[0]
+    const firstMsg = firstKey ? fieldErrors[firstKey]?.[0] : 'Dados inválidos.'
+    return { error: firstMsg ?? 'Dados inválidos.' }
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = (await createClient()) as any
@@ -76,10 +84,16 @@ export async function updateGroupAction(
   const { error } = await supabase
     .from('consortium_groups')
     .update({
-      next_assembly_date: raw.next_assembly_date as string | null,
+      administrator: parsed.data.administrator,
+      type: parsed.data.type,
+      credit_value: parsed.data.credit_value,
+      term_months: parsed.data.term_months,
+      total_quotas: parsed.data.total_quotas,
+      next_assembly_date: parsed.data.next_assembly_date ?? null,
       updated_at: new Date().toISOString(),
     })
     .eq('id', groupId)
+    .is('deleted_at', null) // Defensive — RLS already enforces tenant isolation
 
   if (error) return { error: 'Erro ao atualizar grupo.' }
 
