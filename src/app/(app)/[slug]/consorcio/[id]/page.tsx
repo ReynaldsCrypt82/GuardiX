@@ -11,6 +11,9 @@ import {
 import { QuotaTable, type QuotaRow } from '@/components/consorcio/quota-table'
 import { QuotaForm } from '@/components/consorcio/quota-form'
 import { GroupEditDialog } from '@/components/consorcio/group-edit-dialog'
+import { MarkCommissionPaidDialog } from '@/components/seguros/mark-commission-paid-dialog'
+import { CommissionPaidBadge } from '@/components/seguros/commission-paid-badge'
+import { resolveCommissionRate } from '@/lib/utils/commission-rate'
 
 interface Props {
   params: Promise<{ slug: string; id: string }>
@@ -130,6 +133,99 @@ export default async function ConsorcioGroupDetailPage({ params, searchParams }:
     total: quotas.length,
   }
 
+  // Calcula comissao por cota contemplada para o Card de Comissoes
+  interface CommissionRow {
+    quotaId: string
+    quotaNumber: string
+    clientName: string
+    paidAt: string | null
+    amounts: {
+      brokerName: string
+      brokerAmount: number
+      brokerRate: number
+      partnerName?: string
+      partnerAmount?: number
+      partnerRate?: number
+    } | null
+  }
+
+  // Filtra cotas contempladas (post_contemplation_stage IS NOT NULL)
+  // QuotaRow may include these fields — cast via any to access
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const contemplatedQuotas = quotas.filter((q) => (q as any).post_contemplation_stage !== null && (q as any).post_contemplation_stage !== undefined)
+
+  // Para cada cota contemplada, busca broker_profile e partner para pre-calcular
+  const commissionRows: CommissionRow[] = await Promise.all(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    contemplatedQuotas.map(async (q: any) => {
+      const quotaRow: CommissionRow = {
+        quotaId: q.id,
+        quotaNumber: q.quota_number ?? q.id,
+        clientName: q.client?.name ?? '—',
+        paidAt: q.commission_paid_at ?? null,
+        amounts: null,
+      }
+
+      if (q.commission_paid_at) return quotaRow
+      if (!q.assigned_to) return quotaRow
+
+      const productType = 'consorcio_' + group.type
+
+      const [{ data: bp }, partnerRes] = await Promise.all([
+        supabase
+          .from('broker_profiles')
+          .select('commission_rate_default, commission_rate_overrides')
+          .eq('id', q.assigned_to)
+          .is('deleted_at', null)
+          .maybeSingle(),
+        q.partner_id
+          ? supabase
+              .from('partners')
+              .select('id, name, commission_rate_default, commission_rate_overrides')
+              .eq('id', q.partner_id)
+              .is('deleted_at', null)
+              .maybeSingle()
+          : Promise.resolve({ data: null }),
+      ])
+
+      if (!bp) return quotaRow
+
+      const brokerRate = resolveCommissionRate(
+        bp.commission_rate_overrides as Record<string, number | undefined> | null,
+        Number(bp.commission_rate_default),
+        productType,
+      )
+      const brokerAmount = Number((group.credit_value * brokerRate).toFixed(2))
+
+      let partnerInfo: { name: string; amount: number; rate: number } | undefined
+      if (partnerRes.data) {
+        const p = partnerRes.data as {
+          name: string
+          commission_rate_default: number
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          commission_rate_overrides: any
+        }
+        const pRate = resolveCommissionRate(
+          p.commission_rate_overrides as Record<string, number | undefined> | null,
+          Number(p.commission_rate_default),
+          productType,
+        )
+        partnerInfo = { name: p.name, amount: Number((group.credit_value * pRate).toFixed(2)), rate: pRate }
+      }
+
+      const brokerProfile = q.profile as { full_name?: string } | null
+      quotaRow.amounts = {
+        brokerName: brokerProfile?.full_name ?? 'Corretor',
+        brokerAmount,
+        brokerRate,
+        partnerName: partnerInfo?.name,
+        partnerAmount: partnerInfo?.amount,
+        partnerRate: partnerInfo?.rate,
+      }
+      return quotaRow
+    }),
+  )
+
   return (
     <div className="mx-auto max-w-6xl space-y-6 p-6">
       {/* Breadcrumb */}
@@ -246,6 +342,43 @@ export default async function ConsorcioGroupDetailPage({ params, searchParams }:
 
         <QuotaTable quotas={quotas} slug={slug} groupId={groupId} />
       </div>
+
+      {/* Comissoes das cotas contempladas */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Comissoes das cotas contempladas</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {commissionRows.length === 0 ? (
+            <p className="text-sm text-muted-foreground">Nenhuma cota contemplada para registrar comissao.</p>
+          ) : (
+            <div className="space-y-3">
+              {commissionRows.map((cr) => (
+                <div key={cr.quotaId} className="flex items-center justify-between border rounded-md p-3">
+                  <div>
+                    <p className="text-sm font-medium">Cota {cr.quotaNumber} — {cr.clientName}</p>
+                    <p className="text-xs text-muted-foreground">
+                      Credito base: {formatBRL(group.credit_value)}
+                    </p>
+                  </div>
+                  {cr.paidAt ? (
+                    <CommissionPaidBadge paidAt={cr.paidAt} />
+                  ) : cr.amounts ? (
+                    <MarkCommissionPaidDialog
+                      slug={slug}
+                      sourceType="quota"
+                      sourceId={cr.quotaId}
+                      amounts={cr.amounts}
+                    />
+                  ) : (
+                    <span className="text-xs text-muted-foreground">Sem corretor atribuido</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       <div className="flex justify-end">
         <Button asChild variant="outline">

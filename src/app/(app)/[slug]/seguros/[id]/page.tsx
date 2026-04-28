@@ -12,6 +12,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { VigenciaBadge } from '@/components/seguros/vigencia-badge'
 import { ClaimDialog } from '@/components/seguros/claim-dialog'
 import { EndorsementDialog } from '@/components/seguros/endorsement-dialog'
+import { MarkCommissionPaidDialog } from '@/components/seguros/mark-commission-paid-dialog'
+import { CommissionPaidBadge } from '@/components/seguros/commission-paid-badge'
+import { resolveCommissionRate } from '@/lib/utils/commission-rate'
 
 interface Props {
   params: Promise<{ slug: string; id: string }>
@@ -28,6 +31,9 @@ interface PolicyData {
   premio_total: number
   observacoes: string | null
   type_data: Record<string, unknown> | null
+  partner_id: string | null
+  commission_paid_at: string | null
+  assigned_to: string
   client: { id: string; name: string; type: string } | null
   profile: { id: string; full_name: string } | null
 }
@@ -93,7 +99,7 @@ export default async function PolicyDetailPage({ params }: Props) {
   // Busca apólice — cast explícito para evitar union type do Supabase client
   const { data: rawPolicy, error: policyError } = await supabase
     .from('policies')
-    .select('id, policy_number, type, insurer, vigencia_inicio, vigencia_fim, premio_total, observacoes, type_data, client:clients(id, name, type), profile:profiles!assigned_to(id, full_name)')
+    .select('id, policy_number, type, insurer, vigencia_inicio, vigencia_fim, premio_total, observacoes, type_data, partner_id, commission_paid_at, assigned_to, client:clients(id, name, type), profile:profiles!assigned_to(id, full_name)')
     .eq('id', id)
     .is('deleted_at', null)
     .single()
@@ -101,6 +107,66 @@ export default async function PolicyDetailPage({ params }: Props) {
   if (policyError || !rawPolicy) notFound()
 
   const policy = rawPolicy as unknown as PolicyData
+
+  // Carrega dados para pre-calcular comissao no Dialog (apenas quando ainda nao paga)
+  interface CalculatedAmounts {
+    brokerName: string
+    brokerAmount: number
+    brokerRate: number
+    partnerName?: string
+    partnerAmount?: number
+    partnerRate?: number
+  }
+  let calculatedAmounts: CalculatedAmounts | null = null
+  if (!policy.commission_paid_at && policy.assigned_to) {
+    const [{ data: bp }, partnerRes] = await Promise.all([
+      supabase
+        .from('broker_profiles')
+        .select('commission_rate_default, commission_rate_overrides')
+        .eq('id', policy.assigned_to)
+        .is('deleted_at', null)
+        .maybeSingle(),
+      policy.partner_id
+        ? supabase
+            .from('partners')
+            .select('id, name, commission_rate_default, commission_rate_overrides')
+            .eq('id', policy.partner_id)
+            .is('deleted_at', null)
+            .maybeSingle()
+        : Promise.resolve({ data: null }),
+    ])
+    if (bp) {
+      const brokerRate = resolveCommissionRate(
+        bp.commission_rate_overrides as Record<string, number | undefined> | null,
+        Number(bp.commission_rate_default),
+        policy.type,
+      )
+      const brokerAmount = Number((policy.premio_total * brokerRate).toFixed(2))
+      let partnerInfo: { name: string; amount: number; rate: number } | undefined
+      if (partnerRes.data) {
+        const p = partnerRes.data as {
+          name: string
+          commission_rate_default: number
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          commission_rate_overrides: any
+        }
+        const pRate = resolveCommissionRate(
+          p.commission_rate_overrides as Record<string, number | undefined> | null,
+          Number(p.commission_rate_default),
+          policy.type,
+        )
+        partnerInfo = { name: p.name, amount: Number((policy.premio_total * pRate).toFixed(2)), rate: pRate }
+      }
+      calculatedAmounts = {
+        brokerName: policy.profile?.full_name ?? 'Corretor',
+        brokerAmount,
+        brokerRate,
+        partnerName: partnerInfo?.name,
+        partnerAmount: partnerInfo?.amount,
+        partnerRate: partnerInfo?.rate,
+      }
+    }
+  }
 
   // Busca sinistros e endossos em paralelo
   const [claimsRes, endorsementsRes] = await Promise.all([
@@ -212,6 +278,16 @@ export default async function PolicyDetailPage({ params }: Props) {
           <div className="flex gap-2">
             <ClaimDialog slug={slug} policyId={id} />
             <EndorsementDialog slug={slug} policyId={id} />
+            {policy.commission_paid_at ? (
+              <CommissionPaidBadge paidAt={policy.commission_paid_at} />
+            ) : calculatedAmounts ? (
+              <MarkCommissionPaidDialog
+                slug={slug}
+                sourceType="policy"
+                sourceId={policy.id}
+                amounts={calculatedAmounts}
+              />
+            ) : null}
           </div>
         </div>
 
