@@ -53,6 +53,16 @@ export function SidebarShell({ slug, alertCounts }: SidebarShellProps) {
       icon: <CircleDollarSign size={16} />,
     },
     {
+      label: 'Corretores',
+      href: `/${slug}/corretores`,
+      icon: <UserCog size={16} />,
+    },
+    {
+      label: 'Parceiros',
+      href: `/${slug}/parceiros`,
+      icon: <Users size={16} />,
+    },
+    {
       label: 'Configurações',
       href: `/${slug}/configuracoes`,
       icon: <Settings size={16} />,
