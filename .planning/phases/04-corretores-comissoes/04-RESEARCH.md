@@ -736,17 +736,19 @@ CREATE INDEX idx_commission_entries_reference_month ON public.commission_entries
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Atomicidade do `markCommissionPaidAction`**
    - O que sabemos: Supabase JS client nao tem suporte a transacoes multi-statement. Podemos usar Supabase RPC (funcao PostgreSQL) para atomicidade real.
    - O que e incerto: O planner deve decidir entre Opcao A (sequencia simples) vs. Opcao B (RPC).
    - Recomendacao: Opcao A e suficiente para v1. Documentar a limitacao no codigo com comentario.
+   - **RESOLVED:** Option A (sequential, no RPC) — implemented in Plan 02 Task 3. Idempotency guaranteed by `commission_paid_at IS NULL` check before INSERT (Pitfall 1).
 
 2. **`parceiros` na sidebar ou apenas rota direta?**
    - O que sabemos: A UI-SPEC define `/[slug]/parceiros` como uma pagina separada. A sidebar atual nao tem item para "Parceiros".
    - O que e incerto: Se "Parceiros" deve aparecer como item de navegacao na sidebar ou ser acessado apenas a partir da pagina de Corretores.
    - Recomendacao: Adicionar "Parceiros" como sub-item de "Corretores" no sidebar (usando o padrao de `children` que ja existe para Configuracoes). Decisao final para o planner.
+   - **RESOLVED:** Parceiros adicionado como item INDEPENDENTE da sidebar (nao sub-item) — implementado em Plan 03 Task 1. Decisao tomada por minimizar risco: nao altera a logica de render de `sidebar-shell.tsx` (que ainda nao suporta corretamente parent clicavel + children).
 
 ---
 
