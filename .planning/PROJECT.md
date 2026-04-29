@@ -33,6 +33,12 @@ Corretoras de pequeno e médio porte controlam todo o ciclo de vida de seguros e
 - [x] Gestão de assembleias mensais: datas, alertas 3 dias antes via badge + toast
 - [x] Registro de contemplados (sorteio/lance) e pipeline pós-contemplação (aguardando_docs → em_analise → credito_liberado)
 
+**Corretores & Comissões** — Validated in Phase 4: Corretores & Comissões
+- [x] Cadastro de corretores internos com metas, SUSEP e taxas por produto (broker_profiles 1:1 com profiles)
+- [x] Cadastro de parceiros externos com regras de repasse diferenciadas por produto (partners standalone)
+- [x] Ledger append-only imutável (commission_entries sem UPDATE/DELETE policies) — estorno e correção via novos lançamentos
+- [x] Dashboard individual por corretor: produção do mês, comissão acumulada, carteira ativa, meta % (/[slug]/corretores/[id])
+
 ### Active
 
 **Multi-tenant & Auth**
@@ -56,11 +62,11 @@ Corretoras de pequeno e médio porte controlam todo o ciclo de vida de seguros e
 - [ ] Gestão de assembleias mensais: datas, lances, sorteios
 - [ ] Registro de contemplados e acompanhamento de uso do crédito e documentação
 
-**Corretores & Comissões**
-- [ ] Cadastro de corretores internos com metas e carteira de clientes
-- [ ] Cadastro de parceiros externos com regras de repasse diferenciadas
-- [ ] Cálculo automático de comissões por apólice/consórcio com relatório mensal
-- [ ] Dashboard individual por corretor (produção, comissão, carteira)
+**Corretores & Comissões** — Validated in Phase 4: Corretores & Comissões
+- [x] Cadastro de corretores internos com metas e carteira de clientes
+- [x] Cadastro de parceiros externos com regras de repasse diferenciadas
+- [x] Cálculo automático de comissões por apólice/consórcio com relatório mensal
+- [x] Dashboard individual por corretor (produção, comissão, carteira)
 
 **Financeiro**
 - [ ] Contas a receber: prêmios, parcelas de consórcio
@@ -128,4 +134,4 @@ Este documento evolui a cada transição de fase e milestone.
 4. Atualizar Context com estado atual
 
 ---
-*Last updated: 2026-04-19 após inicialização do projeto*
+*Last updated: 2026-04-28 — Phase 4 (Corretores & Comissões) complete*
