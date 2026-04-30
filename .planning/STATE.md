@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 5 context gathered
-last_updated: "2026-04-30T00:47:17.481Z"
+stopped_at: Completed 05-financeiro-02-PLAN.md
+last_updated: "2026-04-30T15:47:03.528Z"
 last_activity: 2026-04-30
 progress:
   total_phases: 7
   completed_phases: 4
   total_plans: 21
-  completed_plans: 19
-  percent: 90
+  completed_plans: 20
+  percent: 95
 ---
 
 # Project State
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-04-19)
 ## Current Position
 
 Phase: 05 (financeiro) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 Status: Ready to execute
 Last activity: 2026-04-30
 
@@ -57,6 +57,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 03-seguros-consorcio P03 | 18m | 2 tasks | 10 files |
 | Phase 03-seguros-consorcio P04 | 10m | 2 tasks | 6 files |
 | Phase 03-seguros-consorcio P06 | 20 | 3 tasks | 4 files |
+| Phase 05-financeiro P02 | 25 | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -82,6 +83,8 @@ Recent decisions affecting current work:
 - [Phase 03-seguros-consorcio]: Queries de alerta no layout com try/catch — fallback count=0 se tabelas ausentes antes do db push
 - [Phase 03-seguros-consorcio]: start_date excluded from updateGroupSchema — historical field, immutable post-creation per D-04
 - [Phase 03-seguros-consorcio]: Dialog primitive chosen over Sheet for GroupEditDialog — mirrors contemplation-dialog conventions in consorcio module
+- [Phase 05-financeiro]: Select shadcn requer estado controlado + fd.set() manual para incluir valor em FormData
+- [Phase 05-financeiro]: Aba Vencidos sem filtro de mes: .eq(status,pending).lt(due_date, todayStr) conforme D-07
 
 ### Pending Todos
 
@@ -95,6 +98,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-29T13:24:27.008Z
-Stopped at: Phase 5 context gathered
-Resume file: .planning/phases/05-financeiro/05-CONTEXT.md
+Last session: 2026-04-30T15:47:03.524Z
+Stopped at: Completed 05-financeiro-02-PLAN.md
+Resume file: None

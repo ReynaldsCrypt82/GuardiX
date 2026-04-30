@@ -55,11 +55,11 @@
 
 ### Controle Financeiro (FIN)
 
-- [ ] **FIN-01**: Usuário pode registrar conta a receber (prêmio de seguro, parcela de consórcio) com valor, vencimento e status
-- [ ] **FIN-02**: Usuário pode registrar conta a pagar (repasse a seguradora, comissão a corretor) com valor e vencimento
-- [ ] **FIN-03**: Usuário pode visualizar fluxo de caixa consolidado por período (entradas e saídas)
+- [x] **FIN-01**: Usuário pode registrar conta a receber (prêmio de seguro, parcela de consórcio) com valor, vencimento e status
+- [x] **FIN-02**: Usuário pode registrar conta a pagar (repasse a seguradora, comissão a corretor) com valor e vencimento
+- [x] **FIN-03**: Usuário pode visualizar fluxo de caixa consolidado por período (entradas e saídas)
 - [ ] **FIN-04**: Sistema identifica clientes inadimplentes e envia alerta automático de atraso
-- [ ] **FIN-05**: Usuário pode marcar pagamento como recebido/quitado com data de liquidação
+- [x] **FIN-05**: Usuário pode marcar pagamento como recebido/quitado com data de liquidação
 
 ### Dashboards Gerenciais (DASH)
 
@@ -134,11 +134,11 @@
 | COM-04 | Phase 4 — Corretores & Comissoes | Pending |
 | COM-05 | Phase 4 — Corretores & Comissoes | Pending |
 | COM-06 | Phase 4 — Corretores & Comissoes | Pending |
-| FIN-01 | Phase 5 — Financeiro | Pending |
-| FIN-02 | Phase 5 — Financeiro | Pending |
-| FIN-03 | Phase 5 — Financeiro | Pending |
+| FIN-01 | Phase 5 — Financeiro | Complete |
+| FIN-02 | Phase 5 — Financeiro | Complete |
+| FIN-03 | Phase 5 — Financeiro | Complete |
 | FIN-04 | Phase 5 — Financeiro | Pending |
-| FIN-05 | Phase 5 — Financeiro | Pending |
+| FIN-05 | Phase 5 — Financeiro | Complete |
 | DASH-01 | Phase 6 — Dashboards & Relatorios | Pending |
 | DASH-02 | Phase 6 — Dashboards & Relatorios | Pending |
 | DASH-03 | Phase 6 — Dashboards & Relatorios | Pending |
