@@ -286,6 +286,10 @@ export default async function PolicyDetailPage({ params }: Props) {
                 sourceType="policy"
                 sourceId={policy.id}
                 amounts={calculatedAmounts}
+                policyId={policy.id}
+                clientId={policy.client?.id}
+                baseDescription={`Premio ${policy.policy_number} - ${policy.client?.name ?? 'cliente'}`}
+                baseAmount={Number(policy.premio_total)}
               />
             ) : null}
           </div>

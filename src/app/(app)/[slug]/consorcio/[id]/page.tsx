@@ -369,6 +369,9 @@ export default async function ConsorcioGroupDetailPage({ params, searchParams }:
                       sourceType="quota"
                       sourceId={cr.quotaId}
                       amounts={cr.amounts}
+                      quotaId={cr.quotaId}
+                      baseDescription={`Cota ${cr.quotaNumber} - ${cr.clientName}`}
+                      baseAmount={Number(group.credit_value)}
                     />
                   ) : (
                     <span className="text-xs text-muted-foreground">Sem corretor atribuido</span>

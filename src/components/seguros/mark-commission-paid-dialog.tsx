@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { markCommissionPaidAction } from '@/lib/actions/commission-entries'
+import { SuggestEntryDialog } from '@/components/financeiro/suggest-entry-dialog'
 
 interface CalculatedAmounts {
   brokerName: string
@@ -28,6 +29,12 @@ interface Props {
   sourceType: 'policy' | 'quota'
   sourceId: string
   amounts: CalculatedAmounts
+  // NEW — para integração com SuggestEntryDialog (D-04)
+  policyId?: string
+  quotaId?: string
+  clientId?: string
+  baseDescription?: string
+  baseAmount?: number
 }
 
 function formatBRL(v: number): string {
@@ -41,9 +48,13 @@ function formatPercent(v: number): string {
   }).format(v)
 }
 
-export function MarkCommissionPaidDialog({ slug, sourceType, sourceId, amounts }: Props) {
+export function MarkCommissionPaidDialog({
+  slug, sourceType, sourceId, amounts,
+  policyId, quotaId, clientId, baseDescription, baseAmount,
+}: Props) {
   const [open, setOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [suggestOpen, setSuggestOpen] = useState(false)
 
   async function handleConfirm(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -87,12 +98,17 @@ export function MarkCommissionPaidDialog({ slug, sourceType, sourceId, amounts }
       }
       toast.success('Comissao registrada no ledger.')
       setOpen(false)
+      // D-04: oferecer criar lançamento receivable após sucesso
+      if (baseDescription !== undefined && baseAmount !== undefined && baseAmount > 0) {
+        setSuggestOpen(true)
+      }
     } finally {
       setIsSubmitting(false)
     }
   }
 
   return (
+    <>
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
@@ -151,5 +167,18 @@ export function MarkCommissionPaidDialog({ slug, sourceType, sourceId, amounts }
         </form>
       </DialogContent>
     </Dialog>
+    {baseDescription !== undefined && baseAmount !== undefined && (
+      <SuggestEntryDialog
+        slug={slug}
+        open={suggestOpen}
+        onOpenChange={setSuggestOpen}
+        defaultDescription={baseDescription}
+        defaultAmount={baseAmount}
+        policyId={policyId}
+        quotaId={quotaId}
+        clientId={clientId}
+      />
+    )}
+    </>
   )
 }
