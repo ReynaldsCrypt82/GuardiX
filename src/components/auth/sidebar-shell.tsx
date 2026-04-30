@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Settings, Users, UserCog, Shield, CircleDollarSign } from 'lucide-react'
+import { LayoutDashboard, Settings, Users, UserCog, Shield, CircleDollarSign, Wallet } from 'lucide-react'
 
 interface AlertCounts {
   policies: number
@@ -11,6 +11,7 @@ interface AlertCounts {
 interface SidebarShellProps {
   slug: string
   alertCounts?: AlertCounts
+  userRole?: string
 }
 
 interface NavItem {
@@ -21,7 +22,7 @@ interface NavItem {
   children?: { label: string; href: string }[]
 }
 
-export function SidebarShell({ slug, alertCounts }: SidebarShellProps) {
+export function SidebarShell({ slug, alertCounts, userRole }: SidebarShellProps) {
   const pathname = usePathname()
 
   const navItems: NavItem[] = [
@@ -62,6 +63,14 @@ export function SidebarShell({ slug, alertCounts }: SidebarShellProps) {
       href: `/${slug}/parceiros`,
       icon: <Users size={16} />,
     },
+    // D-05: Financeiro APENAS para admin e financeiro
+    ...(userRole === 'admin' || userRole === 'financeiro'
+      ? [{
+          label: 'Financeiro',
+          href: `/${slug}/financeiro`,
+          icon: <Wallet size={16} />,
+        }]
+      : []),
     {
       label: 'Configurações',
       href: `/${slug}/configuracoes`,

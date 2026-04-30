@@ -21,6 +21,8 @@ export default async function SlugLayout({
     redirect(`/login?next=/${slug}/dashboard`)
   }
 
+  const userRole = (user.app_metadata as { role?: string })?.role ?? ''
+
   const meta = user.app_metadata as { slug?: string; tenant_id?: string } | undefined
   if (meta?.slug && meta.slug !== slug) {
     redirect(`/${meta.slug}/dashboard`)
@@ -81,7 +83,7 @@ export default async function SlugLayout({
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
-      <SidebarShell slug={slug} alertCounts={alertCounts} />
+      <SidebarShell slug={slug} alertCounts={alertCounts} userRole={userRole} />
 
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Top bar */}
