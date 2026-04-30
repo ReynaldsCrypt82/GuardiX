@@ -37,6 +37,7 @@ interface ClientsTableProps {
   stages: Stage[]
   userRole: string
   userId: string
+  overdueClientIds: Set<string>
 }
 
 export function ClientsTable({
@@ -45,6 +46,7 @@ export function ClientsTable({
   stages,
   userRole,
   userId,
+  overdueClientIds,
 }: ClientsTableProps) {
   if (clients.length === 0) {
     return (
@@ -77,12 +79,19 @@ export function ClientsTable({
           return (
             <TableRow key={c.id} className="cursor-pointer">
               <TableCell>
-                <Link
-                  href={`/${slug}/clientes/${c.id}`}
-                  className="font-medium hover:underline"
-                >
-                  {c.name}
-                </Link>
+                <div className="flex items-center gap-2">
+                  <Link
+                    href={`/${slug}/clientes/${c.id}`}
+                    className="font-medium hover:underline"
+                  >
+                    {c.name}
+                  </Link>
+                  {overdueClientIds.has(c.id) && (
+                    <Badge variant="destructive" className="text-[10px]">
+                      Inadimplente
+                    </Badge>
+                  )}
+                </div>
               </TableCell>
               <TableCell>
                 <Badge variant={c.type === 'pf' ? 'secondary' : 'outline'}>

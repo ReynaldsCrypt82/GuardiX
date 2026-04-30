@@ -27,3 +27,12 @@ describe('financial_entries RLS — RBAC visualizador', () => {
   it.todo('visualizador NÃO vê lançamentos (não está em admin/financeiro/corretor)')
   it.todo('visualizador NÃO pode INSERT')
 })
+
+describe('financial_entries — overdue client_ids subquery (badge integration)', () => {
+  it.todo('admin recebe Set com client_ids de TODOS os lançamentos pending+overdue do tenant')
+  it.todo('financeiro recebe Set com client_ids de TODOS os lançamentos pending+overdue do tenant')
+  it.todo('corretor recebe Set apenas de client_ids de clients onde assigned_to = auth.uid() (via RLS)')
+  it.todo('visualizador recebe Set vazio (query é skipped no Server Component — Pitfall 2)')
+  it.todo('lançamentos pagos (status=paid) NUNCA aparecem no Set, mesmo com due_date < hoje')
+  it.todo('lançamentos sem client_id (avulsos) NUNCA aparecem no Set (filtro client_id NOT NULL)')
+})

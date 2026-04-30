@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { format } from 'date-fns'
 import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
 import { buildSearchClause } from '@/lib/utils/clients-query'
@@ -52,6 +53,31 @@ export default async function ClientesPage({ params, searchParams }: Props) {
       .is('deleted_at', null)
       .order('position'),
   ])
+
+  // === D-10: Query paralela para overdue client_ids (badge de inadimplência) ===
+  // Pitfall 2: visualizador NUNCA vê badge; corretor vê apenas próprios (RLS já filtra)
+  const todayStr = format(new Date(), 'yyyy-MM-dd')
+  let overdueClientIds = new Set<string>()
+  if (userRole === 'admin' || userRole === 'financeiro' || userRole === 'corretor') {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const sb = supabase as any
+      const { data: overdueRows } = await sb
+        .from('financial_entries')
+        .select('client_id')
+        .is('deleted_at', null)
+        .eq('status', 'pending')
+        .lt('due_date', todayStr)
+        .not('client_id', 'is', null)
+      const ids = ((overdueRows ?? []) as Array<{ client_id: string | null }>)
+        .map((r) => r.client_id)
+        .filter((id): id is string => !!id)
+      overdueClientIds = new Set(ids)
+    } catch {
+      // tabela financial_entries pode não existir antes da Phase 5 db push — fallback graceful
+      overdueClientIds = new Set()
+    }
+  }
 
   // Query de clientes com filtros aplicados
   let query = supabase
@@ -122,6 +148,7 @@ export default async function ClientesPage({ params, searchParams }: Props) {
                 stages={stagesRes.data ?? []}
                 userRole={userRole}
                 userId={userId}
+                overdueClientIds={overdueClientIds}
               />
           <ClientsPagination page={pageNum} totalPages={totalPages} />
         </>
