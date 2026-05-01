@@ -70,7 +70,7 @@
 
 ### Automações & IA (AUTO)
 
-- [ ] **AUTO-01**: Admin pode configurar URL de webhook n8n por evento (vencimento, contemplação, inadimplência)
+- [x] **AUTO-01**: Admin pode configurar URL de webhook n8n por evento (vencimento, contemplação, inadimplência)
 - [ ] **AUTO-02**: Sistema dispara webhook para n8n quando evento ocorre, com payload de dados do cliente/apólice
 - [ ] **AUTO-03**: Sistema envia alertas automáticos por email (Resend) para vencimentos, cobranças e contemplações
 - [ ] **AUTO-04**: Plataforma oferece endpoint de IA para atendimento via WhatsApp com contexto do cliente injetado (RAG)
@@ -143,7 +143,7 @@
 | DASH-02 | Phase 6 — Dashboards & Relatorios | Complete |
 | DASH-03 | Phase 6 — Dashboards & Relatorios | Complete |
 | DASH-04 | Phase 6 — Dashboards & Relatorios | Complete |
-| AUTO-01 | Phase 7 — Automacoes & IA | Pending |
+| AUTO-01 | Phase 7 — Automacoes & IA | Complete |
 | AUTO-02 | Phase 7 — Automacoes & IA | Pending |
 | AUTO-03 | Phase 7 — Automacoes & IA | Pending |
 | AUTO-04 | Phase 7 — Automacoes & IA | Pending |
