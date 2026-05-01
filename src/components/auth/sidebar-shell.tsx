@@ -84,6 +84,9 @@ export function SidebarShell({ slug, alertCounts, userRole }: SidebarShellProps)
           label: 'Pipeline',
           href: `/${slug}/configuracoes/pipeline`,
         },
+        ...(userRole === 'admin'
+          ? [{ label: 'Automações', href: `/${slug}/configuracoes/automacoes` }]
+          : []),
       ],
     },
   ]
