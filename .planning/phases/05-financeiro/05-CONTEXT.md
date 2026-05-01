@@ -141,7 +141,7 @@ Esta fase NÃO inclui: gráficos/KPIs executivos (Phase 6), exportação PDF/Exc
 
 - **Gráfico de barras entradas × saídas** — Phase 6 (Dashboards & Relatórios) junto com outros KPIs executivos.
 - **Exportação PDF/Excel dos lançamentos** — Phase 6 junto com exportação unificada de relatórios.
-- **Alertas por email de inadimplência** — Phase 7 (n8n + Resend).
+- **FIN-04 em Phase 5 é satisfeito por:** badge "Inadimplente" na listagem /clientes + aba "Vencidos" em /financeiro. A expressão "alerta automático de atraso" no requisito refere-se a identificação ativa (não manual — o sistema calcula automaticamente via query `due_date < today`), não a notificação push/email. Alerta proativo por email = Phase 7 (n8n + Resend).
 - **Date range picker customizado** — substituir MonthSelector por range picker quando houver necessidade de relatórios históricos longos (Phase 6).
 - **Tolerância de dias configurável por tenant** — tornar o critério de inadimplência configurável (ex: 5 dias de carência). Complexidade não justificada em v1.
 

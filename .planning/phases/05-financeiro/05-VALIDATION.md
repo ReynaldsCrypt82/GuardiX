@@ -1,9 +1,9 @@
 ---
 phase: 5
 slug: financeiro
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: ready
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-04-29
 ---
 
@@ -52,9 +52,9 @@ created: 2026-04-29
 
 ## Wave 0 Requirements
 
-- [ ] `src/tests/financeiro/financial-entries.test.ts` — stubs for FIN-01 (schema + RLS)
-- [ ] `src/tests/financeiro/financial-actions.test.ts` — stubs for FIN-02, FIN-05 (Server Actions)
-- [ ] `src/tests/financeiro/delinquency.test.ts` — stubs for FIN-04 (badge query + role filter)
+- [ ] `tests/db/rls-financeiro.test.ts` — stubs for FIN-01 (schema + RLS)
+- [ ] `tests/validations/financial-schemas.test.ts` — stubs for FIN-02 (Zod schema validation)
+- [ ] `tests/actions/financial-entries.test.ts` — stubs for FIN-05 (Server Actions + idempotência)
 
 *Existing vitest infrastructure covers the framework; only phase-specific test files needed.*
 

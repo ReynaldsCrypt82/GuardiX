@@ -18,8 +18,8 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     )
 
-    // raw_app_meta_data is the mirror of app_metadata available to the hook payload
-    const rawApp = (claims.raw_app_meta_data ?? {}) as {
+    // Supabase sends app_metadata (not raw_app_meta_data) in the hook payload
+    const rawApp = (claims.app_metadata ?? {}) as {
       tenant_id?: string
       role?: string
       slug?: string

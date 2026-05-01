@@ -58,6 +58,14 @@ async function readClaims(
   }
 }
 
+function redirectWithCookies(url: URL, supabaseResponse: NextResponse): NextResponse {
+  const redirectResponse = NextResponse.redirect(url)
+  supabaseResponse.cookies.getAll().forEach((cookie) => {
+    redirectResponse.cookies.set(cookie.name, cookie.value)
+  })
+  return redirectResponse
+}
+
 export async function updateSession(request: NextRequest): Promise<NextResponse> {
   let supabaseResponse = NextResponse.next({ request })
 
@@ -93,7 +101,7 @@ export async function updateSession(request: NextRequest): Promise<NextResponse>
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     url.searchParams.set('next', pathname)
-    return NextResponse.redirect(url)
+    return redirectWithCookies(url, supabaseResponse)
   }
 
   // 2. Authenticated user but claims missing tenant_id (incomplete onboarding)
@@ -108,7 +116,7 @@ export async function updateSession(request: NextRequest): Promise<NextResponse>
     if (pathname !== '/login' && pathname !== '/cadastro') {
       const url = request.nextUrl.clone()
       url.pathname = '/cadastro'
-      return NextResponse.redirect(url)
+      return redirectWithCookies(url, supabaseResponse)
     }
     return supabaseResponse
   }
@@ -118,7 +126,7 @@ export async function updateSession(request: NextRequest): Promise<NextResponse>
     const url = request.nextUrl.clone()
     url.pathname = `/${userSlug}/dashboard`
     url.search = ''
-    return NextResponse.redirect(url)
+    return redirectWithCookies(url, supabaseResponse)
   }
 
   // 4. Trial expired — block everything except trial-expired page and /login
@@ -128,7 +136,7 @@ export async function updateSession(request: NextRequest): Promise<NextResponse>
       const url = request.nextUrl.clone()
       url.pathname = '/trial-expirado'
       url.search = ''
-      return NextResponse.redirect(url)
+      return redirectWithCookies(url, supabaseResponse)
     }
   }
 
@@ -142,7 +150,7 @@ export async function updateSession(request: NextRequest): Promise<NextResponse>
     if (!exempt.includes(urlSlug) && urlSlug !== userSlug) {
       const url = request.nextUrl.clone()
       url.pathname = `/${userSlug}${remainder}`
-      return NextResponse.redirect(url)
+      return redirectWithCookies(url, supabaseResponse)
     }
   }
 

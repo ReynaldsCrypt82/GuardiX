@@ -603,17 +603,17 @@ import { Wallet } from 'lucide-react' // Recomendação: Wallet (mais semântico
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Integração pós-comissão: qual a UX exata do Dialog secundário?**
    - What we know: D-04 diz "Dialog secundário pós-confirmação com campos pré-preenchidos (valor do prêmio, vencimento = hoje). Usuário pode aceitar ou dispensar."
    - What's unclear: O Dialog abre automaticamente após fechar o Dialog de comissão, ou é um botão no toast de sucesso?
-   - Recommendation: Abre automaticamente após sucesso do `markCommissionPaidAction` — o Dialog de comissão retorna `{ success: true, suggestEntry: { amount, description, policy_id } }` e o componente Client abre o segundo Dialog com esses valores pré-preenchidos.
+   - RESOLVED: Abre automaticamente após sucesso do `markCommissionPaidAction` — o Dialog de comissão retorna `{ success: true, suggestEntry: { amount, description, policy_id } }` e o componente Client abre o segundo Dialog com esses valores pré-preenchidos.
 
 2. **Proteção de acesso à rota `/financeiro` para roles não autorizados**
    - What we know: D-05 diz que apenas admin/financeiro acessam /financeiro.
    - What's unclear: O controle deve ser no middleware, no layout, ou no Server Component da página?
-   - Recommendation: Verificar role no topo do Server Component `financeiro/page.tsx` — se role não está em `['admin', 'financeiro']`, chamar `notFound()` (padrão de `corretores/[id]/page.tsx` que usa `redirect` para corretor tentando acessar dashboard de outro). Middleware seria mais eficiente mas as outras páginas usam verificação no componente — manter consistência.
+   - RESOLVED: Verificar role no topo do Server Component `financeiro/page.tsx` — se role não está em `['admin', 'financeiro']`, chamar `notFound()` (padrão de `corretores/[id]/page.tsx` que usa `redirect` para corretor tentando acessar dashboard de outro). Middleware seria mais eficiente mas as outras páginas usam verificação no componente — manter consistência.
 
 ---
 

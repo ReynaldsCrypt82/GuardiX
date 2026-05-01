@@ -44,7 +44,7 @@ CREATE TABLE public.user_invitations (
   email         TEXT NOT NULL,
   role          TEXT NOT NULL CHECK (role IN ('admin','corretor','financeiro','visualizador')),
   invited_by    UUID NOT NULL REFERENCES public.profiles(id),
-  token         TEXT UNIQUE NOT NULL DEFAULT encode(gen_random_bytes(32), 'hex'),
+  token         TEXT UNIQUE NOT NULL DEFAULT encode(extensions.gen_random_bytes(32), 'hex'),
   expires_at    TIMESTAMPTZ NOT NULL DEFAULT (NOW() + INTERVAL '72 hours'),
   accepted_at   TIMESTAMPTZ,
   cancelled_at  TIMESTAMPTZ,
