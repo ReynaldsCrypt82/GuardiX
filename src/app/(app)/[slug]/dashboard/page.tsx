@@ -1,5 +1,5 @@
 import { notFound, redirect } from 'next/navigation'
-import { format, addDays, startOfToday } from 'date-fns'
+import { format, addDays, addMonths, startOfToday, startOfMonth } from 'date-fns'
 import { createClient } from '@/lib/supabase/server'
 import { StatCard } from '@/components/corretores/stat-card'
 import { MonthSelector } from '@/components/corretores/month-selector'
@@ -50,6 +50,9 @@ export default async function DashboardPage({ params, searchParams }: Props) {
 
   // === Mes selecionado (D-03) ===
   const month = parseSelectedMonth(sp.month)
+  // WR-02 fix: strict upper bound — lt against first instant of next month avoids
+  // sub-second precision gap from "T23:59:59" string boundary
+  const nextMonthStart = format(addMonths(startOfMonth(new Date(month.monthStartStr)), 1), 'yyyy-MM-dd')
   const todayStr = format(startOfToday(), 'yyyy-MM-dd')
   const thirtyDaysLaterStr = format(addDays(startOfToday(), 30), 'yyyy-MM-dd')
   const sevenDaysLaterStr = format(addDays(startOfToday(), 7), 'yyyy-MM-dd')
@@ -79,7 +82,7 @@ export default async function DashboardPage({ params, searchParams }: Props) {
       .eq('entry_type', 'receivable')
       .eq('status', 'paid')
       .gte('paid_at', month.monthStartStr)
-      .lte('paid_at', month.monthEndStr + 'T23:59:59')
+      .lt('paid_at', nextMonthStart)
     for (const r of (data ?? []) as Array<{ amount: number | string }>) {
       receitaTotal += Number(r.amount) || 0
     }
@@ -242,7 +245,7 @@ export default async function DashboardPage({ params, searchParams }: Props) {
           .select('assigned_to')
           .in('assigned_to', profileIds)
           .gte('created_at', month.monthStartStr)
-          .lte('created_at', month.monthEndStr + 'T23:59:59')
+          .lt('created_at', nextMonthStart)
           .is('deleted_at', null),
       ])
       const commissions = ((commRes.data ?? []) as CommissionRow[]) ?? []
