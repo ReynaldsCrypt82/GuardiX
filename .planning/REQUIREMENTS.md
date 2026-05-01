@@ -73,9 +73,9 @@
 - [x] **AUTO-01**: Admin pode configurar URL de webhook n8n por evento (vencimento, contemplação, inadimplência)
 - [ ] **AUTO-02**: Sistema dispara webhook para n8n quando evento ocorre, com payload de dados do cliente/apólice
 - [ ] **AUTO-03**: Sistema envia alertas automáticos por email (Resend) para vencimentos, cobranças e contemplações
-- [ ] **AUTO-04**: Plataforma oferece endpoint de IA para atendimento via WhatsApp com contexto do cliente injetado (RAG)
-- [ ] **AUTO-05**: IA escalona para humano quando confiança da resposta está abaixo do threshold — evita conselho de seguro incorreto
-- [ ] **AUTO-06**: Corretor pode usar chat interno assistido por IA para consultar dados de clientes e apólices
+- [x] **AUTO-04**: Plataforma oferece endpoint de IA para atendimento via WhatsApp com contexto do cliente injetado (RAG)
+- [x] **AUTO-05**: IA escalona para humano quando confiança da resposta está abaixo do threshold — evita conselho de seguro incorreto
+- [x] **AUTO-06**: Corretor pode usar chat interno assistido por IA para consultar dados de clientes e apólices
 
 ## v2 Requirements
 
@@ -146,9 +146,9 @@
 | AUTO-01 | Phase 7 — Automacoes & IA | Complete |
 | AUTO-02 | Phase 7 — Automacoes & IA | Pending |
 | AUTO-03 | Phase 7 — Automacoes & IA | Pending |
-| AUTO-04 | Phase 7 — Automacoes & IA | Pending |
-| AUTO-05 | Phase 7 — Automacoes & IA | Pending |
-| AUTO-06 | Phase 7 — Automacoes & IA | Pending |
+| AUTO-04 | Phase 7 — Automacoes & IA | Complete |
+| AUTO-05 | Phase 7 — Automacoes & IA | Complete |
+| AUTO-06 | Phase 7 — Automacoes & IA | Complete |
 
 ---
 *Last updated: 2026-04-19 após criação do roadmap (7 fases, 48 requisitos mapeados)*

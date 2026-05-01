@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 07-03 Task 1 (Task 2 is human-verify checkpoint)
-last_updated: "2026-05-01T22:32:53.009Z"
+stopped_at: Completed 07-04-PLAN.md
+last_updated: "2026-05-01T22:49:04.718Z"
 last_activity: 2026-05-01 -- Phase 7 Plan 01 complete
 progress:
   total_phases: 7
-  completed_phases: 6
+  completed_phases: 7
   total_plans: 28
-  completed_plans: 27
-  percent: 96
+  completed_plans: 28
+  percent: 100
 ---
 
 # Project State
@@ -63,6 +63,7 @@ Progress: [█░░░░░░░░░] 33% (Plan 01/03 complete)
 | Phase 06-dashboards-relatorios P02 | 20m | 2 tasks | 3 files |
 | Phase 06-dashboards-relatorios P03 | 6m | 3 tasks | 5 files |
 | Phase 07-automacoes-ia P01 | 35m | 6 tasks | 21 files |
+| Phase 07-automacoes-ia P04 | 45 | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -104,6 +105,8 @@ Recent decisions affecting current work:
 - [Phase 07-01]: isUrlSafe() e refine() do Zod garante SSRF guard no caminho de entrada (save) e nao apenas no disparo
 - [Phase 07]: UX: 3-column grid for webhook config cards, vertical list for email template forms
 - [Phase 07]: No delete affordance in UI v1 — softDelete Server Actions exist but no button yet
+- [Phase 07-automacoes-ia]: AI SDK v6: stopWhen:stepCountIs(N) replaces maxSteps; convertToModelMessages is async; makeTool helper bypasses TS2769 overload issue
+- [Phase 07-automacoes-ia]: WhatsApp endpoint uses generateText (complete JSON for n8n); chat endpoint uses streamText+toUIMessageStreamResponse (UI stream for useChat)
 
 ### Pending Todos
 
@@ -117,6 +120,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-01T22:32:44.583Z
-Stopped at: Completed 07-03 Task 1 (Task 2 is human-verify checkpoint)
+Last session: 2026-05-01T22:48:36.406Z
+Stopped at: Completed 07-04-PLAN.md
 Resume file: None
