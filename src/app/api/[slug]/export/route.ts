@@ -3,6 +3,8 @@ import { createClient } from '@/lib/supabase/server'
 import {
   ALLOWED_EXPORT_TYPES,
   isExecutiveRole,
+  parseSelectedMonth,
+  aggregateBrokerRanking,
   type AllowedExportType,
 } from '@/lib/utils/dashboard-queries'
 
@@ -248,10 +250,7 @@ async function generateComissoesXlsx(
   supabase: any,
   sp: URLSearchParams,
 ): Promise<Response> {
-  // Reutilizar parseSelectedMonth e aggregateBrokerRanking do helper Plan 01
-  const { parseSelectedMonth, aggregateBrokerRanking } = await import(
-    '@/lib/utils/dashboard-queries'
-  )
+  // WR-03 fix: use static import at top of file — removed dynamic import()
   // Pitfall 2 (RESEARCH.md): reference_month e DATE yyyy-MM-dd (primeiro dia do mes)
   const month = parseSelectedMonth(sp.get('month') ?? undefined)
 
