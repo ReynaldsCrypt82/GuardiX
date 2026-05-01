@@ -8,6 +8,8 @@ import { ClientsSearch } from './clients-search'
 import { ClientsFilters } from './clients-filters'
 import { ClientsTable } from './clients-table'
 import { ClientsPagination } from './clients-pagination'
+import { ExportButton } from '@/components/export/export-button'
+import { isExecutiveRole } from '@/lib/utils/dashboard-queries'
 
 const PAGE_SIZE = 25
 
@@ -34,6 +36,7 @@ export default async function ClientesPage({ params, searchParams }: Props) {
 
   const userRole = (user.app_metadata as { role?: string }).role ?? ''
   const userId = user.id
+  const canExport = isExecutiveRole(userRole)
 
   const pageNum = Math.max(1, parseInt(sp.page ?? '1', 10))
   const offset = (pageNum - 1) * PAGE_SIZE
@@ -114,16 +117,28 @@ export default async function ClientesPage({ params, searchParams }: Props) {
 
   const hasActiveFilters = !!(sp.q || sp.corretor || sp.stage || sp.type)
 
+  // D-08: passar searchParams ativos para o export
+  const exportParams: Record<string, string> = {}
+  if (sp.q) exportParams.q = sp.q
+  if (sp.corretor) exportParams.corretor = sp.corretor
+  if (sp.stage) exportParams.stage = sp.stage
+  if (sp.type) exportParams.type_filter = sp.type
+
   return (
     <div className="mx-auto max-w-7xl space-y-4 p-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold">Clientes</h1>
           <p className="text-sm text-muted-foreground">{count ?? 0} cliente(s) encontrado(s)</p>
         </div>
-        <Button asChild>
-          <Link href={`/${slug}/clientes/novo`}>+ Novo cliente</Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          {canExport && (
+            <ExportButton slug={slug} type="clientes" params={exportParams} />
+          )}
+          <Button asChild>
+            <Link href={`/${slug}/clientes/novo`}>+ Novo cliente</Link>
+          </Button>
+        </div>
       </div>
 
       <ClientsSearch />

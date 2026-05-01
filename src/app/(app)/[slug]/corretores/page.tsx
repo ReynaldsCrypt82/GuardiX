@@ -2,6 +2,8 @@ import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
+import { ExportButton } from '@/components/export/export-button'
+import { isExecutiveRole } from '@/lib/utils/dashboard-queries'
 import { BrokerListTable, type BrokerRow } from '@/components/corretores/broker-list-table'
 import { startOfMonth, endOfMonth, format } from 'date-fns'
 
@@ -27,6 +29,9 @@ export default async function CorretoresPage({ params, searchParams }: Props) {
   if (role === 'corretor') {
     redirect(`/${slug}/corretores/${user.id}`)
   }
+
+  const canExport = isExecutiveRole(role)
+  const currentMonthValue = format(startOfMonth(new Date()), 'yyyy-MM')
 
   // 1. Buscar profiles com role='corretor' do tenant (RLS aplica tenant_id)
   const pageNum = Math.max(1, parseInt(sp.page ?? '1', 10))
@@ -110,13 +115,20 @@ export default async function CorretoresPage({ params, searchParams }: Props) {
 
   return (
     <div className="mx-auto max-w-7xl space-y-4 p-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold">Corretores</h1>
           <p className="text-sm text-muted-foreground">
             {count ?? 0} corretor(es) cadastrado(s)
           </p>
         </div>
+        {canExport && (
+          <ExportButton
+            slug={slug}
+            type="comissoes"
+            params={{ month: currentMonthValue }}
+          />
+        )}
       </div>
 
       {rows.length === 0 ? (

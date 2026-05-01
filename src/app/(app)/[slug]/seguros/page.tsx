@@ -2,6 +2,8 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
+import { ExportButton } from '@/components/export/export-button'
+import { isExecutiveRole } from '@/lib/utils/dashboard-queries'
 import { PolicyTable, type PolicyRow } from '@/components/seguros/policy-table'
 import { addDays, startOfToday, format } from 'date-fns'
 
@@ -33,6 +35,9 @@ export default async function SegurosPage({ params, searchParams }: Props) {
     data: { user },
   } = await supabase.auth.getUser()
   if (!user) notFound()
+
+  const role = (user.app_metadata as { role?: string })?.role ?? ''
+  const canExport = isExecutiveRole(role)
 
   const pageNum = Math.max(1, parseInt(sp.page ?? '1', 10))
   const from = (pageNum - 1) * PAGE_SIZE
@@ -78,16 +83,28 @@ export default async function SegurosPage({ params, searchParams }: Props) {
   const totalPages = Math.max(1, Math.ceil((count ?? 0) / PAGE_SIZE))
   const hasActiveFilters = !!(sp.type || sp.insurer || sp.assigned_to || sp.status)
 
+  // D-08: passar searchParams ativos como params para o export — mapeando type → type_filter
+  const exportParams: Record<string, string> = {}
+  if (sp.type) exportParams.type_filter = sp.type
+  if (sp.insurer) exportParams.insurer = sp.insurer
+  if (sp.assigned_to) exportParams.assigned_to = sp.assigned_to
+  if (sp.status) exportParams.status = sp.status
+
   return (
     <div className="mx-auto max-w-7xl space-y-4 p-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold">Apólices de Seguro</h1>
           <p className="text-sm text-muted-foreground">{count ?? 0} apólice(s) encontrada(s)</p>
         </div>
-        <Button asChild>
-          <Link href={`/${slug}/seguros/nova`}>+ Nova apólice</Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          {canExport && (
+            <ExportButton slug={slug} type="apolices" params={exportParams} />
+          )}
+          <Button asChild>
+            <Link href={`/${slug}/seguros/nova`}>+ Nova apólice</Link>
+          </Button>
+        </div>
       </div>
 
       {/* Filtros inline */}
