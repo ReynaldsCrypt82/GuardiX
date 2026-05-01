@@ -74,10 +74,11 @@ Corretoras de pequeno e médio porte controlam todo o ciclo de vida de seguros e
 - [ ] Fluxo de caixa com inadimplência e alertas de atraso
 - [ ] Relatórios financeiros por período
 
-**Dashboards Gerenciais**
-- [ ] Dashboard executivo: receita, produção, inadimplência, vencimentos próximos
-- [ ] Indicadores por produto, corretor e período
-- [ ] Alertas visuais e notificações no sistema
+**Dashboards Gerenciais** — Validated in Phase 6: Dashboards & Relatórios
+- [x] Dashboard executivo: receita, produção, inadimplência, vencimentos próximos
+- [x] Indicadores por produto, corretor e período (ranking por comissão, MonthSelector URL-driven)
+- [x] Alertas visuais e notificações no sistema (vencimentos, cobranças, assembleias)
+- [x] Export Excel contextual: apólices, clientes e corretores com filtros forwarded (DASH-04)
 
 **Automações & IA**
 - [ ] Integração com n8n via webhook/API para automações (alertas, cobranças, relatórios)
