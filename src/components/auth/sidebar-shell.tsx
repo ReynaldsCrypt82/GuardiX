@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Settings, Users, UserCog, Shield, CircleDollarSign, Wallet } from 'lucide-react'
+import { LayoutDashboard, Settings, Users, UserCog, Shield, CircleDollarSign, Wallet, Bot } from 'lucide-react'
 
 interface AlertCounts {
   policies: number
@@ -69,6 +69,14 @@ export function SidebarShell({ slug, alertCounts, userRole }: SidebarShellProps)
           label: 'Financeiro',
           href: `/${slug}/financeiro`,
           icon: <Wallet size={16} />,
+        }]
+      : []),
+    // D-AI: Assistente IA disponivel para admin, corretor e financeiro (nao para visualizador)
+    ...(userRole === 'admin' || userRole === 'corretor' || userRole === 'financeiro'
+      ? [{
+          label: 'Assistente IA',
+          href: `/${slug}/assistente`,
+          icon: <Bot size={16} />,
         }]
       : []),
     {
