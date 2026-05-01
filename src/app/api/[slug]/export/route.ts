@@ -35,7 +35,8 @@ export async function GET(
   const meta = (user.app_metadata as { slug?: string; role?: string }) ?? {}
 
   // T-06-21: cross-tenant check — usuario do tenant A nao pode acessar /api/B/export
-  if (meta.slug && meta.slug !== slug) {
+  // CR-01 fix: require meta.slug to be present AND equal — absent slug is also denied
+  if (!meta.slug || meta.slug !== slug) {
     return new Response('Forbidden', { status: 403 })
   }
 
