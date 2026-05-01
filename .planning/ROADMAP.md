@@ -13,8 +13,8 @@ Construção do SaaS multi-tenant para corretoras de seguros e consórcio em 7 f
 - [ ] **Phase 1: Fundacao & Auth** - Multi-tenant isolado, autenticacao e controle de acesso por papel
 - [ ] **Phase 2: CRM & Clientes** - Cadastro completo de clientes PF/PJ, pipeline de vendas e follow-up
 - [x] **Phase 3: Seguros & Consorcio** - Gestao de apolices de seguros e cotas de consorcio em paralelo (completed 2026-04-25)
-- [x] **Phase 4: Corretores & Comissoes** - Cadastro de corretores, parceiros externos e ledger de comissoes (completed 2026-04-29)
-- [x] **Phase 5: Financeiro** - Contas a receber/pagar, fluxo de caixa e controle de inadimplencia (completed 2026-04-30)
+- [x] **Phase 4: Corretores & Comissoes** - Cadastro de corretores, parceiros externos e ledger de comissoes (completed 2026-04-29)
+- [x] **Phase 5: Financeiro** - Contas a receber/pagar, fluxo de caixa e controle de inadimplencia (completed 2026-04-30)
 - [ ] **Phase 6: Dashboards & Relatorios** - KPIs executivos, rankings e exportacao de relatorios
 - [ ] **Phase 7: Automacoes & IA** - Webhooks n8n, alertas por email e atendimento via IA
 
@@ -104,7 +104,11 @@ Plans:
   2. Admin visualiza ranking de producao e comissao por corretor no periodo selecionado
   3. Sistema exibe alertas visuais em tempo real para apolices vencendo, cobranças atrasadas e assembleias proximas
   4. Usuario pode exportar relatorios de apolices, clientes e comissoes em PDF ou Excel
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [ ] 06-01-PLAN.md — Wave 0: instalar exceljs + helpers puros (aggregateBrokerRanking, parseSelectedMonth, isExecutiveRole, ALLOWED_EXPORT_TYPES) + suite Vitest cobrindo DASH-01/02/03/09
+- [ ] 06-02-PLAN.md — Painel executivo /[slug]/dashboard: 4 KPIs + 3 alertas + ranking de corretores + RBAC (admin/financeiro vs corretor redirect vs visualizador 404)
+- [ ] 06-03-PLAN.md — Export Excel: Route Handler /api/[slug]/export com whitelist+RBAC+slug check, ExportButton em /seguros, /clientes, /corretores com filtros forwarded
 **UI hint**: yes
 
 ### Phase 7: Automacoes & IA
@@ -131,5 +135,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 3. Seguros & Consorcio | 6/6 | Complete   | 2026-04-26 |
 | 4. Corretores & Comissoes | 4/4 | Complete    | 2026-04-29 |
 | 5. Financeiro | 3/3 | Complete   | 2026-04-30 |
-| 6. Dashboards & Relatorios | 0/TBD | Not started | - |
+| 6. Dashboards & Relatorios | 0/3 | Planned     | - |
 | 7. Automacoes & IA | 0/TBD | Not started | - |
