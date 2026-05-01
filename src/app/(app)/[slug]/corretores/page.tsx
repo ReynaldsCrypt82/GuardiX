@@ -37,10 +37,13 @@ export default async function CorretoresPage({ params, searchParams }: Props) {
   const pageNum = Math.max(1, parseInt(sp.page ?? '1', 10))
   const from = (pageNum - 1) * PAGE_SIZE
 
+  // WR-01 fix: match clientes/page.tsx filters — exclude inactive and soft-deleted brokers
   const { data: profiles, count } = await supabase
     .from('profiles')
     .select('id, full_name', { count: 'exact' })
     .eq('role', 'corretor')
+    .eq('active', true)
+    .is('deleted_at', null)
     .order('full_name', { ascending: true })
     .range(from, from + PAGE_SIZE - 1)
 
