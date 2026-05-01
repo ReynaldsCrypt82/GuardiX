@@ -66,7 +66,7 @@
 - [x] **DASH-01**: Admin visualiza KPIs executivos: receita do período, total de apólices ativas, inadimplência e vencimentos próximos
 - [x] **DASH-02**: Admin visualiza ranking de produção e comissão por corretor no período
 - [x] **DASH-03**: Sistema exibe alertas visuais em tempo real: apólices vencendo, cobranças em atraso, assembleias próximas
-- [ ] **DASH-04**: Usuário pode exportar relatórios de apólices, clientes e comissões em PDF ou Excel
+- [x] **DASH-04**: Usuário pode exportar relatórios de apólices, clientes e comissões em PDF ou Excel
 
 ### Automações & IA (AUTO)
 
@@ -142,7 +142,7 @@
 | DASH-01 | Phase 6 — Dashboards & Relatorios | Complete |
 | DASH-02 | Phase 6 — Dashboards & Relatorios | Complete |
 | DASH-03 | Phase 6 — Dashboards & Relatorios | Complete |
-| DASH-04 | Phase 6 — Dashboards & Relatorios | Pending |
+| DASH-04 | Phase 6 — Dashboards & Relatorios | Complete |
 | AUTO-01 | Phase 7 — Automacoes & IA | Pending |
 | AUTO-02 | Phase 7 — Automacoes & IA | Pending |
 | AUTO-03 | Phase 7 — Automacoes & IA | Pending |

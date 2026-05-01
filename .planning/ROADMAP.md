@@ -15,7 +15,7 @@ Construção do SaaS multi-tenant para corretoras de seguros e consórcio em 7 f
 - [x] **Phase 3: Seguros & Consorcio** - Gestao de apolices de seguros e cotas de consorcio em paralelo (completed 2026-04-25)
 - [x] **Phase 4: Corretores & Comissoes** - Cadastro de corretores, parceiros externos e ledger de comissoes (completed 2026-04-29)
 - [x] **Phase 5: Financeiro** - Contas a receber/pagar, fluxo de caixa e controle de inadimplencia (completed 2026-04-30)
-- [ ] **Phase 6: Dashboards & Relatorios** - KPIs executivos, rankings e exportacao de relatorios
+- [x] **Phase 6: Dashboards & Relatorios** - KPIs executivos, rankings e exportacao de relatorios (completed 2026-05-01)
 - [ ] **Phase 7: Automacoes & IA** - Webhooks n8n, alertas por email e atendimento via IA
 
 ## Phase Details
@@ -108,7 +108,7 @@ Plans:
 Plans:
 - [x] 06-01-PLAN.md — Wave 0: instalar exceljs + helpers puros (aggregateBrokerRanking, parseSelectedMonth, isExecutiveRole, ALLOWED_EXPORT_TYPES) + suite Vitest cobrindo DASH-01/02/03/09
 - [x] 06-02-PLAN.md — Painel executivo /[slug]/dashboard: 4 KPIs + 3 alertas + ranking de corretores + RBAC (admin/financeiro vs corretor redirect vs visualizador 404)
-- [ ] 06-03-PLAN.md — Export Excel: Route Handler /api/[slug]/export com whitelist+RBAC+slug check, ExportButton em /seguros, /clientes, /corretores com filtros forwarded
+- [x] 06-03-PLAN.md — Export Excel: Route Handler /api/[slug]/export com whitelist+RBAC+slug check, ExportButton em /seguros, /clientes, /corretores com filtros forwarded
 **UI hint**: yes
 
 ### Phase 7: Automacoes & IA
@@ -135,5 +135,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 3. Seguros & Consorcio | 6/6 | Complete   | 2026-04-26 |
 | 4. Corretores & Comissoes | 4/4 | Complete    | 2026-04-29 |
 | 5. Financeiro | 3/3 | Complete   | 2026-04-30 |
-| 6. Dashboards & Relatorios | 2/3 | In Progress|  |
+| 6. Dashboards & Relatorios | 3/3 | Complete   | 2026-05-01 |
 | 7. Automacoes & IA | 0/TBD | Not started | - |
