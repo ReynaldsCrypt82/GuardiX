@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: verifying
-stopped_at: Phase 6 context gathered
-last_updated: "2026-04-30T16:09:14.864Z"
-last_activity: 2026-04-30
+status: executing
+stopped_at: Completed 06-02-PLAN.md
+last_updated: "2026-05-01T01:26:19.609Z"
+last_activity: 2026-05-01
 progress:
   total_phases: 7
   completed_phases: 5
-  total_plans: 21
-  completed_plans: 21
-  percent: 100
+  total_plans: 24
+  completed_plans: 23
+  percent: 96
 ---
 
 # Project State
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-19)
 
 **Core value:** Corretoras de pequeno e médio porte controlam todo o ciclo de vida de seguros e consórcio em um único sistema, substituindo planilhas e ferramentas dispersas.
-**Current focus:** Phase 05 — financeiro
+**Current focus:** Phase 06 — dashboards-relatorios
 
 ## Current Position
 
-Phase: 05 (financeiro) — EXECUTING
-Plan: 3 of 3
-Status: Phase complete — ready for verification
-Last activity: 2026-04-30
+Phase: 06 (dashboards-relatorios) — EXECUTING
+Plan: 2 of 3
+Status: Ready to execute
+Last activity: 2026-05-01
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -59,6 +59,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 03-seguros-consorcio P06 | 20 | 3 tasks | 4 files |
 | Phase 05-financeiro P02 | 25 | 3 tasks | 7 files |
 | Phase 05-financeiro P03 | 45 | 3 tasks | 8 files |
+| Phase 06-dashboards-relatorios P02 | 20m | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -89,6 +90,9 @@ Recent decisions affecting current work:
 - [Phase 05-financeiro]: Spread condicional no navItems para manter tipo NavItem[] sem nulls na sidebar
 - [Phase 05-financeiro]: Query overdue financial_entries com try/catch graceful: fallback new Set() se tabela nao existir
 - [Phase 05-financeiro]: SuggestEntryDialog modo controlado: MarkCommissionPaidDialog controla ciclo de vida (abre so apos sucesso confirmado)
+- [Phase 06-dashboards-relatorios]: D-09 RBAC no dashboard: corretor redireciona para proprio dashboard, visualizador recebe notFound — padrao identico ao financeiro/page.tsx
+- [Phase 06-dashboards-relatorios]: Queries de KPI em try/catch individuais sem Promise.all: fallback por card independente, mais robusto contra falhas parciais em dev
+- [Phase 06-dashboards-relatorios]: reference_month filtrado como DATE yyyy-MM-dd (monthStartStr) — Pitfall 2 documentado em RESEARCH.md
 
 ### Pending Todos
 
@@ -102,6 +106,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-30T16:09:14.848Z
-Stopped at: Phase 6 context gathered
-Resume file: .planning/phases/06-dashboards-relatorios/06-CONTEXT.md
+Last session: 2026-05-01T01:26:19.603Z
+Stopped at: Completed 06-02-PLAN.md
+Resume file: None
