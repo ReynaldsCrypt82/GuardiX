@@ -42,12 +42,21 @@ export async function updateUserProfile(
     .single()
   if (!profile || profile.tenant_id !== tenantId) return { error: 'Usuário não encontrado' }
 
-  // Atualiza email + app_metadata no auth.users
-  const { error: authUpdateErr } = await admin.auth.admin.updateUserById(userId, {
-    email: data.email.trim(),
-    app_metadata: { role: data.role },
+  // Atualiza app_metadata via RPC (contorna limitação da auth.admin API com
+  // usuários criados via SQL direto que retornam "Database error loading user")
+  const { error: metaErr } = await admin.rpc('admin_set_user_app_metadata', {
+    p_user_id:   userId,
+    p_role:      data.role,
+    p_tenant_id: tenantId,
   })
-  if (authUpdateErr) return { error: 'Erro ao atualizar acesso: ' + authUpdateErr.message }
+  if (metaErr) return { error: 'Erro ao atualizar perfil de acesso: ' + metaErr.message }
+
+  // Atualiza e-mail via RPC
+  const { error: emailErr } = await admin.rpc('admin_set_user_email', {
+    p_user_id: userId,
+    p_email:   data.email.trim(),
+  })
+  if (emailErr) return { error: 'Erro ao atualizar e-mail: ' + emailErr.message }
 
   // Atualiza profiles
   const { error: profileErr } = await admin
