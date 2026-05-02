@@ -49,11 +49,17 @@ export default async function BrokerDashboardPage({ params, searchParams }: Prop
   // === 1. Buscar profile do broker e broker_profile ===
   const { data: profile } = await supabase
     .from('profiles')
-    .select('id, full_name, email, role')
+    .select('id, full_name, role')
     .eq('id', id)
     .maybeSingle()
 
   if (!profile || profile.role !== 'corretor') notFound()
+
+  // email vem de auth.users (não existe na tabela profiles)
+  const { createAdminClient } = await import('@/lib/supabase/admin')
+  const adminClient = createAdminClient()
+  const { data: { user: authUser } } = await adminClient.auth.admin.getUserById(id)
+  const brokerEmail = authUser?.email ?? null
 
   const { data: brokerProfile } = await supabase
     .from('broker_profiles')
@@ -157,7 +163,7 @@ export default async function BrokerDashboardPage({ params, searchParams }: Prop
               {brokerProfile?.susep_number
                 ? `SUSEP: ${brokerProfile.susep_number}`
                 : 'Sem SUSEP cadastrado'}
-              {profile.email && <> — {profile.email}</>}
+              {brokerEmail && <> — {brokerEmail}</>}
             </p>
           </div>
           <Badge variant="outline">Corretor interno</Badge>
