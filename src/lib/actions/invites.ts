@@ -239,12 +239,13 @@ export async function acceptInvite(
   }
 
   // Helper — unclaims the invite so the user can retry
+  // invite is non-null here: guarded by the claimErr check above
+  const inviteId = invite.id
   async function unclaimInvite() {
-    if (!invite) return
     await admin
       .from('user_invitations')
       .update({ accepted_at: null })
-      .eq('id', invite.id)
+      .eq('id', inviteId)
   }
 
   // Set password + app_metadata (app_metadata only — never user_metadata for tenant_id/role)
