@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { PolicyTab } from './policy-tab'
 import { ConsortiumTab } from './consortium-tab'
+import { AddInteractionForm } from '@/components/clientes/add-interaction-form'
+import { TasksPanel } from '@/components/clientes/add-task-form'
 
 export default async function ClientDetailPage({
   params,
@@ -16,6 +18,11 @@ export default async function ClientDetailPage({
   const supabase = (await createClient()) as any
 
   // Busca dados completos do cliente (RLS garante isolamento por tenant — T-03-17)
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) notFound()
+  const role = (user.app_metadata as { role?: string })?.role ?? ''
+  const canEdit = role === 'admin' || role === 'corretor' || role === 'financeiro'
+
   const { data: client } = await supabase
     .from('clients')
     .select(
@@ -156,74 +163,44 @@ export default async function ClientDetailPage({
 
         {/* Aba Timeline */}
         <TabsContent value="timeline">
-          <Card>
-            <CardContent className="pt-4">
-              {!interactions || interactions.length === 0 ? (
-                <p className="text-sm text-muted-foreground">
-                  Nenhuma interação registrada.
-                </p>
-              ) : (
-                <ul className="space-y-3">
-                  {interactions.map(
-                    (i: {
-                      id: string
-                      type: string
-                      occurred_at: string
-                      description: string
-                    }) => (
-                      <li key={i.id} className="text-sm border-l-2 pl-3 py-1">
-                        <span className="font-medium capitalize">{i.type}</span>{' '}
-                        <span className="text-muted-foreground">
-                          {new Date(i.occurred_at).toLocaleDateString('pt-BR')}
-                        </span>
-                        <p className="mt-0.5 text-muted-foreground">{i.description}</p>
-                      </li>
-                    ),
-                  )}
-                </ul>
-              )}
-            </CardContent>
-          </Card>
+          <div className="space-y-4">
+            {canEdit && <AddInteractionForm clientId={clientId} slug={slug} />}
+            {interactions && interactions.length > 0 && (
+              <Card>
+                <CardContent className="pt-4">
+                  <ul className="space-y-3">
+                    {interactions.map(
+                      (i: {
+                        id: string
+                        type: string
+                        occurred_at: string
+                        description: string
+                      }) => (
+                        <li key={i.id} className="text-sm border-l-2 border-primary/30 pl-3 py-1">
+                          <span className="font-medium capitalize">{i.type}</span>{' '}
+                          <span className="text-muted-foreground text-xs">
+                            {new Date(i.occurred_at).toLocaleDateString('pt-BR', {
+                              day: '2-digit', month: 'short', year: 'numeric',
+                              hour: '2-digit', minute: '2-digit',
+                            })}
+                          </span>
+                          <p className="mt-0.5 text-muted-foreground">{i.description}</p>
+                        </li>
+                      ),
+                    )}
+                  </ul>
+                </CardContent>
+              </Card>
+            )}
+            {(!interactions || interactions.length === 0) && !canEdit && (
+              <p className="text-sm text-muted-foreground">Nenhuma interação registrada.</p>
+            )}
+          </div>
         </TabsContent>
 
         {/* Aba Tarefas */}
         <TabsContent value="tarefas">
-          <Card>
-            <CardContent className="pt-4">
-              {!tasks || tasks.length === 0 ? (
-                <p className="text-sm text-muted-foreground">
-                  Nenhuma tarefa cadastrada.
-                </p>
-              ) : (
-                <ul className="space-y-3">
-                  {tasks.map(
-                    (t: {
-                      id: string
-                      description: string
-                      due_date: string
-                      completed_at: string | null
-                    }) => (
-                      <li key={t.id} className="text-sm border-l-2 pl-3 py-1">
-                        <span
-                          className={
-                            t.completed_at
-                              ? 'line-through text-muted-foreground'
-                              : 'font-medium'
-                          }
-                        >
-                          {t.description}
-                        </span>
-                        <span className="text-muted-foreground ml-2">
-                          Prazo:{' '}
-                          {new Date(t.due_date).toLocaleDateString('pt-BR')}
-                        </span>
-                      </li>
-                    ),
-                  )}
-                </ul>
-              )}
-            </CardContent>
-          </Card>
+          <TasksPanel clientId={clientId} slug={slug} tasks={tasks ?? []} />
         </TabsContent>
 
         {/* Aba Apólices */}

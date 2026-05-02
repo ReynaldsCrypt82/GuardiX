@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Settings, Users, UserCog, Shield, CircleDollarSign, Wallet, Bot } from 'lucide-react'
+import { LayoutDashboard, Settings, Users, UserCog, Shield, CircleDollarSign, Wallet, Bot, Kanban } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
 
 interface AlertCounts {
@@ -37,6 +37,14 @@ export function SidebarShell({ slug, alertCounts, userRole }: SidebarShellProps)
       href: `/${slug}/clientes`,
       icon: <Users size={16} />,
     },
+    // Pipeline — visível apenas para quem pode editar
+    ...(userRole === 'admin' || userRole === 'corretor' || userRole === 'financeiro'
+      ? [{
+          label: 'Pipeline',
+          href: `/${slug}/pipeline`,
+          icon: <Kanban size={16} />,
+        }]
+      : []),
     // Seção "Produtos" — label não clicável
     {
       label: 'Produtos',
