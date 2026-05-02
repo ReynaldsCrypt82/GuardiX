@@ -9,6 +9,7 @@ import { ClientsFilters } from './clients-filters'
 import { ClientsTable } from './clients-table'
 import { ClientsPagination } from './clients-pagination'
 import { ExportButton } from '@/components/export/export-button'
+import { ImportClientsButton } from '@/components/clientes/import-clients-button'
 import { isExecutiveRole } from '@/lib/utils/dashboard-queries'
 
 const PAGE_SIZE = 25
@@ -133,7 +134,10 @@ export default async function ClientesPage({ params, searchParams }: Props) {
         </div>
         <div className="flex items-center gap-2">
           {canExport && (
-            <ExportButton slug={slug} type="clientes" params={exportParams} />
+            <>
+              <ImportClientsButton />
+              <ExportButton slug={slug} type="clientes" params={exportParams} />
+            </>
           )}
           <Button asChild>
             <Link href={`/${slug}/clientes/novo`}>+ Novo cliente</Link>
