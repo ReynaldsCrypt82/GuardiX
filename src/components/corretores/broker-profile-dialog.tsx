@@ -29,6 +29,9 @@ interface Props {
   triggerVariant?: 'default' | 'outline' | 'ghost'
   triggerSize?: 'default' | 'sm'
   triggerLabel?: string
+  // controlled mode: caller manages open state (no DialogTrigger rendered)
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
 function extractFirstMsg(
@@ -47,9 +50,15 @@ export function BrokerProfileDialog({
   triggerVariant = 'outline',
   triggerSize = 'sm',
   triggerLabel,
+  open: controlledOpen,
+  onOpenChange: controlledOnOpenChange,
 }: Props) {
-  const [open, setOpen] = useState(false)
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const isControlled = controlledOpen !== undefined
+  const open = isControlled ? controlledOpen : uncontrolledOpen
+  const setOpen = isControlled ? (controlledOnOpenChange ?? (() => {})) : setUncontrolledOpen
 
   const label = triggerLabel ?? (existing ? 'Editar perfil' : 'Completar perfil de corretor')
 
@@ -75,11 +84,13 @@ export function BrokerProfileDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant={triggerVariant} size={triggerSize}>
-          {label}
-        </Button>
-      </DialogTrigger>
+      {!isControlled && (
+        <DialogTrigger asChild>
+          <Button variant={triggerVariant} size={triggerSize}>
+            {label}
+          </Button>
+        </DialogTrigger>
+      )}
       <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Perfil de corretor — {brokerName}</DialogTitle>

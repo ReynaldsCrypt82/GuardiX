@@ -1,4 +1,5 @@
 'use client'
+import { useState } from 'react'
 import Link from 'next/link'
 import {
   Table,
@@ -44,66 +45,81 @@ function formatBRL(v: number | null | undefined): string {
 }
 
 export function BrokerListTable({ slug, rows }: Props) {
+  const [editTarget, setEditTarget] = useState<BrokerRow | null>(null)
+  const [dialogOpen, setDialogOpen] = useState(false)
+
+  function handleEdit(row: BrokerRow) {
+    setEditTarget(row)
+    setDialogOpen(true)
+  }
+
+  function handleDialogOpenChange(open: boolean) {
+    setDialogOpen(open)
+    if (!open) setTimeout(() => setEditTarget(null), 200)
+  }
+
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Nome</TableHead>
-          <TableHead>SUSEP</TableHead>
-          <TableHead>Meta mensal</TableHead>
-          <TableHead>Producao do mes</TableHead>
-          <TableHead className="w-[50px]">Acoes</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {rows.map((row) => (
-          <TableRow key={row.profile_id}>
-            <TableCell className="font-medium">{row.full_name}</TableCell>
-            <TableCell className="text-sm">{row.susep_number ?? '—'}</TableCell>
-            <TableCell className="text-sm">{formatBRL(row.monthly_goal)}</TableCell>
-            <TableCell className="text-sm">{row.production_count} apolice(s)</TableCell>
-            <TableCell>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                    <MoreHorizontal size={16} />
-                    <span className="sr-only">Abrir menu</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem asChild>
-                    <Link href={`/${slug}/corretores/${row.profile_id}`}>
-                      Ver dashboard
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <span>
-                      <BrokerProfileDialog
-                        slug={slug}
-                        profileId={row.profile_id}
-                        brokerName={row.full_name}
-                        existing={row.broker_profile
-                          ? {
-                              id: row.profile_id,
-                              susep_number: row.broker_profile.susep_number,
-                              monthly_goal: row.broker_profile.monthly_goal,
-                              commission_rate_default: row.broker_profile.commission_rate_default,
-                              commission_rate_overrides: row.broker_profile.commission_rate_overrides,
-                            }
-                          : undefined
-                        }
-                        triggerVariant="ghost"
-                        triggerSize="sm"
-                        triggerLabel={row.has_broker_profile ? 'Editar perfil' : 'Completar perfil de corretor'}
-                      />
-                    </span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </TableCell>
+    <>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Nome</TableHead>
+            <TableHead>SUSEP</TableHead>
+            <TableHead>Meta mensal</TableHead>
+            <TableHead>Producao do mes</TableHead>
+            <TableHead className="w-[50px]">Acoes</TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {rows.map((row) => (
+            <TableRow key={row.profile_id}>
+              <TableCell className="font-medium">{row.full_name}</TableCell>
+              <TableCell className="text-sm">{row.susep_number ?? '—'}</TableCell>
+              <TableCell className="text-sm">{formatBRL(row.monthly_goal)}</TableCell>
+              <TableCell className="text-sm">{row.production_count} apolice(s)</TableCell>
+              <TableCell>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                      <MoreHorizontal size={16} />
+                      <span className="sr-only">Abrir menu</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem asChild>
+                      <Link href={`/${slug}/corretores/${row.profile_id}`}>
+                        Ver dashboard
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onSelect={() => handleEdit(row)}>
+                      {row.has_broker_profile ? 'Editar perfil' : 'Completar perfil de corretor'}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+
+      {/* Dialog sempre no DOM — evita problema de foco do Radix ao montar com open=true */}
+      <BrokerProfileDialog
+        slug={slug}
+        profileId={editTarget?.profile_id ?? ''}
+        brokerName={editTarget?.full_name ?? ''}
+        existing={editTarget?.broker_profile
+          ? {
+              id: editTarget.profile_id,
+              susep_number: editTarget.broker_profile.susep_number,
+              monthly_goal: editTarget.broker_profile.monthly_goal,
+              commission_rate_default: editTarget.broker_profile.commission_rate_default,
+              commission_rate_overrides: editTarget.broker_profile.commission_rate_overrides,
+            }
+          : undefined
+        }
+        open={dialogOpen}
+        onOpenChange={handleDialogOpenChange}
+      />
+    </>
   )
 }
