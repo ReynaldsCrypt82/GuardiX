@@ -221,7 +221,8 @@ export async function acceptInvite(
 
   // Find the auth user that inviteUserByEmail pre-created — use direct email lookup
   // instead of listUsers() to avoid O(n) scan and the 1000-user pagination cap
-  const { data: userByEmail, error: lookupErr } = await admin.auth.admin.getUserByEmail(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: userByEmail, error: lookupErr } = await (admin.auth.admin as any).getUserByEmail(
     invite.email,
   )
   if (lookupErr || !userByEmail?.user) {
