@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { LayoutDashboard, Settings, Users, UserCog, Shield, CircleDollarSign, Wallet, Bot } from 'lucide-react'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 interface AlertCounts {
   policies: number
@@ -172,6 +173,11 @@ export function SidebarShell({ slug, alertCounts, userRole }: SidebarShellProps)
           </div>
         ))}
       </nav>
+
+      {/* Rodapé */}
+      <div className="border-t border-sidebar-border p-2">
+        <ThemeToggle />
+      </div>
     </aside>
   )
 }
