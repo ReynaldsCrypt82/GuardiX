@@ -76,7 +76,7 @@ export async function POST(req: Request) {
   }
 
   // 3. Enviar via Resend
-  const fromAddress = process.env.RESEND_FROM_EMAIL ?? 'noreply@nexusagent.com.br'
+  const fromAddress = process.env.RESEND_FROM_EMAIL ?? 'noreply@guardix.app'
   const resendRes = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {

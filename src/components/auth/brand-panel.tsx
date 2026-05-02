@@ -19,17 +19,14 @@ export function BrandPanel() {
         {/* Product logo */}
         <div className="flex flex-col items-center gap-1">
           <span className="text-2xl font-semibold tracking-tight text-white">
-            NEXUS AGENT
+            GuardiX
           </span>
         </div>
 
         {/* Taglines */}
         <div className="flex flex-col gap-2">
           <p className="max-w-xs text-lg font-semibold leading-snug text-white">
-            Gestão completa para corretoras de seguros e consórcio.
-          </p>
-          <p className="text-sm text-white/80">
-            Do cadastro ao fluxo de caixa — tudo em um lugar.
+            Sua corretora segura. Seu cliente protegido.
           </p>
         </div>
       </div>

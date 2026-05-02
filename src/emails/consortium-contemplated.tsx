@@ -45,7 +45,7 @@ export function ConsortiumContemplatedEmail({
           </Section>
           <Hr />
           <Text style={{ fontSize: '12px', color: '#666666' }}>
-            NEXUS AGENT — Plataforma de gestao para corretoras.
+            GuardiX — Sua corretora segura. Seu cliente protegido.
           </Text>
         </Container>
       </Body>

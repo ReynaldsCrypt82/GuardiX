@@ -107,7 +107,7 @@ export function SidebarShell({ slug, alertCounts, userRole }: SidebarShellProps)
     <aside className="flex h-full w-60 flex-col border-r bg-background">
       {/* Logo */}
       <div className="flex h-14 items-center border-b px-4">
-        <span className="text-base font-semibold tracking-tight">NEXUS AGENT</span>
+        <span className="text-base font-semibold tracking-tight">GuardiX</span>
       </div>
 
       {/* Nav */}

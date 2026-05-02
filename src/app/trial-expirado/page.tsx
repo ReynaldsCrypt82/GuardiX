@@ -14,7 +14,7 @@ export default function TrialExpiradoPage() {
         </CardHeader>
         <CardContent className="flex flex-col gap-6">
           <p className="text-sm text-muted-foreground">
-            Seus dados estão seguros. Escolha um plano para continuar usando o NEXUS AGENT.
+            Seus dados estão seguros. Escolha um plano para continuar usando o GuardiX.
           </p>
 
           <div className="flex flex-col gap-3">
@@ -22,7 +22,7 @@ export default function TrialExpiradoPage() {
               <Link href="#">Ver planos</Link>
             </Button>
             <Button variant="outline" asChild className="h-11 w-full">
-              <a href="mailto:suporte@nexusagent.com.br">Falar com suporte</a>
+              <a href="mailto:suporte@guardix.app">Falar com suporte</a>
             </Button>
           </div>
 

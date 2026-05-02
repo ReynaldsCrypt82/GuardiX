@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import { ChatInterface } from '@/components/assistente/chat-interface'
 
-export const metadata = { title: 'Assistente IA — NEXUS AGENT' }
+export const metadata = { title: 'Assistente IA — GuardiX' }
 
 export default async function AssistentePage({
   params,

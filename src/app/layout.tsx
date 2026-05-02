@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'NEXUS AGENT — Plataforma para Corretoras',
+  title: 'GuardiX — Sua corretora segura. Seu cliente protegido.',
   description: 'Plataforma SaaS multi-tenant para corretoras de seguros e consórcio',
 }
 

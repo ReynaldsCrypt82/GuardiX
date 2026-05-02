@@ -124,7 +124,7 @@ async function generateApolicesXlsx(
   }
 
   const workbook = new ExcelJS.Workbook()
-  workbook.creator = 'NEXUS AGENT'
+  workbook.creator = 'GuardiX'
   workbook.created = new Date()
   const sheet = workbook.addWorksheet('Apolices')
   sheet.columns = [
@@ -206,7 +206,7 @@ async function generateClientesXlsx(
   }
 
   const workbook = new ExcelJS.Workbook()
-  workbook.creator = 'NEXUS AGENT'
+  workbook.creator = 'GuardiX'
   workbook.created = new Date()
   const sheet = workbook.addWorksheet('Clientes')
   sheet.columns = [
@@ -286,7 +286,7 @@ async function generateComissoesXlsx(
   const rows = aggregateBrokerRanking(profilesArr, commissions, productions)
 
   const workbook = new ExcelJS.Workbook()
-  workbook.creator = 'NEXUS AGENT'
+  workbook.creator = 'GuardiX'
   workbook.created = new Date()
   const sheet = workbook.addWorksheet('Comissoes')
   sheet.columns = [
