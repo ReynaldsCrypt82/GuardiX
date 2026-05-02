@@ -1,6 +1,7 @@
 import { notFound, redirect } from 'next/navigation'
 import { format, addDays, addMonths, startOfToday, startOfMonth } from 'date-fns'
 import { createClient } from '@/lib/supabase/server'
+import { FileText, TrendingUp, AlertTriangle, Clock } from 'lucide-react'
 import { StatCard } from '@/components/corretores/stat-card'
 import { MonthSelector } from '@/components/corretores/month-selector'
 import { AlertSection } from '@/components/dashboard/alert-section'
@@ -274,24 +275,32 @@ export default async function DashboardPage({ params, searchParams }: Props) {
       {/* 4 KPI Cards (D-02) */}
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
         <StatCard
-          title="Apolices ativas"
+          title="Apólices ativas"
           value={String(apolicesAtivas)}
-          subtext="Vigencia em dia"
+          subtext="Vigência em dia"
+          icon={<FileText size={18} />}
+          variant="default"
         />
         <StatCard
-          title="Receita do periodo"
+          title="Receita do período"
           value={formatBRL(receitaTotal)}
           subtext={`Pago em ${month.monthLabel}`}
+          icon={<TrendingUp size={18} />}
+          variant="success"
         />
         <StatCard
-          title="Inadimplencia"
+          title="Inadimplência"
           value={formatBRL(inadimplenciaTotal)}
-          subtext="Receivable pendente vencido"
+          subtext="A receber vencido"
+          icon={<AlertTriangle size={18} />}
+          variant="danger"
         />
         <StatCard
           title="Vencendo em 30 dias"
           value={String(vencendoCount)}
-          subtext="Apolices com vigencia ate +30d"
+          subtext="Apólices com vigência até +30d"
+          icon={<Clock size={18} />}
+          variant="warning"
         />
       </div>
 

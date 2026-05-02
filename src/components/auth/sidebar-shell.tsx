@@ -104,23 +104,25 @@ export function SidebarShell({ slug, alertCounts, userRole }: SidebarShellProps)
   }
 
   return (
-    <aside className="flex h-full w-60 flex-col border-r bg-background">
+    <aside className="flex h-full w-60 flex-col bg-sidebar border-r border-sidebar-border">
       {/* Logo */}
-      <div className="flex h-14 items-center border-b px-4">
-        <span className="text-base font-semibold tracking-tight">GuardiX</span>
+      <div className="flex h-14 items-center gap-2.5 border-b border-sidebar-border px-4">
+        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-sidebar-primary">
+          <Shield size={14} className="text-white" />
+        </div>
+        <span className="text-sm font-bold tracking-tight text-sidebar-foreground">GuardiX</span>
       </div>
 
       {/* Nav */}
-      <nav className="flex flex-col gap-1 p-3">
+      <nav className="flex flex-col gap-0.5 p-2 flex-1">
         {navItems.map((item) => (
           <div key={item.label}>
             {item.sectionLabel ? (
-              // Seção label — não clicável, não active (D-02)
-              <div className="px-3 py-1 mt-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              <div className="px-3 py-1 mt-3 text-[10px] font-semibold text-sidebar-foreground/40 uppercase tracking-widest">
                 {item.label}
               </div>
             ) : item.children ? (
-              <div className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-foreground">
+              <div className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-sidebar-foreground/70">
                 {item.icon}
                 {item.label}
               </div>
@@ -128,10 +130,10 @@ export function SidebarShell({ slug, alertCounts, userRole }: SidebarShellProps)
               <Link
                 href={item.href}
                 className={[
-                  'flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors',
+                  'flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors',
                   isActive(item.href)
-                    ? 'bg-primary text-primary-foreground font-semibold'
-                    : 'text-foreground hover:bg-muted',
+                    ? 'bg-sidebar-primary/15 text-sidebar-primary font-semibold'
+                    : 'text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground',
                 ].join(' ')}
               >
                 {item.icon}
@@ -142,7 +144,7 @@ export function SidebarShell({ slug, alertCounts, userRole }: SidebarShellProps)
                   </span>
                 )}
                 {item.label === 'Consórcio' && (alertCounts?.assemblies ?? 0) > 0 && (
-                  <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-orange-500 text-[10px] font-semibold text-white px-1">
+                  <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-500 text-[10px] font-semibold text-white px-1">
                     {(alertCounts?.assemblies ?? 0) > 99 ? '99+' : alertCounts?.assemblies}
                   </span>
                 )}
@@ -150,19 +152,18 @@ export function SidebarShell({ slug, alertCounts, userRole }: SidebarShellProps)
             )}
 
             {item.children && (
-              <div className="mt-1 ml-4 flex flex-col gap-1 border-l pl-3">
+              <div className="mt-0.5 ml-4 flex flex-col gap-0.5 border-l border-sidebar-border pl-3">
                 {item.children.map((child) => (
                   <Link
                     key={child.label}
                     href={child.href}
                     className={[
-                      'rounded-md px-3 py-1.5 text-sm transition-colors flex items-center gap-2',
+                      'rounded-lg px-3 py-1.5 text-sm transition-colors',
                       isActive(child.href)
-                        ? 'bg-primary/10 text-primary font-semibold'
-                        : 'text-muted-foreground hover:text-foreground hover:bg-muted',
+                        ? 'text-sidebar-primary font-semibold'
+                        : 'text-sidebar-foreground/50 hover:text-sidebar-foreground hover:bg-sidebar-accent',
                     ].join(' ')}
                   >
-                    <UserCog size={14} />
                     {child.label}
                   </Link>
                 ))}
