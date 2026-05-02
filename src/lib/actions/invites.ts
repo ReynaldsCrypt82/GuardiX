@@ -240,6 +240,7 @@ export async function acceptInvite(
 
   // Helper — unclaims the invite so the user can retry
   async function unclaimInvite() {
+    if (!invite) return
     await admin
       .from('user_invitations')
       .update({ accepted_at: null })
