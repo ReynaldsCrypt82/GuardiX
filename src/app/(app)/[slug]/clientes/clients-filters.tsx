@@ -22,11 +22,12 @@ export function ClientsFilters({ corretores, stages }: ClientsFiltersProps) {
   const searchParams = useSearchParams()
   const pathname = usePathname()
 
-  const currentCorretor = searchParams.get('corretor') ?? ''
-  const currentStage = searchParams.get('stage') ?? ''
-  const currentType = searchParams.get('type') ?? ''
+  const currentCorretor  = searchParams.get('corretor')  ?? ''
+  const currentStage     = searchParams.get('stage')     ?? ''
+  const currentType      = searchParams.get('type')      ?? ''
+  const currentCategory  = searchParams.get('category')  ?? ''
 
-  const activeCount = [currentCorretor, currentStage, currentType].filter(Boolean).length
+  const activeCount = [currentCorretor, currentStage, currentType, currentCategory].filter(Boolean).length
 
   function handleChange(key: string, value: string) {
     const params = resetPageOnFilterChange(
@@ -42,6 +43,7 @@ export function ClientsFilters({ corretores, stages }: ClientsFiltersProps) {
     params.delete('corretor')
     params.delete('stage')
     params.delete('type')
+    params.delete('category')
     params.delete('q')
     params.set('page', '1')
     router.replace(`${pathname}?${params.toString()}`)
@@ -85,6 +87,17 @@ export function ClientsFilters({ corretores, stages }: ClientsFiltersProps) {
           <SelectItem value="_all">Todos os tipos</SelectItem>
           <SelectItem value="pf">Pessoa Física</SelectItem>
           <SelectItem value="pj">Pessoa Jurídica</SelectItem>
+        </SelectContent>
+      </Select>
+
+      <Select value={currentCategory} onValueChange={(v) => handleChange('category', v)}>
+        <SelectTrigger className="w-[150px]">
+          <SelectValue placeholder="Categoria" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="_all">Todas as categorias</SelectItem>
+          <SelectItem value="novo">Novo</SelectItem>
+          <SelectItem value="renovacao">Renovação</SelectItem>
         </SelectContent>
       </Select>
 

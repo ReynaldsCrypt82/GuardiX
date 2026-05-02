@@ -80,6 +80,27 @@ export async function completeTask(taskId: string, clientId: string, slug: strin
   return {}
 }
 
+// ─── Categoria do cliente (novo / renovacao) ─────────────────────────────────
+
+export async function updateClientCategory(
+  clientId: string,
+  category: 'novo' | 'renovacao' | null,
+  slug: string,
+): Promise<{ error?: string }> {
+  const { supabase, user } = await getUser()
+  if (!user) return { error: 'Não autorizado' }
+
+  const { error } = await supabase
+    .from('clients')
+    .update({ category })
+    .eq('id', clientId)
+    .is('deleted_at', null)
+
+  if (error) return { error: 'Erro ao atualizar categoria' }
+  revalidatePath(`/${slug}/clientes`)
+  return {}
+}
+
 // ─── Mover cliente no Kanban ──────────────────────────────────────────────────
 
 export async function moveClientStage(

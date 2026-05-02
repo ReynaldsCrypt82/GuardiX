@@ -22,6 +22,7 @@ interface Props {
     corretor?: string
     stage?: string
     type?: string
+    category?: string
   }>
 }
 
@@ -87,7 +88,7 @@ export default async function ClientesPage({ params, searchParams }: Props) {
   let query = supabase
     .from('clients')
     .select(
-      `id, name, type, document, created_at,
+      `id, name, type, document, created_at, category,
        assigned_to:profiles!clients_assigned_to_fkey(id, full_name),
        stage:pipeline_stages(id, name, color)`,
       { count: 'exact' },
@@ -111,6 +112,7 @@ export default async function ClientesPage({ params, searchParams }: Props) {
   if (sp.corretor) query = query.eq('assigned_to', sp.corretor)
   if (sp.stage) query = query.eq('stage_id', sp.stage)
   if (sp.type && (sp.type === 'pf' || sp.type === 'pj')) query = query.eq('type', sp.type)
+  if (sp.category && (sp.category === 'novo' || sp.category === 'renovacao')) query = query.eq('category', sp.category)
 
   const { data: clients, count } = await query
 

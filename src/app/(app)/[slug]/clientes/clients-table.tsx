@@ -14,6 +14,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { formatDocument } from '@/lib/utils/format-document'
 import { ClientStageSelector } from './client-stage-selector'
+import { ClientCategorySelector } from './client-category-selector'
 
 interface Stage {
   id: string
@@ -27,6 +28,7 @@ interface Client {
   type: 'pf' | 'pj'
   document: string
   created_at: string
+  category: 'novo' | 'renovacao' | null
   assigned_to: { id: string; full_name: string | null } | null
   stage: Stage | null
 }
@@ -65,6 +67,7 @@ export function ClientsTable({
           <TableHead>Documento</TableHead>
           <TableHead>Corretor</TableHead>
           <TableHead>Estágio</TableHead>
+          <TableHead>Categoria</TableHead>
           <TableHead>Cadastrado em</TableHead>
         </TableRow>
       </TableHeader>
@@ -108,6 +111,14 @@ export function ClientsTable({
                   clientId={c.id}
                   currentStage={c.stage}
                   stages={stages}
+                  canEdit={canEdit}
+                />
+              </TableCell>
+              <TableCell>
+                <ClientCategorySelector
+                  slug={slug}
+                  clientId={c.id}
+                  current={c.category}
                   canEdit={canEdit}
                 />
               </TableCell>

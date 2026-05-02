@@ -233,22 +233,39 @@ export default async function DashboardPage({ params, searchParams }: Props) {
     const profileIds = profilesArr.map((p) => p.id)
 
     if (profileIds.length > 0) {
-      const [commRes, prodRes] = await Promise.all([
+      const [ratesRes, prodRes] = await Promise.all([
         supabase
-          .from('commission_entries')
-          .select('broker_id, amount')
-          .in('broker_id', profileIds)
-          .eq('reference_month', month.monthStartStr),
+          .from('broker_profiles')
+          .select('id, commission_rate_default')
+          .in('id', profileIds)
+          .is('deleted_at', null),
         supabase
           .from('policies')
-          .select('assigned_to')
+          .select('assigned_to, premio_total')
           .in('assigned_to', profileIds)
-          .gte('created_at', month.monthStartStr)
-          .lt('created_at', nextMonthStart)
+          .gte('vigencia_inicio', month.monthStartStr)
+          .lt('vigencia_inicio', nextMonthStart)
           .is('deleted_at', null),
       ])
-      const commissions = ((commRes.data ?? []) as CommissionRow[]) ?? []
-      const productions = ((prodRes.data ?? []) as ProductionRow[]) ?? []
+
+      // Mapa de taxa por corretor
+      const rateMap = new Map(
+        ((ratesRes.data ?? []) as Array<{ id: string; commission_rate_default: string | number }>)
+          .map((b) => [b.id, Number(b.commission_rate_default) || 0])
+      )
+
+      // Comissão estimada = premio_total × taxa do corretor
+      const commissions: CommissionRow[] = (
+        (prodRes.data ?? []) as Array<{ assigned_to: string; premio_total: string | number }>
+      ).map((p) => ({
+        broker_id: p.assigned_to,
+        amount: Number(p.premio_total) * (rateMap.get(p.assigned_to) ?? 0),
+      }))
+
+      const productions: ProductionRow[] = (
+        (prodRes.data ?? []) as Array<{ assigned_to: string }>
+      )
+
       rankingRows = aggregateBrokerRanking(profilesArr, commissions, productions)
     } else {
       rankingRows = []
