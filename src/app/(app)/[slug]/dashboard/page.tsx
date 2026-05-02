@@ -73,19 +73,17 @@ export default async function DashboardPage({ params, searchParams }: Props) {
     apolicesAtivas = 0
   }
 
-  // --- KPI 2: Receita do periodo (Pitfall 3: filtrar por paid_at, nao due_date) ---
+  // --- KPI 2: Receita do periodo — soma premio_total das apólices com vigencia_inicio no mês ---
   let receitaTotal = 0
   try {
     const { data } = await supabase
-      .from('financial_entries')
-      .select('amount')
+      .from('policies')
+      .select('premio_total')
       .is('deleted_at', null)
-      .eq('entry_type', 'receivable')
-      .eq('status', 'paid')
-      .gte('paid_at', month.monthStartStr)
-      .lt('paid_at', nextMonthStart)
-    for (const r of (data ?? []) as Array<{ amount: number | string }>) {
-      receitaTotal += Number(r.amount) || 0
+      .gte('vigencia_inicio', month.monthStartStr)
+      .lt('vigencia_inicio', nextMonthStart)
+    for (const r of (data ?? []) as Array<{ premio_total: number | string }>) {
+      receitaTotal += Number(r.premio_total) || 0
     }
   } catch {
     receitaTotal = 0
@@ -284,7 +282,7 @@ export default async function DashboardPage({ params, searchParams }: Props) {
         <StatCard
           title="Receita do período"
           value={formatBRL(receitaTotal)}
-          subtext={`Pago em ${month.monthLabel}`}
+          subtext={`Prêmios em ${month.monthLabel}`}
           icon={<TrendingUp size={18} />}
           variant="success"
         />
