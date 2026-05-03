@@ -233,18 +233,27 @@ export default async function DashboardPage({ params, searchParams }: Props) {
     const profileIds = profilesArr.map((p) => p.id)
 
     if (profileIds.length > 0) {
-      const [ratesRes, prodRes] = await Promise.all([
+      const [ratesRes, commissionPoliciesRes, productionPoliciesRes] = await Promise.all([
         supabase
           .from('broker_profiles')
           .select('id, commission_rate_default, commission_rate_renovacao')
           .in('id', profileIds)
           .is('deleted_at', null),
+        // Comissão: apólices com vigencia_inicio no mês (prêmio gerado no período)
         supabase
           .from('policies')
           .select('assigned_to, premio_total')
           .in('assigned_to', profileIds)
           .gte('vigencia_inicio', month.monthStartStr)
           .lt('vigencia_inicio', nextMonthStart)
+          .is('deleted_at', null),
+        // Produção: apólices criadas no mês (vendas realizadas) — igual à página /corretores/[id]
+        supabase
+          .from('policies')
+          .select('assigned_to')
+          .in('assigned_to', profileIds)
+          .gte('created_at', month.monthStartStr)
+          .lt('created_at', nextMonthStart)
           .is('deleted_at', null),
       ])
 
@@ -257,14 +266,15 @@ export default async function DashboardPage({ params, searchParams }: Props) {
 
       // Comissão estimada = premio_total × taxa padrão do corretor
       const commissions: CommissionRow[] = (
-        (prodRes.data ?? []) as Array<{ assigned_to: string; premio_total: string | number }>
+        (commissionPoliciesRes.data ?? []) as Array<{ assigned_to: string; premio_total: string | number }>
       ).map((p) => ({
         broker_id: p.assigned_to,
         amount: Number(p.premio_total) * (rateMap.get(p.assigned_to) ?? 0),
       }))
 
+      // Produção = apólices criadas no mês por corretor
       const productions: ProductionRow[] = (
-        (prodRes.data ?? []) as Array<{ assigned_to: string }>
+        (productionPoliciesRes.data ?? []) as Array<{ assigned_to: string }>
       )
 
       rankingRows = aggregateBrokerRanking(profilesArr, commissions, productions)
