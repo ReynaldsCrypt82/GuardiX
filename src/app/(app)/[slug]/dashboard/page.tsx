@@ -241,35 +241,27 @@ export default async function DashboardPage({ params, searchParams }: Props) {
           .is('deleted_at', null),
         supabase
           .from('policies')
-          .select('assigned_to, premio_total, category')
+          .select('assigned_to, premio_total')
           .in('assigned_to', profileIds)
           .gte('vigencia_inicio', month.monthStartStr)
           .lt('vigencia_inicio', nextMonthStart)
           .is('deleted_at', null),
       ])
 
-      // Mapa de taxas por corretor: default e renovacao
+      // Mapa de taxas por corretor
       type BrokerRateRow = { id: string; commission_rate_default: string | number; commission_rate_renovacao: string | number | null }
       const rateMap = new Map(
         ((ratesRes.data ?? []) as BrokerRateRow[])
           .map((b) => [b.id, Number(b.commission_rate_default) || 0])
       )
-      const renovacaoRateMap = new Map(
-        ((ratesRes.data ?? []) as BrokerRateRow[])
-          .filter((b) => b.commission_rate_renovacao != null && b.commission_rate_renovacao !== '')
-          .map((b) => [b.id, Number(b.commission_rate_renovacao) || 0])
-      )
 
-      // Comissão estimada = premio_total × taxa do corretor (renovacao se aplicável)
+      // Comissão estimada = premio_total × taxa padrão do corretor
       const commissions: CommissionRow[] = (
-        (prodRes.data ?? []) as Array<{ assigned_to: string; premio_total: string | number; category: string | null }>
-      ).map((p) => {
-        const isRenovacao = p.category === 'renovacao'
-        const rate = isRenovacao && renovacaoRateMap.has(p.assigned_to)
-          ? (renovacaoRateMap.get(p.assigned_to) ?? 0)
-          : (rateMap.get(p.assigned_to) ?? 0)
-        return { broker_id: p.assigned_to, amount: Number(p.premio_total) * rate }
-      })
+        (prodRes.data ?? []) as Array<{ assigned_to: string; premio_total: string | number }>
+      ).map((p) => ({
+        broker_id: p.assigned_to,
+        amount: Number(p.premio_total) * (rateMap.get(p.assigned_to) ?? 0),
+      }))
 
       const productions: ProductionRow[] = (
         (prodRes.data ?? []) as Array<{ assigned_to: string }>
