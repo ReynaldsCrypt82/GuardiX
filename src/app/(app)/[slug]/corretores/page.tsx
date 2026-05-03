@@ -55,7 +55,7 @@ export default async function CorretoresPage({ params, searchParams }: Props) {
       ? await supabase
           .from('broker_profiles')
           .select(
-            'id, susep_number, monthly_goal, commission_rate_default, commission_rate_overrides',
+            'id, susep_number, monthly_goal, commission_rate_default, commission_rate_renovacao, commission_rate_overrides',
           )
           .is('deleted_at', null)
           .in('id', profileIds)
@@ -63,6 +63,14 @@ export default async function CorretoresPage({ params, searchParams }: Props) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const brokerProfileMap = new Map((brokerProfiles ?? []).map((b: any) => [b.id, b]))
+  type BrokerProfileRecord = {
+    susep_number: string | null
+    monthly_goal: number
+    commission_rate_default: number
+    commission_rate_renovacao: number | null
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    commission_rate_overrides: any
+  }
 
   // 3. Producao do mes corrente: count de policies por assigned_to no mes corrente
   const monthStart = format(startOfMonth(new Date()), 'yyyy-MM-dd')
@@ -85,16 +93,7 @@ export default async function CorretoresPage({ params, searchParams }: Props) {
   // 4. Montar BrokerRow[]
   const rows: BrokerRow[] = (profiles ?? []).map(
     (p: { id: string; full_name: string }) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const bp = brokerProfileMap.get(p.id) as
-        | {
-            susep_number: string | null
-            monthly_goal: number
-            commission_rate_default: number
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            commission_rate_overrides: any
-          }
-        | undefined
+      const bp = brokerProfileMap.get(p.id) as BrokerProfileRecord | undefined
       return {
         profile_id: p.id,
         full_name: p.full_name,
@@ -107,6 +106,7 @@ export default async function CorretoresPage({ params, searchParams }: Props) {
               susep_number: bp.susep_number,
               monthly_goal: bp.monthly_goal,
               commission_rate_default: bp.commission_rate_default,
+              commission_rate_renovacao: bp.commission_rate_renovacao ?? null,
               commission_rate_overrides: bp.commission_rate_overrides,
             }
           : undefined,

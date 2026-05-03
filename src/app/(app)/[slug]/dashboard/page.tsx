@@ -236,31 +236,40 @@ export default async function DashboardPage({ params, searchParams }: Props) {
       const [ratesRes, prodRes] = await Promise.all([
         supabase
           .from('broker_profiles')
-          .select('id, commission_rate_default')
+          .select('id, commission_rate_default, commission_rate_renovacao')
           .in('id', profileIds)
           .is('deleted_at', null),
         supabase
           .from('policies')
-          .select('assigned_to, premio_total')
+          .select('assigned_to, premio_total, category')
           .in('assigned_to', profileIds)
           .gte('vigencia_inicio', month.monthStartStr)
           .lt('vigencia_inicio', nextMonthStart)
           .is('deleted_at', null),
       ])
 
-      // Mapa de taxa por corretor
+      // Mapa de taxas por corretor: default e renovacao
+      type BrokerRateRow = { id: string; commission_rate_default: string | number; commission_rate_renovacao: string | number | null }
       const rateMap = new Map(
-        ((ratesRes.data ?? []) as Array<{ id: string; commission_rate_default: string | number }>)
+        ((ratesRes.data ?? []) as BrokerRateRow[])
           .map((b) => [b.id, Number(b.commission_rate_default) || 0])
       )
+      const renovacaoRateMap = new Map(
+        ((ratesRes.data ?? []) as BrokerRateRow[])
+          .filter((b) => b.commission_rate_renovacao != null && b.commission_rate_renovacao !== '')
+          .map((b) => [b.id, Number(b.commission_rate_renovacao) || 0])
+      )
 
-      // Comissão estimada = premio_total × taxa do corretor
+      // Comissão estimada = premio_total × taxa do corretor (renovacao se aplicável)
       const commissions: CommissionRow[] = (
-        (prodRes.data ?? []) as Array<{ assigned_to: string; premio_total: string | number }>
-      ).map((p) => ({
-        broker_id: p.assigned_to,
-        amount: Number(p.premio_total) * (rateMap.get(p.assigned_to) ?? 0),
-      }))
+        (prodRes.data ?? []) as Array<{ assigned_to: string; premio_total: string | number; category: string | null }>
+      ).map((p) => {
+        const isRenovacao = p.category === 'renovacao'
+        const rate = isRenovacao && renovacaoRateMap.has(p.assigned_to)
+          ? (renovacaoRateMap.get(p.assigned_to) ?? 0)
+          : (rateMap.get(p.assigned_to) ?? 0)
+        return { broker_id: p.assigned_to, amount: Number(p.premio_total) * rate }
+      })
 
       const productions: ProductionRow[] = (
         (prodRes.data ?? []) as Array<{ assigned_to: string }>

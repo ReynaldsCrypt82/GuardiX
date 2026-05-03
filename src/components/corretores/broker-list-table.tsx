@@ -30,6 +30,7 @@ export interface BrokerRow {
     susep_number: string | null
     monthly_goal: number
     commission_rate_default: number
+    commission_rate_renovacao: number | null
     commission_rate_overrides: Record<string, number | undefined> | null
   }
 }
@@ -113,6 +114,7 @@ export function BrokerListTable({ slug, rows }: Props) {
               susep_number: editTarget.broker_profile.susep_number,
               monthly_goal: editTarget.broker_profile.monthly_goal,
               commission_rate_default: editTarget.broker_profile.commission_rate_default,
+              commission_rate_renovacao: editTarget.broker_profile.commission_rate_renovacao,
               commission_rate_overrides: editTarget.broker_profile.commission_rate_overrides,
             }
           : undefined

@@ -18,6 +18,7 @@ interface BrokerProfileData {
   susep_number: string | null
   monthly_goal: number
   commission_rate_default: number
+  commission_rate_renovacao: number | null
   commission_rate_overrides: Record<string, number | undefined> | null
 }
 
@@ -124,22 +125,40 @@ export function BrokerProfileDialog({
             />
           </div>
 
-          {/* Taxa de comissao padrao */}
-          <div className="space-y-2">
-            <Label htmlFor="commission_rate_default">Taxa de comissao padrao (%)</Label>
-            <Input
-              id="commission_rate_default"
-              name="commission_rate_default"
-              type="number"
-              step="0.0001"
-              min="0"
-              max="1"
-              placeholder="Ex.: 0.05"
-              defaultValue={existing?.commission_rate_default ?? ''}
-            />
-            <p className="text-xs text-muted-foreground">
-              Taxa aplicada quando nao ha override por tipo de produto
-            </p>
+          {/* Taxas de comissao: novo vs renovacao */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="commission_rate_default">Taxa — Seguro novo (%)</Label>
+              <Input
+                id="commission_rate_default"
+                name="commission_rate_default"
+                type="number"
+                step="0.0001"
+                min="0"
+                max="1"
+                placeholder="Ex.: 0.05"
+                defaultValue={existing?.commission_rate_default ?? ''}
+              />
+              <p className="text-xs text-muted-foreground">
+                Apólices novas e fallback geral
+              </p>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="commission_rate_renovacao">Taxa — Renovação (%)</Label>
+              <Input
+                id="commission_rate_renovacao"
+                name="commission_rate_renovacao"
+                type="number"
+                step="0.0001"
+                min="0"
+                max="1"
+                placeholder="Ex.: 0.03"
+                defaultValue={existing?.commission_rate_renovacao ?? ''}
+              />
+              <p className="text-xs text-muted-foreground">
+                Deixe vazio para usar a taxa de novo
+              </p>
+            </div>
           </div>
 
           {/* Taxas por tipo de produto */}

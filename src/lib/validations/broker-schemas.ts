@@ -19,6 +19,10 @@ export const upsertBrokerProfileSchema = z.object({
   susep_number: z.string().optional(),
   monthly_goal: z.coerce.number().min(0, 'Meta invalida'),
   commission_rate_default: z.coerce.number().min(0, 'Taxa invalida (0-1)').max(1, 'Taxa invalida (0-1)'),
+  commission_rate_renovacao: z.preprocess(
+    (v) => (v === '' || v === undefined || v === null ? undefined : v),
+    z.coerce.number().min(0).max(1).optional(),
+  ),
   commission_rate_overrides: commissionOverridesSchema,
 })
 

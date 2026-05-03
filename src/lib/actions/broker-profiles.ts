@@ -61,6 +61,7 @@ export async function upsertBrokerProfileAction(slug: string, formData: FormData
       susep_number: parsed.data.susep_number || null,
       monthly_goal: parsed.data.monthly_goal,
       commission_rate_default: parsed.data.commission_rate_default,
+      commission_rate_renovacao: parsed.data.commission_rate_renovacao ?? null,
       commission_rate_overrides: parsed.data.commission_rate_overrides ?? {},
     }, { onConflict: 'id' })
 
