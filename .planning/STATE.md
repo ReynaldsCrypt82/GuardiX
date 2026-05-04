@@ -1,17 +1,17 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.1
-milestone_name: portal-do-cliente
-status: defining-requirements
-stopped_at: —
-last_updated: "2026-05-04T00:00:00.000Z"
-last_activity: 2026-05-04
+milestone: v1.0
+milestone_name: milestone
+status: Defining requirements
+stopped_at: Phase 1 context gathered
+last_updated: "2026-05-04T18:52:31.981Z"
+last_activity: 2026-05-04 — 4 fases adicionadas ao ROADMAP (v1.1 Portal do Cliente)
 progress:
-  total_phases: 0
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  total_phases: 8
+  completed_phases: 4
+  total_plans: 18
+  completed_plans: 18
+  percent: 100
 ---
 
 # Project State
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-05-04)
 Phase: Not started (defining requirements)
 Plan: —
 Status: Defining requirements
-Last activity: 2026-05-04 — Milestone v1.1 iniciado
+Last activity: 2026-05-04 — 4 fases adicionadas ao ROADMAP (v1.1 Portal do Cliente)
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -64,6 +64,13 @@ Decisions carregadas do v1.0 relevantes para v1.1:
 - [Phase 07-01]: pg_cron schedule automation-cron-daily aplicado em producao com sucesso (schedule=1); vault secrets necessarios antes do cron disparar
 - [Phase 07-automacoes-ia]: AI SDK v6: stopWhen:stepCountIs(N) replaces maxSteps; convertToModelMessages is async; makeTool helper bypasses TS2769 overload issue
 
+### Roadmap Evolution
+
+- Phase 1 added: Auth do Portal
+- Phase 2 added: Wildcard Routing e Layout do Portal
+- Phase 3 added: Portal Apolices e Consorcio
+- Phase 4 added: Portal Financeiro e PDFs
+
 ### Pending Todos
 
 None yet.
@@ -77,6 +84,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-04
-Stopped at: Iniciando definição de requirements v1.1
-Resume file: None
+Last session: 2026-05-04T18:52:31.963Z
+Stopped at: Phase 1 context gathered
+Resume file: .planning/phases/01-auth-do-portal/01-CONTEXT.md
