@@ -96,7 +96,8 @@ export async function updateSession(request: NextRequest): Promise<NextResponse>
 
   // 1. Anonymous user hitting a protected route → /login?next=<path>
   if (!claims) {
-    if (isAuthRoute(pathname) || pathname === '/' || pathname === '/trial-expirado') {
+    const isPortalAuthRoute = /^\/[^/]+\/portal\/(login|cadastro)(\/.*)?$/.test(pathname)
+    if (isAuthRoute(pathname) || pathname === '/' || pathname === '/trial-expirado' || isPortalAuthRoute) {
       return supabaseResponse
     }
     const url = request.nextUrl.clone()
@@ -111,6 +112,37 @@ export async function updateSession(request: NextRequest): Promise<NextResponse>
   const tenantId = appMeta.tenant_id
   const trialEndsAt = appMeta.trial_ends_at
   const plan = appMeta.plan ?? 'trial'
+
+  // 2.5 Portal client branch — D-06, D-07, D-12
+  // Portal clients have role='portal_client' + tenant_id + portal_slug in app_metadata,
+  // but NO `slug` field. They must NOT fall into the incomplete-onboarding redirect below.
+  const role = appMeta.role
+  const isPortalClient = role === 'portal_client'
+
+  if (isPortalClient) {
+    const portalSlug = appMeta.portal_slug
+    const isPortalRoute = /^\/[^/]+\/portal(\/.*)?$/.test(pathname)
+    const isPortalAuthRoute = /^\/[^/]+\/portal\/(login|cadastro)(\/.*)?$/.test(pathname)
+
+    if (isPortalAuthRoute) {
+      // Already logged in — bounce to home
+      const url = request.nextUrl.clone()
+      url.pathname = portalSlug ? `/${portalSlug}/portal/home` : '/login'
+      url.search = ''
+      return redirectWithCookies(url, supabaseResponse)
+    }
+
+    if (!isPortalRoute) {
+      // D-07: portal_client outside portal → /{portal_slug}/portal/home
+      const url = request.nextUrl.clone()
+      url.pathname = portalSlug ? `/${portalSlug}/portal/home` : '/login'
+      url.search = ''
+      return redirectWithCookies(url, supabaseResponse)
+    }
+
+    // Portal client on a portal route (non-auth) — let through; RLS does the rest
+    return supabaseResponse
+  }
 
   if (!tenantId || !userSlug) {
     // User exists but is not attached to a tenant — force re-onboarding
@@ -139,6 +171,15 @@ export async function updateSession(request: NextRequest): Promise<NextResponse>
       url.search = ''
       return redirectWithCookies(url, supabaseResponse)
     }
+  }
+
+  // 4.5 D-08: Internal users blocked from /{slug}/portal/** routes
+  const isPortalRoute = /^\/[^/]+\/portal(\/.*)?$/.test(pathname)
+  if (isPortalRoute) {
+    const url = request.nextUrl.clone()
+    url.pathname = `/${userSlug}/dashboard`
+    url.search = ''
+    return redirectWithCookies(url, supabaseResponse)
   }
 
   // 5. Slug ownership — if URL has /{some-slug}/ prefix, it must match userSlug
