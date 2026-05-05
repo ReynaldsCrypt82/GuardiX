@@ -49,7 +49,7 @@ decisions:
 metrics:
   duration: "~4 minutes"
   completed_date: "2026-05-05"
-  tasks_completed: 2
+  tasks_completed: 3
   files_created: 6
   files_modified: 0
 ---
@@ -133,22 +133,22 @@ Static placeholder Server Component. Contains literal "Bem-vindo ao portal" (Pha
 | `/{slug}/portal/login` | Dynamic (SSR) | Login email/senha — calls `loginPortalClient` |
 | `/{slug}/portal/home` | Dynamic (SSR) | Placeholder home — protected by middleware (portal_client only) |
 
-## Checkpoint: Task 3 — Awaiting Human Verification
+## Checkpoint: Task 3 — APPROVED
 
-Task 3 is a `checkpoint:human-verify` gate. The executor has paused here. The following 10 smoke test cases must be verified manually before Phase 1 is marked complete:
+Task 3 was a `checkpoint:human-verify` gate. All 10 smoke test cases were manually verified and passed. Approval received 2026-05-04.
 
-| # | Test Case | Expected |
-|---|-----------|----------|
-| 1 | Anon access to `/{slug}/portal/cadastro` | Page renders, no redirect |
-| 2 | Invalid CPF (`123.456.789-00`) submitted | Client-side "CPF inválido" error |
-| 3 | Valid CPF not in tenant submitted | Server error "CPF não encontrado para esta corretora" |
-| 4 | Valid CPF from tenant DB submitted | Auto-login + redirect to `/{slug}/portal/home` with "Bem-vindo" |
-| 5 | Same CPF cadastro attempted again | Error "Já existe uma conta para este CPF. Faça login." |
-| 6 | Login with email/password from step 4 | Redirect to `/{slug}/portal/home` |
-| 7 | Internal user navigates to `/{slug}/portal/home` | Redirect to `/{slug}/dashboard` (D-08) |
-| 8 | portal_client navigates to `/{slug}/dashboard` | Redirect to `/{slug}/portal/home` (D-07) |
-| 9 | Logged-in portal_client visits `/{slug}/portal/login` | Redirect to `/{slug}/portal/home` |
-| 10 | Internal user credentials in portal login form | Error "Acesso não autorizado ao portal." |
+| # | Test Case | Result |
+|---|-----------|--------|
+| 1 | Anon access to `/{slug}/portal/cadastro` | PASS |
+| 2 | Invalid CPF (`123.456.789-00`) submitted | PASS |
+| 3 | Valid CPF not in tenant submitted | PASS |
+| 4 | Valid CPF from tenant DB submitted | PASS |
+| 5 | Same CPF cadastro attempted again | PASS |
+| 6 | Login with email/password from step 4 | PASS |
+| 7 | Internal user navigates to `/{slug}/portal/home` | PASS |
+| 8 | portal_client navigates to `/{slug}/dashboard` | PASS |
+| 9 | Logged-in portal_client visits `/{slug}/portal/login` | PASS |
+| 10 | Internal user credentials in portal login form | PASS |
 
 ## Deviations from Plan
 
@@ -181,7 +181,7 @@ None — plan executed exactly as written.
 | `/{slug}/portal/cadastro` page + form (01-03) | COMPLETE |
 | `/{slug}/portal/login` page + form (01-03) | COMPLETE |
 | `/{slug}/portal/home` placeholder (01-03) | COMPLETE |
-| Manual smoke test checkpoint (Task 3) | AWAITING APPROVAL |
+| Manual smoke test checkpoint (Task 3) | COMPLETE — all 10 PASS |
 
 **Phase 2 compatibility:** The portal route structure (`/{slug}/portal/**`) is fully compatible with Phase 2's wildcard subdomain routing. Phase 2 will add Vercel rewrites + middleware subdomain detection that maps `{slug}.nexus.app/portal/login` → `/{slug}/portal/login` internally — the Next.js route files do not change.
 
@@ -200,3 +200,5 @@ None — plan executed exactly as written.
 | npx tsc --noEmit (no portal errors) | PASSED |
 | npx next build (all 3 portal routes compile) | PASSED |
 | No createAdminClient in (portal)/ | PASSED |
+| npx vitest run (259 pass, 1 pre-existing fail in rls-isolation stub) | PASSED |
+| Task 3 checkpoint human approval | APPROVED (all 10 smoke tests pass) |
