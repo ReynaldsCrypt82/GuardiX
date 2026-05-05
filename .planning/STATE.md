@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: planned-phase
-stopped_at: Phase 1 planned — 3 plans (01-01 Wave 0, 01-02 Wave 1, 01-03 Wave 2) verified and ready for execution
-last_updated: "2026-05-04T20:30:00.000Z"
-last_activity: 2026-05-04 — Phase 1 planejada (01-01/02/03-PLAN.md criados e verificados pelo plan-checker)
+status: executing
+stopped_at: Phase 1 planned — plan-checker PASS (5 blockers resolved)
+last_updated: "2026-05-05T10:56:23.161Z"
+last_activity: 2026-05-05
 progress:
   total_phases: 8
-  completed_phases: 4
-  total_plans: 18
-  completed_plans: 18
+  completed_phases: 5
+  total_plans: 21
+  completed_plans: 21
   percent: 100
 ---
 
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-04)
 
 **Core value:** Corretoras de pequeno e médio porte controlam todo o ciclo de vida de seguros e consórcio em um único sistema, substituindo planilhas e ferramentas dispersas.
-**Current focus:** Milestone v1.1 — Portal do Cliente
+**Current focus:** Phase 01 — auth-do-portal
 
 ## Current Position
 
-Phase: 1 — Auth do Portal (planned)
-Plan: ready for 01-01 (Wave 0)
-Status: planned-phase
-Last activity: 2026-05-04 — Phase 1 plans (01-01/02/03) created, plan-checker PASS after 5 blockers resolved
+Phase: 02
+Plan: Not started
+Status: Executing Phase 01
+Last activity: 2026-05-05
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -36,7 +36,7 @@ Progress: [░░░░░░░░░░] 0%
 
 **Velocity (v1.0 histórico):**
 
-- Total plans completed: 28
+- Total plans completed: 31
 - Average duration: ~20m/plan
 
 **Recent Trend (v1.0):**
