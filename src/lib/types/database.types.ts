@@ -409,6 +409,30 @@ export type Database = {
           },
         ]
       }
+      // -----------------------------------------------------------------------
+      // Phase 01 (v1.1) tables — Portal do Cliente
+      // -----------------------------------------------------------------------
+      portal_clients: {
+        Row: {
+          id: string
+          tenant_id: string
+          client_id: string
+          created_at: string
+        }
+        Insert: {
+          id: string
+          tenant_id: string
+          client_id: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          tenant_id?: string
+          client_id?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

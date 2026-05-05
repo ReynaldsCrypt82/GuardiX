@@ -31,8 +31,9 @@ type AppClaims = {
   sub: string
   app_metadata?: {
     tenant_id?: string
-    role?: 'admin' | 'corretor' | 'financeiro' | 'visualizador'
+    role?: 'admin' | 'corretor' | 'financeiro' | 'visualizador' | 'portal_client'
     slug?: string
+    portal_slug?: string
     trial_ends_at?: string
     plan?: string
   }
