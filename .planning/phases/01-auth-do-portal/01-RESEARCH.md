@@ -591,7 +591,7 @@ export async function loginPortalClient(
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Policies internas precisam de check de role adicional?**
    - O que sabemos: `clients_select` verifica role (`IN ('admin','financeiro','visualizador')` ou `assigned_to = auth.uid()`). Portal_clients têm `role = 'portal_client'` — não passam em nenhum dos dois checks. Seguro.

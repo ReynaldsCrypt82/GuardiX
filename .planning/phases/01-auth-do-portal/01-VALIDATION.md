@@ -38,10 +38,10 @@ created: 2026-05-04
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 1-01-01 | 01 | 0 | PORTAL-AUTH-01 | T-1-01 | portal_clients RLS blocks cross-tenant access | unit | `npx vitest run src/lib/__tests__/portal-rls.test.ts` | ❌ W0 | ⬜ pending |
-| 1-01-02 | 01 | 0 | PORTAL-AUTH-02 | T-1-02 | CPF verification only matches within tenant | unit | `npx vitest run src/lib/__tests__/portal-signup.test.ts` | ❌ W0 | ⬜ pending |
-| 1-01-03 | 01 | 1 | PORTAL-AUTH-03 | T-1-03 | portal_client JWT blocked outside /portal/** | unit | `npx vitest run src/lib/__tests__/portal-middleware.test.ts` | ❌ W0 | ⬜ pending |
-| 1-01-04 | 01 | 1 | PORTAL-AUTH-04 | — | internal user JWT blocked inside /portal/** | unit | `npx vitest run src/lib/__tests__/portal-middleware.test.ts` | ❌ W0 | ⬜ pending |
+| 1-01-01 | 01 | 0 | PORTAL-AUTH-01 | T-1-01 | portal_clients RLS blocks cross-tenant access | unit | `npx vitest run tests/auth/portal-rls.test.ts` | ❌ W0 | ⬜ pending |
+| 1-01-02 | 01 | 0 | PORTAL-AUTH-02 | T-1-02 | CPF verification only matches within tenant | unit | `npx vitest run tests/auth/portal-signup.test.ts` | ❌ W0 | ⬜ pending |
+| 1-01-03 | 01 | 1 | PORTAL-AUTH-03 | T-1-03 | portal_client JWT blocked outside /portal/** | unit | `npx vitest run tests/auth/portal-middleware.test.ts` | ❌ W0 | ⬜ pending |
+| 1-01-04 | 01 | 1 | PORTAL-AUTH-04 | — | internal user JWT blocked inside /portal/** | unit | `npx vitest run tests/auth/portal-middleware.test.ts` | ❌ W0 | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -49,9 +49,9 @@ created: 2026-05-04
 
 ## Wave 0 Requirements
 
-- [ ] `src/lib/__tests__/portal-rls.test.ts` — stubs para isolamento RLS portal_clients
-- [ ] `src/lib/__tests__/portal-signup.test.ts` — stubs para verificação CPF no cadastro
-- [ ] `src/lib/__tests__/portal-middleware.test.ts` — stubs para separação de sessão no middleware
+- [ ] `tests/auth/portal-rls.test.ts` — stubs para isolamento RLS portal_clients
+- [ ] `tests/auth/portal-signup.test.ts` — stubs para verificação CPF no cadastro
+- [ ] `tests/auth/portal-middleware.test.ts` — stubs para separação de sessão no middleware
 
 *Framework Vitest já instalado — sem instalações adicionais necessárias.*
 

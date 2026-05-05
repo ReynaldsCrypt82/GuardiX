@@ -27,7 +27,7 @@ Implementar o sistema de autenticação exclusivo para clientes finais das corre
 ### Fluxo de Cadastro
 - **D-03:** Auto-cadastro direto por CPF — cliente acessa `/{slug}/portal/cadastro`, informa CPF, sistema verifica existência na tabela `clients` do tenant via `createAdminClient()`, cria conta Supabase Auth.
 - **D-04:** Dados do formulário de cadastro: CPF (verificado), email (será o login Supabase), senha. O email não precisa estar na base da corretora — o que valida é o CPF.
-- **D-05:** Verificação de CPF usa `createAdminClient()` (service_role) com `.eq('tenant_id', tenantId).eq('cpf_cnpj', cpf)` na tabela `clients`. Esta operação só ocorre em Server Action (nunca exposto ao cliente).
+- **D-05:** Verificação de CPF usa `createAdminClient()` (service_role) com `.eq('tenant_id', tenantId).eq('document', cpf)` na tabela `clients` (coluna é `document`, não `cpf_cnpj` — confirmado no schema `20260420_0006_clients_schema.sql`). Esta operação só ocorre em Server Action (nunca exposto ao cliente).
 
 ### Separação de Sessão
 - **D-06:** Middleware identifica clientes do portal pelo `app_metadata.role === 'portal_client'`. Rotas do portal vivem em `/{slug}/portal/**`. Usuários internos nunca chegam a essas rotas; clientes do portal são barrados fora delas.
