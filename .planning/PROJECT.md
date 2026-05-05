@@ -88,8 +88,8 @@ Corretoras de pequeno e médio porte controlam todo o ciclo de vida de seguros e
 
 ### Active (v1.1 — Portal do Cliente)
 
-- [ ] Auto-cadastro por CPF no portal (verificação na base da corretora) — v1.1
-- [ ] Login email/senha no portal (Supabase Auth separado, role portal_client) — v1.1
+- ✓ Auto-cadastro por CPF no portal (verificação na base da corretora) — v1.1 Phase 1
+- ✓ Login email/senha no portal (Supabase Auth separado, role portal_client) — v1.1 Phase 1
 - [ ] Visualização de apólices ativas no portal (read-only) — v1.1
 - [ ] Visualização de cotas de consórcio no portal (read-only) — v1.1
 - [ ] Financeiro no portal: parcelas em aberto, vencidas e pagas — v1.1
