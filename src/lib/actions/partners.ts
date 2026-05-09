@@ -1,6 +1,7 @@
 'use server'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import {
   createPartnerSchema,
   updatePartnerSchema,
@@ -107,10 +108,12 @@ export async function softDeletePartnerAction(slug: string, partnerId: string) {
   const role = (user.app_metadata as { role?: string })?.role
   if (role !== 'admin') return { error: 'Apenas administradores podem excluir parceiros.' }
 
-  const { error, count } = await supabase
+  const admin = createAdminClient()
+  const { error, count } = await (admin as AnySupabase)
     .from('partners')
     .update({ deleted_at: new Date().toISOString() }, { count: 'exact' })
     .eq('id', partnerId)
+    .eq('tenant_id', (user.app_metadata as { tenant_id?: string })?.tenant_id)
 
   if (error) return { error: `Erro ao excluir parceiro: ${error.message}` }
   if (count === 0) return { error: 'Parceiro não encontrado ou já excluído.' }
