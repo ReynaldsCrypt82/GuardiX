@@ -3,7 +3,8 @@ import { validateCPF } from './cpf'
 import { validateCNPJ } from './cnpj'
 
 const baseFields = {
-  assigned_to: z.string().uuid('Corretor responsável obrigatório'),
+  assigned_to: z.string().uuid().optional().or(z.literal('')),
+  partner_id: z.string().uuid().optional().or(z.literal('')),
   email: z.string().email('E-mail inválido').optional().or(z.literal('')),
   phone: z.string().optional().or(z.literal('')),
 }
@@ -26,3 +27,13 @@ export const createClientSchema = z.discriminatedUnion('type', [
 
 export type CreateClientInput = z.infer<typeof createClientSchema>
 export type ClientFormError = Record<string, string[]>
+
+export const updateClientBrokerSchema = z.object({
+  clientId: z.string().uuid(),
+  assignedTo: z.string().uuid().optional(),
+  partnerId: z.string().uuid().optional(),
+}).refine(
+  (d) => d.assignedTo || d.partnerId,
+  { message: 'Informe corretor ou parceiro', path: ['assignedTo'] },
+)
+export type UpdateClientBrokerInput = z.infer<typeof updateClientBrokerSchema>
