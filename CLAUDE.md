@@ -182,6 +182,7 @@ Sempre aplicar as seguintes skills em toda tarefa:
 | `/caveman` | Todo commit — use `/caveman-commit` para mensagens de commit |
 | `/supabase-postgres-best-practices` | Toda migration SQL, query RLS, Server Action com Supabase, ou schema change |
 | `/frontend-design` | Todo componente UI, página, formulário ou mudança visual |
+| `/vercel:deploy` | Todo deploy para produção — verificar build, env vars e status do deployment |
 
 <!-- GSD:conventions-end -->
 
