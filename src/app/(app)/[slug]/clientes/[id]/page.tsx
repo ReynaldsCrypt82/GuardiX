@@ -7,6 +7,7 @@ import { PolicyTab } from './policy-tab'
 import { ConsortiumTab } from './consortium-tab'
 import { AddInteractionForm } from '@/components/clientes/add-interaction-form'
 import { TasksPanel } from '@/components/clientes/add-task-form'
+import { ClientBrokerSelector } from '@/components/clientes/client-broker-selector'
 
 export default async function ClientDetailPage({
   params,
@@ -26,13 +27,34 @@ export default async function ClientDetailPage({
   const { data: client } = await supabase
     .from('clients')
     .select(
-      '*, stage:pipeline_stages(name, color), profile:profiles!assigned_to(full_name)',
+      '*, stage:pipeline_stages(name, color), profile:profiles!assigned_to(full_name), partner:partners!partner_id(id, name)',
     )
     .eq('id', clientId)
     .is('deleted_at', null)
     .single()
 
   if (!client) notFound()
+
+  // Buscar brokers e parceiros para o selector (apenas quando admin pode editar)
+  const canEditBroker = role === 'admin'
+
+  const { data: availableBrokers } = canEditBroker
+    ? await supabase
+        .from('profiles')
+        .select('id, full_name')
+        .in('role', ['admin', 'corretor'])
+        .eq('active', true)
+        .is('deleted_at', null)
+        .order('full_name')
+    : { data: [] }
+
+  const { data: availablePartners } = canEditBroker
+    ? await supabase
+        .from('partners')
+        .select('id, name')
+        .is('deleted_at', null)
+        .order('name')
+    : { data: [] }
 
   // Busca apólices do cliente — RLS policies_select garante tenant (T-03-18)
   const { data: policies } = await supabase
@@ -105,9 +127,27 @@ export default async function ClientDetailPage({
               )}
             </div>
           </div>
-          <div className="text-sm text-muted-foreground mt-2 flex flex-wrap gap-x-4 gap-y-1">
-            {client.profile?.full_name && (
-              <span>Corretor: {client.profile.full_name}</span>
+          <div className="text-sm text-muted-foreground mt-2 flex flex-wrap gap-x-4 gap-y-1 items-center">
+            {canEditBroker ? (
+              <ClientBrokerSelector
+                clientId={clientId}
+                slug={slug}
+                currentAssignedTo={client.assigned_to ?? null}
+                currentPartnerId={client.partner_id ?? null}
+                currentBrokerName={client.profile?.full_name ?? null}
+                currentPartnerName={client.partner?.name ?? null}
+                isClosed={client.stage?.name === 'Fechado'}
+                brokers={(availableBrokers ?? []) as { id: string; full_name: string }[]}
+                partners={(availablePartners ?? []) as { id: string; name: string }[]}
+              />
+            ) : (
+              <span>
+                {client.partner?.name
+                  ? `Parceiro: ${client.partner.name}`
+                  : client.profile?.full_name
+                    ? `Corretor: ${client.profile.full_name}`
+                    : null}
+              </span>
             )}
             {client.email && <span>{client.email}</span>}
             {client.phone && <span>{client.phone}</span>}
