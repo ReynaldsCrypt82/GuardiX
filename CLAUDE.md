@@ -172,7 +172,17 @@ Plataforma SaaS multi-tenant para corretoras de seguros e consórcio de pequeno 
 <!-- GSD:conventions-start source:CONVENTIONS.md -->
 ## Conventions
 
-Conventions not yet established. Will populate as patterns emerge during development.
+### Skills obrigatórias neste projeto
+
+Sempre aplicar as seguintes skills em toda tarefa:
+
+| Skill | Quando aplicar |
+|-------|---------------|
+| `/gsd` | Toda implementação de código — use `/gsd-quick`, `/gsd-execute-phase` ou `/gsd-debug` conforme o escopo |
+| `/caveman` | Todo commit — use `/caveman-commit` para mensagens de commit |
+| `/supabase-postgres-best-practices` | Toda migration SQL, query RLS, Server Action com Supabase, ou schema change |
+| `/frontend-design` | Todo componente UI, página, formulário ou mudança visual |
+
 <!-- GSD:conventions-end -->
 
 <!-- GSD:architecture-start source:ARCHITECTURE.md -->
