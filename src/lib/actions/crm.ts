@@ -14,6 +14,9 @@ export async function addInteraction(formData: FormData): Promise<{ error?: stri
   const { supabase, user } = await getUser()
   if (!user) return { error: 'Não autorizado' }
 
+  const tenantId = (user.app_metadata as { tenant_id?: string })?.tenant_id
+  if (!tenantId) return { error: 'Tenant não identificado.' }
+
   const clientId = formData.get('client_id') as string
   const slug = formData.get('slug') as string
   const type = formData.get('type') as string
@@ -25,7 +28,9 @@ export async function addInteraction(formData: FormData): Promise<{ error?: stri
   const ALLOWED = ['comentario', 'ligacao', 'email', 'reuniao', 'whatsapp', 'visita']
   if (!ALLOWED.includes(type)) return { error: 'Tipo inválido' }
 
-  const { error } = await supabase.from('client_interactions').insert({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error } = await (supabase.from('client_interactions') as any).insert({
+    tenant_id: tenantId,
     client_id: clientId,
     type,
     description,
@@ -44,6 +49,9 @@ export async function addTask(formData: FormData): Promise<{ error?: string }> {
   const { supabase, user } = await getUser()
   if (!user) return { error: 'Não autorizado' }
 
+  const tenantId = (user.app_metadata as { tenant_id?: string })?.tenant_id
+  if (!tenantId) return { error: 'Tenant não identificado.' }
+
   const clientId = formData.get('client_id') as string
   const slug = formData.get('slug') as string
   const description = (formData.get('description') as string)?.trim()
@@ -52,7 +60,9 @@ export async function addTask(formData: FormData): Promise<{ error?: string }> {
   if (!description) return { error: 'Descrição obrigatória' }
   if (!dueDate) return { error: 'Prazo obrigatório' }
 
-  const { error } = await supabase.from('client_tasks').insert({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error } = await (supabase.from('client_tasks') as any).insert({
+    tenant_id: tenantId,
     client_id: clientId,
     description,
     due_date: dueDate,
