@@ -26,7 +26,7 @@ export default async function PipelinePage({ params }: Props) {
       .order('position'),
     supabase
       .from('clients')
-      .select('id, name, type, document, stage_id, assigned_to:profiles!clients_assigned_to_fkey(full_name)')
+      .select('id, name, type, document, stage_id, assigned_to:profiles!clients_assigned_to_fkey(full_name), partner:partners!clients_partner_id_fkey(name)')
       .is('deleted_at', null)
       .order('created_at', { ascending: false }),
   ])

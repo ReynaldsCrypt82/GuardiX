@@ -19,6 +19,7 @@ interface Client {
   document: string
   stage_id: string | null
   assigned_to: { full_name: string } | null
+  partner: { name: string } | null
 }
 
 interface Props {
@@ -157,11 +158,13 @@ function KanbanCard({
           {formatDoc(client.document, client.type)}
         </p>
 
-        {/* Corretor */}
-        {client.assigned_to && (
+        {/* Corretor / Parceiro */}
+        {(client.assigned_to || client.partner) && (
           <div className="flex items-center gap-1 text-xs text-muted-foreground">
             <User size={11} />
-            <span className="truncate">{client.assigned_to.full_name}</span>
+            <span className="truncate">
+              {client.assigned_to?.full_name ?? client.partner?.name}
+            </span>
           </div>
         )}
 
