@@ -107,14 +107,13 @@ export async function softDeletePartnerAction(slug: string, partnerId: string) {
   const role = (user.app_metadata as { role?: string })?.role
   if (role !== 'admin') return { error: 'Apenas administradores podem excluir parceiros.' }
 
-  const { data, error } = await supabase
+  const { error, count } = await supabase
     .from('partners')
-    .update({ deleted_at: new Date().toISOString() })
+    .update({ deleted_at: new Date().toISOString() }, { count: 'exact' })
     .eq('id', partnerId)
-    .select('id')
 
   if (error) return { error: `Erro ao excluir parceiro: ${error.message}` }
-  if (!data || data.length === 0) return { error: 'Parceiro não encontrado ou já excluído.' }
+  if (count === 0) return { error: 'Parceiro não encontrado ou já excluído.' }
 
   revalidatePath(`/${slug}/parceiros`)
   return { success: true }
