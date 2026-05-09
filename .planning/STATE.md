@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-05-04)
 Phase: 02
 Plan: Not started
 Status: Executing Phase 01
-Last activity: 2026-05-09 — Completed quick task 260509-lcj: partners em Corretores + troca de corretor com lock
+Last activity: 2026-05-09 — Completed quick task 260509-lx5: pipeline partner join + KanbanCard fallback + softDelete error transparency
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -76,6 +76,7 @@ Decisions carregadas do v1.0 relevantes para v1.1:
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260509-lcj | Partners em Corretores + troca de corretor com lock por stage | 2026-05-09 | a2ace99 | [260509-lcj-partners-em-corretores-e-troca-de-corret](.planning/quick/260509-lcj-partners-em-corretores-e-troca-de-corret/) |
+| 260509-lx5 | Pipeline partner join + KanbanCard fallback + softDelete error transparency | 2026-05-09 | 0b85cae | [260509-lx5-corrigir-bugs-pipeline-card-sem-parceiro](.planning/quick/260509-lx5-corrigir-bugs-pipeline-card-sem-parceiro/) |
 
 ### Pending Todos
 
