@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-05-04)
 Phase: 02
 Plan: Not started
 Status: Executing Phase 01
-Last activity: 2026-05-05
+Last activity: 2026-05-09 — Completed quick task 260509-lcj: partners em Corretores + troca de corretor com lock
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -70,6 +70,12 @@ Decisions carregadas do v1.0 relevantes para v1.1:
 - Phase 2 added: Wildcard Routing e Layout do Portal
 - Phase 3 added: Portal Apolices e Consorcio
 - Phase 4 added: Portal Financeiro e PDFs
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260509-lcj | Partners em Corretores + troca de corretor com lock por stage | 2026-05-09 | a2ace99 | [260509-lcj-partners-em-corretores-e-troca-de-corret](.planning/quick/260509-lcj-partners-em-corretores-e-troca-de-corret/) |
 
 ### Pending Todos
 
