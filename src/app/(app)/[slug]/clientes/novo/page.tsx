@@ -15,13 +15,22 @@ export default async function NovoClientePage({ params }: Props) {
   if (!user) notFound()
 
   // Carregar corretores disponíveis do tenant corrente (passam por RLS de profiles)
-  const { data: corretores } = await supabase
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabaseAny = supabase as any
+  const { data: corretores } = await supabaseAny
     .from('profiles')
     .select('id, full_name, role')
     .in('role', ['admin', 'corretor'])
     .eq('active', true)
     .is('deleted_at', null)
     .order('full_name')
+
+  // Carregar parceiros externos do tenant (UAT Issue #1)
+  const { data: parceiros } = await supabaseAny
+    .from('partners')
+    .select('id, name')
+    .is('deleted_at', null)
+    .order('name')
 
   const userRole = (user.app_metadata as { role?: string })?.role
   const defaultAssignedTo =
@@ -34,6 +43,7 @@ export default async function NovoClientePage({ params }: Props) {
       <NewClientForm
         slug={slug}
         corretores={corretores ?? []}
+        parceiros={parceiros ?? []}
         defaultAssignedTo={defaultAssignedTo}
         lockAssignedToSelf={corretorLockedToSelf}
       />

@@ -31,9 +31,15 @@ interface Corretor {
   role: string
 }
 
+interface Partner {
+  id: string
+  name: string
+}
+
 interface Props {
   slug: string
   corretores: Corretor[]
+  parceiros: Partner[]
   defaultAssignedTo: string
   lockAssignedToSelf: boolean
 }
@@ -66,11 +72,15 @@ function applyCNPJMask(value: string): string {
 export function NewClientForm({
   slug,
   corretores,
+  parceiros,
   defaultAssignedTo,
   lockAssignedToSelf,
 }: Props) {
   const router = useRouter()
   const [clientType, setClientType] = useState<'pf' | 'pj'>('pf')
+  const [selectedAssignee, setSelectedAssignee] = useState<string>(
+    defaultAssignedTo ? `broker:${defaultAssignedTo}` : '',
+  )
 
   const form = useForm<CreateClientInput>({
     resolver: zodResolver(createClientSchema),
@@ -107,6 +117,8 @@ export function NewClientForm({
         fd.append(k, String(v))
       }
     })
+    const partnerIdVal = (data as { partner_id?: string }).partner_id
+    if (partnerIdVal) fd.append('partner_id', partnerIdVal)
 
     const res = await createClientAction(slug, fd)
     if (res?.error) {
@@ -270,32 +282,63 @@ export function NewClientForm({
           )}
         />
 
-        {/* Corretor responsável */}
+        {/* Corretor / Parceiro responsável — selector unificado (UAT Issue #1) */}
         <FormField
           control={form.control}
           name="assigned_to"
-          render={({ field }) => (
+          render={() => (
             <FormItem>
               <FormLabel>
-                Corretor responsável
+                Corretor / Parceiro responsável
                 <span className="ml-1 text-destructive">*</span>
               </FormLabel>
               <Select
                 disabled={lockAssignedToSelf}
-                value={field.value}
-                onValueChange={field.onChange}
+                value={selectedAssignee}
+                onValueChange={(val) => {
+                  if (val.startsWith('broker:')) {
+                    const id = val.replace('broker:', '')
+                    form.setValue('assigned_to', id)
+                    form.setValue('partner_id' as keyof CreateClientInput, '')
+                    setSelectedAssignee(val)
+                  } else {
+                    const id = val.replace('partner:', '')
+                    form.setValue('assigned_to', '')
+                    form.setValue('partner_id' as keyof CreateClientInput, id)
+                    setSelectedAssignee(val)
+                  }
+                }}
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Selecione o corretor" />
+                    <SelectValue placeholder="Selecione corretor ou parceiro" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {corretores.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>
-                      {c.full_name ?? c.id}
-                    </SelectItem>
-                  ))}
+                  {corretores.length > 0 && (
+                    <>
+                      <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
+                        Corretores Internos
+                      </div>
+                      {corretores.map((c) => (
+                        <SelectItem key={c.id} value={`broker:${c.id}`}>
+                          {c.full_name ?? c.id}
+                        </SelectItem>
+                      ))}
+                    </>
+                  )}
+                  {parceiros.length > 0 && (
+                    <>
+                      <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
+                        Parceiros Externos
+                      </div>
+                      {parceiros.map((p) => (
+                        <SelectItem key={p.id} value={`partner:${p.id}`}>
+                          {p.name}
+                        </SelectItem>
+                      ))}
+                    </>
+                  )}
                 </SelectContent>
               </Select>
               <FormMessage />

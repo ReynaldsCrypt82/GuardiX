@@ -33,6 +33,13 @@ export default async function CorretoresPage({ params, searchParams }: Props) {
   const canExport = isExecutiveRole(role)
   const currentMonthValue = format(startOfMonth(new Date()), 'yyyy-MM')
 
+  // Buscar parceiros externos do tenant (UAT Issue #1 — seção "Corretores Parceiros")
+  const { data: partnerRows } = await supabase
+    .from('partners')
+    .select('id, name, contact_email, cnpj, commission_rate_default')
+    .is('deleted_at', null)
+    .order('name')
+
   // 1. Buscar profiles com role='corretor' do tenant (RLS aplica tenant_id)
   const pageNum = Math.max(1, parseInt(sp.page ?? '1', 10))
   const from = (pageNum - 1) * PAGE_SIZE
@@ -169,6 +176,68 @@ export default async function CorretoresPage({ params, searchParams }: Props) {
           </div>
         </div>
       )}
+
+      {/* Corretores Parceiros (UAT Issue #1) */}
+      <div className="mt-8 space-y-4">
+        <div>
+          <h2 className="text-lg font-semibold">Corretores Parceiros</h2>
+          <p className="text-sm text-muted-foreground">
+            Parceiros externos cadastrados nesta corretora
+          </p>
+        </div>
+        {(partnerRows ?? []).length === 0 ? (
+          <div className="rounded-lg border border-dashed p-6 text-center">
+            <p className="text-sm text-muted-foreground">Nenhum parceiro externo cadastrado.</p>
+            <Button asChild variant="outline" size="sm" className="mt-3">
+              <Link href={`/${slug}/parceiros`}>Gerenciar Parceiros</Link>
+            </Button>
+          </div>
+        ) : (
+          <div className="rounded-lg border overflow-hidden">
+            <table className="w-full text-sm">
+              <thead className="bg-muted/50">
+                <tr>
+                  <th className="px-4 py-3 text-left font-medium">Nome</th>
+                  <th className="px-4 py-3 text-left font-medium">CNPJ</th>
+                  <th className="px-4 py-3 text-left font-medium">E-mail</th>
+                  <th className="px-4 py-3 text-left font-medium">Taxa padrão</th>
+                  <th className="px-4 py-3 text-left font-medium">Tipo</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y">
+                {(partnerRows ?? []).map(
+                  (p: {
+                    id: string
+                    name: string
+                    contact_email: string | null
+                    cnpj: string | null
+                    commission_rate_default: number
+                  }) => (
+                    <tr key={p.id} className="hover:bg-muted/30">
+                      <td className="px-4 py-3 font-medium">{p.name}</td>
+                      <td className="px-4 py-3 text-muted-foreground">{p.cnpj ?? '—'}</td>
+                      <td className="px-4 py-3 text-muted-foreground">
+                        {p.contact_email ?? '—'}
+                      </td>
+                      <td className="px-4 py-3">
+                        {new Intl.NumberFormat('pt-BR', {
+                          style: 'percent',
+                          minimumFractionDigits: 2,
+                        }).format(p.commission_rate_default)}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold border-blue-200 bg-blue-50 text-blue-700">
+                          Parceiro Externo
+                        </span>
+                      </td>
+                    </tr>
+                  ),
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
