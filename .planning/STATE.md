@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-05-04)
 Phase: 02
 Plan: Not started
 Status: Executing Phase 01
-Last activity: 2026-05-09 — Completed quick task 260509-lx5: pipeline partner join + KanbanCard fallback + softDelete error transparency
+Last activity: 2026-05-10 — Completed quick task 260509-to3: melhorias form seguros: seguradora combobox, cliente busca server-side, marca/modelo FIPE API
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -78,6 +78,7 @@ Decisions carregadas do v1.0 relevantes para v1.1:
 | 260509-lcj | Partners em Corretores + troca de corretor com lock por stage | 2026-05-09 | a2ace99 | [260509-lcj-partners-em-corretores-e-troca-de-corret](.planning/quick/260509-lcj-partners-em-corretores-e-troca-de-corret/) |
 | 260509-lx5 | Pipeline partner join + KanbanCard fallback + softDelete error transparency | 2026-05-09 | 0b85cae | [260509-lx5-corrigir-bugs-pipeline-card-sem-parceiro](.planning/quick/260509-lx5-corrigir-bugs-pipeline-card-sem-parceiro/) |
 | 260509-t2g | Corrigir tenant_id ausente em addInteraction/addTask + RLS partner clients | 2026-05-09 | 1f9ea36 | [260509-t2g-corrigir-tenant-id-ausente-e-rls-de-inte](.planning/quick/260509-t2g-corrigir-tenant-id-ausente-e-rls-de-inte/) |
+| 260509-to3 | Melhorias form seguros: seguradora combobox, cliente busca server-side, marca/modelo FIPE API | 2026-05-10 | e0b6cd2 | [260509-to3-melhorias-no-formul-rio-de-seguros-segur](.planning/quick/260509-to3-melhorias-no-formul-rio-de-seguros-segur/) |
 
 ### Pending Todos
 
