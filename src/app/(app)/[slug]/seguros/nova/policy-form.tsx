@@ -175,7 +175,6 @@ export function PolicyForm({ slug, corretores, defaultAssignedTo, lockAssignedTo
       .then((data: FipeMarca[]) => setFipeMarcas(Array.isArray(data) ? data : []))
       .catch(() => setFipeMarcas([]))
       .finally(() => setLoadingMarcas(false))
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedType, fipeMarcas.length])
 
   // Load FIPE modelos when marca changes
