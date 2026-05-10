@@ -77,6 +77,7 @@ Decisions carregadas do v1.0 relevantes para v1.1:
 |---|-------------|------|--------|-----------|
 | 260509-lcj | Partners em Corretores + troca de corretor com lock por stage | 2026-05-09 | a2ace99 | [260509-lcj-partners-em-corretores-e-troca-de-corret](.planning/quick/260509-lcj-partners-em-corretores-e-troca-de-corret/) |
 | 260509-lx5 | Pipeline partner join + KanbanCard fallback + softDelete error transparency | 2026-05-09 | 0b85cae | [260509-lx5-corrigir-bugs-pipeline-card-sem-parceiro](.planning/quick/260509-lx5-corrigir-bugs-pipeline-card-sem-parceiro/) |
+| 260509-t2g | Corrigir tenant_id ausente em addInteraction/addTask + RLS partner clients | 2026-05-09 | 1f9ea36 | [260509-t2g-corrigir-tenant-id-ausente-e-rls-de-inte](.planning/quick/260509-t2g-corrigir-tenant-id-ausente-e-rls-de-inte/) |
 
 ### Pending Todos
 
