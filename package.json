@@ -22,6 +22,7 @@
     "ai": "^6.0.173",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
     "exceljs": "^4.4.0",
     "geist": "^1.7.0",
