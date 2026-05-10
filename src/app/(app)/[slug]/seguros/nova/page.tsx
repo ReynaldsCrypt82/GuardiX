@@ -17,21 +17,13 @@ export default async function NovaPolicePage({ params }: Props) {
 
   const role = (user.app_metadata as { role?: string })?.role ?? ''
 
-  // Carregar clientes e corretores do tenant (RLS garante isolamento)
-  const [clientesRes, corretoresRes] = await Promise.all([
-    supabase
-      .from('clients')
-      .select('id, name')
-      .is('deleted_at', null)
-      .order('name'),
-    supabase
-      .from('profiles')
-      .select('id, full_name, role')
-      .in('role', ['admin', 'corretor'])
-      .eq('active', true)
-      .is('deleted_at', null)
-      .order('full_name'),
-  ])
+  const { data: corretores } = await supabase
+    .from('profiles')
+    .select('id, full_name, role')
+    .in('role', ['admin', 'corretor'])
+    .eq('active', true)
+    .is('deleted_at', null)
+    .order('full_name')
 
   const defaultAssignedTo = role === 'corretor' ? user.id : ''
   const lockAssignedToSelf = role === 'corretor'
@@ -44,8 +36,7 @@ export default async function NovaPolicePage({ params }: Props) {
       </div>
       <PolicyForm
         slug={slug}
-        clientes={clientesRes.data ?? []}
-        corretores={corretoresRes.data ?? []}
+        corretores={corretores ?? []}
         defaultAssignedTo={defaultAssignedTo}
         lockAssignedToSelf={lockAssignedToSelf}
       />

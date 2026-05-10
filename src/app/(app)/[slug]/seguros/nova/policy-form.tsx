@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
+import { Check, ChevronsUpDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -14,12 +15,19 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command'
+import { cn } from '@/lib/utils'
+import { SEGURADORAS } from '@/lib/constants/seguradoras'
+import { searchClientsAction, type ClientSearchResult } from '@/lib/actions/clients-search'
 import { createPolicyAction } from '@/lib/actions/policies'
-
-interface Cliente {
-  id: string
-  name: string
-}
 
 interface Corretor {
   id: string
@@ -29,7 +37,6 @@ interface Corretor {
 
 interface Props {
   slug: string
-  clientes: Cliente[]
   corretores: Corretor[]
   defaultAssignedTo: string
   lockAssignedToSelf: boolean
@@ -42,17 +49,14 @@ type PolicyType = 'auto' | 'vida' | 'residencial' | 'empresarial' | 'saude' | 'o
 interface FormValues {
   type: PolicyType
   policy_number: string
-  insurer: string
   vigencia_inicio: string
   vigencia_fim: string
   premio_total: string
-  client_id: string
   assigned_to: string
   observacoes: string
   // auto
   placa: string
   chassi: string
-  marca_modelo: string
   ano: string
   valor_fipe: string
   cobertura: string
@@ -75,7 +79,17 @@ interface FormValues {
   dependentes: string
 }
 
-export function PolicyForm({ slug, clientes, corretores, defaultAssignedTo, lockAssignedToSelf }: Props) {
+// FIPE types
+interface FipeMarca {
+  codigo: string
+  nome: string
+}
+interface FipeModelo {
+  codigo: number
+  nome: string
+}
+
+export function PolicyForm({ slug, corretores, defaultAssignedTo, lockAssignedToSelf }: Props) {
   const router = useRouter()
   const [selectedType, setSelectedType] = useState<PolicyType>('auto')
   const [clientId, setClientId] = useState('')
@@ -83,6 +97,27 @@ export function PolicyForm({ slug, clientes, corretores, defaultAssignedTo, lock
   const [cobertura, setCobertura] = useState<'basica' | 'compreensiva'>('compreensiva')
   const [tipoImovel, setTipoImovel] = useState<'proprio' | 'alugado'>('proprio')
   const [acomodacao, setAcomodacao] = useState<'enfermaria' | 'apartamento'>('apartamento')
+
+  // Seguradora (M1)
+  const [insurerOpen, setInsurerOpen] = useState(false)
+  const [insurer, setInsurer] = useState('')
+
+  // Cliente (M2)
+  const [clientName, setClientName] = useState('')
+  const [clientQuery, setClientQuery] = useState('')
+  const [clientResults, setClientResults] = useState<ClientSearchResult[]>([])
+  const [clientOpen, setClientOpen] = useState(false)
+  const [clientLoading, setClientLoading] = useState(false)
+
+  // FIPE Marca/Modelo (M3)
+  const [fipeMarcas, setFipeMarcas] = useState<FipeMarca[]>([])
+  const [fipeModelos, setFipeModelos] = useState<FipeModelo[]>([])
+  const [marcaSelecionada, setMarcaSelecionada] = useState<FipeMarca | null>(null)
+  const [modeloSelecionado, setModeloSelecionado] = useState<FipeModelo | null>(null)
+  const [loadingMarcas, setLoadingMarcas] = useState(false)
+  const [loadingModelos, setLoadingModelos] = useState(false)
+  const [marcaOpen, setMarcaOpen] = useState(false)
+  const [modeloOpen, setModeloOpen] = useState(false)
 
   const {
     register,
@@ -103,14 +138,71 @@ export function PolicyForm({ slug, clientes, corretores, defaultAssignedTo, lock
     reset({
       type: selectedType,
       assigned_to: assignedTo,
-      client_id: clientId,
     })
     // Reset select-controlled states too
     setCobertura('compreensiva')
     setTipoImovel('proprio')
     setAcomodacao('apartamento')
+    // Reset FIPE states
+    setMarcaSelecionada(null)
+    setModeloSelecionado(null)
+    setFipeModelos([])
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedType])
+
+  // Debounced client search
+  useEffect(() => {
+    if (clientQuery.trim().length < 2) {
+      setClientResults([])
+      return
+    }
+    setClientLoading(true)
+    const handle = setTimeout(async () => {
+      const results = await searchClientsAction(slug, clientQuery)
+      setClientResults(results)
+      setClientLoading(false)
+    }, 250)
+    return () => clearTimeout(handle)
+  }, [clientQuery, slug])
+
+  // Load FIPE marcas when type='auto'
+  useEffect(() => {
+    if (selectedType !== 'auto') return
+    if (fipeMarcas.length > 0) return // cache em memoria
+    setLoadingMarcas(true)
+    fetch('https://parallelum.com.br/fipe/api/v1/carros/marcas')
+      .then((r) => (r.ok ? r.json() : []))
+      .then((data: FipeMarca[]) => setFipeMarcas(Array.isArray(data) ? data : []))
+      .catch(() => setFipeMarcas([]))
+      .finally(() => setLoadingMarcas(false))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedType, fipeMarcas.length])
+
+  // Load FIPE modelos when marca changes
+  useEffect(() => {
+    if (!marcaSelecionada) {
+      setFipeModelos([])
+      setModeloSelecionado(null)
+      return
+    }
+    setLoadingModelos(true)
+    setModeloSelecionado(null) // limpa modelo ao trocar marca
+    fetch(
+      `https://parallelum.com.br/fipe/api/v1/carros/marcas/${marcaSelecionada.codigo}/modelos`,
+    )
+      .then((r) => (r.ok ? r.json() : { modelos: [] }))
+      .then((data: { modelos?: FipeModelo[] }) =>
+        setFipeModelos(Array.isArray(data?.modelos) ? data.modelos : []),
+      )
+      .catch(() => setFipeModelos([]))
+      .finally(() => setLoadingModelos(false))
+  }, [marcaSelecionada])
+
+  // Combined marca + modelo string for FormData
+  const marcaModeloCombinado =
+    marcaSelecionada && modeloSelecionado
+      ? `${marcaSelecionada.nome} ${modeloSelecionado.nome}`
+      : ''
 
   async function onSubmit(data: FormValues) {
     const fd = new FormData()
@@ -122,11 +214,15 @@ export function PolicyForm({ slug, clientes, corretores, defaultAssignedTo, lock
       }
     })
 
-    // Controlled selects
+    // Controlled values
     fd.set('type', selectedType)
+    fd.set('insurer', insurer)
     fd.set('client_id', clientId)
     fd.set('assigned_to', assignedTo)
-    if (selectedType === 'auto') fd.set('cobertura', cobertura)
+    if (selectedType === 'auto') {
+      fd.set('cobertura', cobertura)
+      fd.set('marca_modelo', marcaModeloCombinado)
+    }
     if (selectedType === 'residencial') fd.set('tipo_imovel', tipoImovel)
     if (selectedType === 'saude') fd.set('acomodacao', acomodacao)
 
@@ -181,12 +277,46 @@ export function PolicyForm({ slug, clientes, corretores, defaultAssignedTo, lock
           )}
         </div>
 
+        {/* Seguradora — Combobox (M1) */}
         <div className="space-y-2">
-          <Label htmlFor="insurer">Seguradora <span className="text-destructive">*</span></Label>
-          <Input id="insurer" {...register('insurer')} placeholder="Ex.: Porto Seguro" />
-          {errors.insurer && (
-            <p className="text-xs text-destructive">{errors.insurer.message}</p>
-          )}
+          <Label>Seguradora <span className="text-destructive">*</span></Label>
+          <Popover open={insurerOpen} onOpenChange={setInsurerOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                type="button"
+                variant="outline"
+                role="combobox"
+                aria-expanded={insurerOpen}
+                className="w-full justify-between font-normal"
+              >
+                {insurer || 'Selecione a seguradora'}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+              <Command>
+                <CommandInput placeholder="Buscar seguradora..." />
+                <CommandList>
+                  <CommandEmpty>Nenhuma seguradora encontrada.</CommandEmpty>
+                  <CommandGroup>
+                    {SEGURADORAS.map((s) => (
+                      <CommandItem
+                        key={s}
+                        value={s}
+                        onSelect={(v) => {
+                          setInsurer(v)
+                          setInsurerOpen(false)
+                        }}
+                      >
+                        <Check className={cn('mr-2 h-4 w-4', insurer === s ? 'opacity-100' : 'opacity-0')} />
+                        {s}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
 
@@ -223,20 +353,57 @@ export function PolicyForm({ slug, clientes, corretores, defaultAssignedTo, lock
         )}
       </div>
 
+      {/* Cliente — Combobox com busca server-side (M2) */}
       <div className="space-y-2">
         <Label>Cliente <span className="text-destructive">*</span></Label>
-        <Select value={clientId} onValueChange={setClientId}>
-          <SelectTrigger>
-            <SelectValue placeholder="Selecione o cliente" />
-          </SelectTrigger>
-          <SelectContent>
-            {clientes.map((c) => (
-              <SelectItem key={c.id} value={c.id}>
-                {c.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <Popover open={clientOpen} onOpenChange={setClientOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              type="button"
+              variant="outline"
+              role="combobox"
+              aria-expanded={clientOpen}
+              className="w-full justify-between font-normal"
+            >
+              {clientName || 'Buscar cliente'}
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+            <Command shouldFilter={false}>
+              <CommandInput
+                placeholder="Digite ao menos 2 letras..."
+                value={clientQuery}
+                onValueChange={setClientQuery}
+              />
+              <CommandList>
+                <CommandEmpty>
+                  {clientLoading
+                    ? 'Buscando...'
+                    : clientQuery.trim().length < 2
+                      ? 'Digite ao menos 2 letras.'
+                      : 'Nenhum cliente encontrado.'}
+                </CommandEmpty>
+                <CommandGroup>
+                  {clientResults.map((c) => (
+                    <CommandItem
+                      key={c.id}
+                      value={c.id}
+                      onSelect={() => {
+                        setClientId(c.id)
+                        setClientName(c.name)
+                        setClientOpen(false)
+                      }}
+                    >
+                      <Check className={cn('mr-2 h-4 w-4', clientId === c.id ? 'opacity-100' : 'opacity-0')} />
+                      <span>{c.name}{c.document ? ` — ${c.document}` : ''}</span>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
       </div>
 
       <div className="space-y-2">
@@ -280,14 +447,104 @@ export function PolicyForm({ slug, clientes, corretores, defaultAssignedTo, lock
               <Input id="chassi" {...register('chassi')} placeholder="Opcional" />
             </div>
           </div>
+
+          {/* Marca — Combobox FIPE (M3) */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="marca_modelo">Marca/Modelo <span className="text-destructive">*</span></Label>
-              <Input id="marca_modelo" {...register('marca_modelo')} placeholder="Toyota Corolla" />
-              {errors.marca_modelo && (
-                <p className="text-xs text-destructive">{errors.marca_modelo.message}</p>
+              <Label>Marca <span className="text-destructive">*</span></Label>
+              <Popover open={marcaOpen} onOpenChange={setMarcaOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={marcaOpen}
+                    disabled={loadingMarcas}
+                    className="w-full justify-between font-normal"
+                  >
+                    {marcaSelecionada?.nome ?? (loadingMarcas ? 'Carregando...' : 'Selecione a marca')}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                  <Command>
+                    <CommandInput placeholder="Buscar marca..." />
+                    <CommandList>
+                      <CommandEmpty>Nenhuma marca encontrada.</CommandEmpty>
+                      <CommandGroup>
+                        {fipeMarcas.map((m) => (
+                          <CommandItem
+                            key={m.codigo}
+                            value={m.nome}
+                            onSelect={() => {
+                              setMarcaSelecionada(m)
+                              setMarcaOpen(false)
+                            }}
+                          >
+                            <Check className={cn('mr-2 h-4 w-4', marcaSelecionada?.codigo === m.codigo ? 'opacity-100' : 'opacity-0')} />
+                            {m.nome}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+            </div>
+
+            {/* Modelo — Combobox FIPE (M3) */}
+            <div className="space-y-2">
+              <Label>Modelo <span className="text-destructive">*</span></Label>
+              <Popover open={modeloOpen} onOpenChange={setModeloOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={modeloOpen}
+                    disabled={!marcaSelecionada || loadingModelos}
+                    className="w-full justify-between font-normal"
+                  >
+                    {modeloSelecionado?.nome ??
+                      (loadingModelos
+                        ? 'Carregando...'
+                        : !marcaSelecionada
+                          ? 'Selecione uma marca primeiro'
+                          : 'Selecione o modelo')}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                  <Command>
+                    <CommandInput placeholder="Buscar modelo..." />
+                    <CommandList>
+                      <CommandEmpty>Nenhum modelo encontrado.</CommandEmpty>
+                      <CommandGroup>
+                        {fipeModelos.map((m) => (
+                          <CommandItem
+                            key={m.codigo}
+                            value={m.nome}
+                            onSelect={() => {
+                              setModeloSelecionado(m)
+                              setModeloOpen(false)
+                            }}
+                          >
+                            <Check className={cn('mr-2 h-4 w-4', modeloSelecionado?.codigo === m.codigo ? 'opacity-100' : 'opacity-0')} />
+                            {m.nome}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+              {marcaModeloCombinado === '' && (
+                <p className="text-xs text-muted-foreground">Selecione marca e modelo para continuar.</p>
               )}
             </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="ano">Ano <span className="text-destructive">*</span></Label>
               <Input id="ano" type="number" {...register('ano')} placeholder="2024" />
@@ -295,24 +552,23 @@ export function PolicyForm({ slug, clientes, corretores, defaultAssignedTo, lock
                 <p className="text-xs text-destructive">{errors.ano.message}</p>
               )}
             </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="valor_fipe">Valor FIPE (R$) <span className="text-destructive">*</span></Label>
               <Input id="valor_fipe" type="number" step="0.01" {...register('valor_fipe')} placeholder="0,00" />
             </div>
-            <div className="space-y-2">
-              <Label>Cobertura <span className="text-destructive">*</span></Label>
-              <Select value={cobertura} onValueChange={(v) => setCobertura(v as 'basica' | 'compreensiva')}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="basica">Básica</SelectItem>
-                  <SelectItem value="compreensiva">Compreensiva</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Cobertura <span className="text-destructive">*</span></Label>
+            <Select value={cobertura} onValueChange={(v) => setCobertura(v as 'basica' | 'compreensiva')}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="basica">Básica</SelectItem>
+                <SelectItem value="compreensiva">Compreensiva</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
       )}
